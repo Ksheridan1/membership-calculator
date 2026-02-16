@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>HydroBlast Membership Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      padding: 40px;
+    }
+    .container {
+      max-width: 600px;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      width: 100%;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .results {
+      margin-top: 20px;
+      background: #f1f1f1;
+      padding: 15px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>HydroBlast Annual Care Calculator</h1>
+
+  <label>Soft Wash Price ($)</label>
+  <input type="number" id="softwash">
+
+  <label>Gutter Linear Feet</label>
+  <input type="number" id="gutterFeet">
+
+  <label>Price per Gutter Foot ($)</label>
+  <input type="number" id="gutterRate" value="1">
+
+  <label>Number of Exterior Windows</label>
+  <input type="number" id="windows">
+
+  <label>Price per Window ($)</label>
+  <input type="number" id="windowRate" value="4">
+
+  <label>Driveway Price ($)</label>
+  <input type="number" id="driveway">
+
+  <label>Water Feature Monthly Price ($)</label>
+  <input type="number" id="waterMonthly">
+
+  <button onclick="calculate()">Calculate Membership</button>
+
+  <div class="results" id="results" style="display:none;">
+    <p><strong>Annual Retail Total:</strong> $<span id="retail"></span></p>
+    <p><strong>Annual Membership (15% Premium):</strong> $<span id="membershipAnnual"></span></p>
+    <p><strong>Monthly Membership Price:</strong> $<span id="monthly"></span></p>
+  </div>
+</div>
+
+<script>
+function calculate() {
+  let softwash = parseFloat(document.getElementById('softwash').value) || 0;
+  let gutterFeet = parseFloat(document.getElementById('gutterFeet').value) || 0;
+  let gutterRate = parseFloat(document.getElementById('gutterRate').value) || 0;
+  let windows = parseFloat(document.getElementById('windows').value) || 0;
+  let windowRate = parseFloat(document.getElementById('windowRate').value) || 0;
+  let driveway = parseFloat(document.getElementById('driveway').value) || 0;
+  let waterMonthly = parseFloat(document.getElementById('waterMonthly').value) || 0;
+
+  let retailTotal = 
+    softwash +
+    (gutterFeet * gutterRate) +
+    (windows * windowRate) +
+    driveway +
+    (waterMonthly * 12);
+
+  let membershipAnnual = retailTotal * 1.15;
+  let monthlyPrice = membershipAnnual / 12;
+
+  document.getElementById('retail').innerText = retailTotal.toFixed(2);
+  document.getElementById('membershipAnnual').innerText = membershipAnnual.toFixed(2);
+  document.getElementById('monthly').innerText = monthlyPrice.toFixed(2);
+
+  document.getElementById('results').style.display = 'block';
+}
+</script>
+
+</body>
+</html>
