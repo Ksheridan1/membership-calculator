@@ -1,275 +1,258 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Exterior Service Membership Calculator</title>
-  <style>
-    :root {
-      --bg: #f3f6fb;
-      --card: #ffffff;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --accent: #0f766e;
-      --accent-hover: #115e59;
-      --border: #d1d5db;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Exterior Service Membership Calculator</title>
 
-    * { box-sizing: border-box; }
+<style>
+:root {
+  --bg: #f3f6fb;
+  --card: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --accent: #0f766e;
+  --accent-hover: #115e59;
+  --border: #d1d5db;
+}
 
-    body {
-      margin: 0;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(180deg, #eaf2ff 0%, var(--bg) 100%);
-      color: var(--text);
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-    }
+* { box-sizing: border-box; }
 
-    .calculator {
-      width: min(860px, 100%);
-      background: var(--card);
-      border-radius: 14px;
-      box-shadow: 0 12px 30px rgba(31, 41, 55, 0.12);
-      padding: 26px;
-    }
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(180deg, #eaf2ff 0%, var(--bg) 100%);
+  color: var(--text);
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
 
-    h1 { margin: 0 0 8px; font-size: 1.7rem; }
+.calculator {
+  width: min(850px, 100%);
+  background: var(--card);
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(31, 41, 55, 0.12);
+  padding: 26px;
+}
 
-    .subtext {
-      margin: 0 0 18px;
-      color: var(--muted);
-      line-height: 1.4;
-    }
+h1 { margin: 0 0 8px; font-size: 1.7rem; }
 
-    .grid {
-      display: grid;
-      gap: 14px;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      align-items: end;
-    }
+.subtext {
+  margin: 0 0 20px;
+  color: var(--muted);
+  line-height: 1.4;
+}
 
-    .field { display: flex; flex-direction: column; gap: 6px; }
+.grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
 
-    label { font-weight: 600; font-size: 0.92rem; }
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
 
-    input, select {
-      width: 100%;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 1rem;
-      transition: border-color 0.15s ease;
-      background: #fff;
-    }
+label {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
 
-    input:focus, select:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
-    }
+input, select {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 1rem;
+}
 
-    .inline-note {
-      font-size: 0.85rem;
-      color: var(--muted);
-      margin-top: 2px;
-    }
+button {
+  margin-top: 20px;
+  width: 100%;
+  border: none;
+  border-radius: 9px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 12px;
+  cursor: pointer;
+}
 
-    button {
-      margin-top: 18px;
-      width: 100%;
-      border: none;
-      border-radius: 9px;
-      background: var(--accent);
-      color: #fff;
-      font-size: 1rem;
-      font-weight: 700;
-      padding: 12px;
-      cursor: pointer;
-      transition: background 0.15s ease;
-    }
+button:hover {
+  background: var(--accent-hover);
+}
 
-    button:hover { background: var(--accent-hover); }
+.results {
+  margin-top: 20px;
+  border: 1px solid #dbe5ff;
+  background: #f8fbff;
+  border-radius: 10px;
+  padding: 14px;
+  display: none;
+}
 
-    .results {
-      margin-top: 20px;
-      border: 1px solid #dbe5ff;
-      background: #f8fbff;
-      border-radius: 10px;
-      padding: 14px;
-      display: none;
-    }
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px dashed #d7def4;
+}
 
-    .results h2 { margin: 0 0 10px; font-size: 1.1rem; }
+.result-row:last-child {
+  border-bottom: none;
+}
 
-    .result-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 7px 0;
-      border-bottom: 1px dashed #d7def4;
-    }
-
-    .result-row:last-child { border-bottom: none; }
-
-    .amount { font-weight: 700; }
-  </style>
+.amount { font-weight: 700; }
+.highlight { font-size: 1.05rem; }
+</style>
 </head>
+
 <body>
-  <main class="calculator">
-    <h1>Annual Membership Price Calculator</h1>
-    <p class="subtext">
-      Enter raw retail inputs. We compute annual retail, a pay-as-you-go monthly (premium markup),
-      and a membership monthly (discount off retail monthly).
-    </p>
+<main class="calculator">
 
-    <div class="grid">
-      <!-- Membership controls -->
-      <div class="field">
-        <label for="nonMemberMarkup">Non-member monthly premium (%)</label>
-        <input id="nonMemberMarkup" type="number" min="0" step="0.01" value="15" />
-        <div class="inline-note">Used for pay-as-you-go monthly pricing.</div>
-      </div>
+<h1>Annual Membership Price Calculator</h1>
+<p class="subtext">
+Enter raw retail pricing. We calculate retail, non-member pricing, membership pricing,
+and required activation fee.
+</p>
 
-      <div class="field">
-        <label for="membershipDiscount">Membership discount</label>
-        <select id="membershipDiscount">
-          <option value="0">No discount (0%)</option>
-          <option value="0.10">Standard (10% off)</option>
-          <option value="0.15" selected>Premium (15% off)</option>
-          <option value="0.20">Elite (20% off)</option>
-        </select>
-        <div class="inline-note">Applied to retail monthly (annual retail ÷ 12).</div>
-      </div>
+<div class="grid">
 
-      <div class="field">
-        <label for="softWash">Soft wash price ($)</label>
-        <input id="softWash" type="number" min="0" step="0.01" placeholder="0.00" />
-      </div>
+<div class="field">
+<label>Activation Tier</label>
+<select id="activationFee">
+  <option value="100">Low – $100</option>
+  <option value="199">Mid – $199</option>
+  <option value="299">High – $299</option>
+</select>
+</div>
 
-      <div class="field">
-        <label for="gutterFeet">Gutter linear feet</label>
-        <input id="gutterFeet" type="number" min="0" step="1" placeholder="0" />
-      </div>
+<div class="field">
+<label>Non-member monthly premium (%)</label>
+<input id="premiumPercent" type="number" value="15" />
+</div>
 
-      <div class="field">
-        <label for="gutterRate">Price per gutter foot ($)</label>
-        <input id="gutterRate" type="number" min="0" step="0.01" placeholder="0.00" />
-      </div>
+<div class="field">
+<label>Membership discount (%)</label>
+<input id="discountPercent" type="number" value="15" />
+</div>
 
-      <div class="field">
-        <label for="windowCount">Window count</label>
-        <input id="windowCount" type="number" min="0" step="1" placeholder="0" />
-      </div>
+<div class="field">
+<label>Soft wash price ($)</label>
+<input id="softWash" type="number" />
+</div>
 
-      <div class="field">
-        <label for="windowRate">Price per window ($)</label>
-        <input id="windowRate" type="number" min="0" step="0.01" placeholder="0.00" />
-      </div>
+<div class="field">
+<label>Gutter linear feet</label>
+<input id="gutterFeet" type="number" />
+</div>
 
-      <div class="field">
-        <label for="drivewayPrice">Driveway pressure wash price ($)</label>
-        <input id="drivewayPrice" type="number" min="0" step="0.01" placeholder="0.00" />
-      </div>
+<div class="field">
+<label>Price per gutter foot ($)</label>
+<input id="gutterRate" type="number" />
+</div>
 
-      <div class="field">
-        <label for="waterMonthly">Water feature monthly price ($)</label>
-        <input id="waterMonthly" type="number" min="0" step="0.01" placeholder="0.00" />
-      </div>
-    </div>
+<div class="field">
+<label>Window count</label>
+<input id="windowCount" type="number" />
+</div>
 
-    <button id="calculateBtn" type="button">Calculate</button>
+<div class="field">
+<label>Price per window ($)</label>
+<input id="windowRate" type="number" />
+</div>
 
-    <section class="results" id="results" aria-live="polite">
-      <h2>Results</h2>
+<div class="field">
+<label>Driveway pressure wash ($)</label>
+<input id="drivewayPrice" type="number" />
+</div>
 
-      <div class="result-row">
-        <span>Annual retail value</span>
-        <span class="amount" id="annualRetailValue">$0.00</span>
-      </div>
+<div class="field">
+<label>Water feature monthly ($)</label>
+<input id="waterMonthly" type="number" />
+</div>
 
-      <div class="result-row">
-        <span>Retail monthly (annual ÷ 12)</span>
-        <span class="amount" id="retailMonthly">$0.00</span>
-      </div>
+</div>
 
-      <div class="result-row">
-        <span>Non-member monthly (retail monthly × premium)</span>
-        <span class="amount" id="nonMemberMonthly">$0.00</span>
-      </div>
+<button onclick="calculate()">Calculate</button>
 
-      <div class="result-row">
-        <span>Membership monthly (retail monthly − discount)</span>
-        <span class="amount" id="memberMonthly">$0.00</span>
-      </div>
+<section class="results" id="results">
 
-      <div class="result-row">
-        <span>Membership annual (membership monthly × 12)</span>
-        <span class="amount" id="memberAnnual">$0.00</span>
-      </div>
+<div class="result-row">
+<span>Annual retail value</span>
+<span class="amount" id="annualRetail"></span>
+</div>
 
-      <div class="result-row">
-        <span>Annual savings vs retail</span>
-        <span class="amount" id="annualSavings">$0.00</span>
-      </div>
-    </section>
-  </main>
+<div class="result-row">
+<span>Retail monthly (annual ÷ 12)</span>
+<span class="amount" id="retailMonthly"></span>
+</div>
 
-  <script>
-    const getInputNumber = (id) => Number.parseFloat(document.getElementById(id).value) || 0;
+<div class="result-row">
+<span>Non-member monthly (retail + premium)</span>
+<span class="amount" id="nonMemberMonthly"></span>
+</div>
 
-    const asCurrency = (value) =>
-      new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(value);
+<div class="result-row">
+<span>Membership monthly (retail - discount)</span>
+<span class="amount highlight" id="memberMonthly"></span>
+</div>
 
-    function calculateMembershipPricing() {
-      // Raw retail inputs
-      const softWashPrice = getInputNumber("softWash");
-      const gutterLinearFeet = getInputNumber("gutterFeet");
-      const gutterPricePerFoot = getInputNumber("gutterRate");
-      const windowCount = getInputNumber("windowCount");
-      const pricePerWindow = getInputNumber("windowRate");
-      const drivewayPressureWashPrice = getInputNumber("drivewayPrice");
-      const waterFeatureMonthlyPrice = getInputNumber("waterMonthly");
+<div class="result-row">
+<span>Activation fee (due today)</span>
+<span class="amount highlight" id="activationDisplay"></span>
+</div>
 
-      // Controls
-      const nonMemberMarkupPct = getInputNumber("nonMemberMarkup") / 100;  // e.g., 15% => 0.15
-      const membershipDiscountPct = Number.parseFloat(document.getElementById("membershipDiscount").value) || 0;
+<div class="result-row">
+<span>Total collected Year 1 (activation + membership × 12)</span>
+<span class="amount" id="yearOneTotal"></span>
+</div>
 
-      // Annual retail
-      const annualRetailTotal =
-        softWashPrice +
-        (gutterLinearFeet * gutterPricePerFoot) +
-        (windowCount * pricePerWindow) +
-        drivewayPressureWashPrice +
-        (waterFeatureMonthlyPrice * 12);
+</section>
+</main>
 
-      // Retail monthly
-      const retailMonthly = annualRetailTotal / 12;
+<script>
 
-      // Non-member monthly (premium markup)
-      const nonMemberMonthly = retailMonthly * (1 + nonMemberMarkupPct);
+const get = id => parseFloat(document.getElementById(id).value) || 0;
 
-      // Membership monthly (discount off retail monthly)
-      const memberMonthly = retailMonthly * (1 - membershipDiscountPct);
-      const memberAnnual = memberMonthly * 12;
+const currency = val =>
+new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(val);
 
-      // Savings vs retail (annual)
-      const annualSavings = annualRetailTotal - memberAnnual;
+function calculate() {
 
-      // Display
-      document.getElementById("annualRetailValue").textContent = asCurrency(annualRetailTotal);
-      document.getElementById("retailMonthly").textContent = asCurrency(retailMonthly);
-      document.getElementById("nonMemberMonthly").textContent = asCurrency(nonMemberMonthly);
-      document.getElementById("memberMonthly").textContent = asCurrency(memberMonthly);
-      document.getElementById("memberAnnual").textContent = asCurrency(memberAnnual);
-      document.getElementById("annualSavings").textContent = asCurrency(Math.max(0, annualSavings));
+const premium = get("premiumPercent") / 100;
+const discount = get("discountPercent") / 100;
+const activation = get("activationFee");
 
-      document.getElementById("results").style.display = "block";
-    }
+const annualRetail =
+get("softWash") +
+get("gutterFeet") * get("gutterRate") +
+get("windowCount") * get("windowRate") +
+get("drivewayPrice") +
+(get("waterMonthly") * 12);
 
-    document.getElementById("calculateBtn").addEventListener("click", calculateMembershipPricing);
-  </script>
+const retailMonthly = annualRetail / 12;
+const nonMemberMonthly = retailMonthly * (1 + premium);
+const memberMonthly = retailMonthly * (1 - discount);
+const yearOneTotal = activation + (memberMonthly * 12);
+
+document.getElementById("annualRetail").textContent = currency(annualRetail);
+document.getElementById("retailMonthly").textContent = currency(retailMonthly);
+document.getElementById("nonMemberMonthly").textContent = currency(nonMemberMonthly);
+document.getElementById("memberMonthly").textContent = currency(memberMonthly);
+document.getElementById("activationDisplay").textContent = currency(activation);
+document.getElementById("yearOneTotal").textContent = currency(yearOneTotal);
+
+document.getElementById("results").style.display = "block";
+}
+
+</script>
+
 </body>
 </html>
+
