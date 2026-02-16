@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Exterior Service Membership Calculator</title>
+<title>HydroBlast Membership System</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
@@ -14,11 +14,11 @@ body {
   background:#f3f6fb;
   padding:20px;
 }
-.calculator {
-  max-width:900px;
+.container {
+  max-width:1000px;
   margin:auto;
   background:#fff;
-  padding:25px;
+  padding:30px;
   border-radius:12px;
   box-shadow:0 10px 25px rgba(0,0,0,0.1);
 }
@@ -53,51 +53,66 @@ button {
 canvas {
   border:1px solid #ccc;
   border-radius:6px;
-  margin-top:10px;
   width:100%;
   height:200px;
 }
+h2,h3 { margin-top:30px; }
+.highlight { font-weight:bold; font-size:1.1rem; }
 </style>
 </head>
 
 <body>
-<div class="calculator">
+<div class="container">
 
-<h2>Membership Calculator + Contract</h2>
+<h2>HydroBlast 12-Month Membership System</h2>
 
+<h3>Client Info</h3>
 <div class="grid">
-
 <input id="clientName" placeholder="Client Full Name">
-<input id="clientAddress" placeholder="Client Address">
-
-<select id="activationFee">
-<option value="100">Activation – $100</option>
-<option value="199">Activation – $199</option>
-<option value="299">Activation – $299</option>
-</select>
-
-<input id="softWash" placeholder="Soft Wash Price" type="number">
-<input id="gutterFeet" placeholder="Gutter Feet" type="number">
-<input id="gutterRate" placeholder="Gutter Rate" type="number">
-<input id="windowCount" placeholder="Window Count" type="number">
-<input id="windowRate" placeholder="Window Rate" type="number">
-<input id="drivewayPrice" placeholder="Driveway Price" type="number">
-
+<input id="clientAddress" placeholder="Service Address">
 </div>
 
-<button onclick="calculate()">Calculate</button>
+<h3>Membership Controls</h3>
+<div class="grid">
+<select id="activationFee">
+  <option value="100">Activation – $100</option>
+  <option value="199">Activation – $199</option>
+  <option value="299">Activation – $299</option>
+</select>
+
+<input id="premiumPercent" type="number" value="15" placeholder="Non-member premium %">
+
+<input id="discountPercent" type="number" value="15" placeholder="Membership discount %">
+</div>
+
+<h3>Service Pricing Inputs</h3>
+<div class="grid">
+<input id="softWash" type="number" placeholder="Soft Wash Price">
+<input id="gutterFeet" type="number" placeholder="Gutter Feet">
+<input id="gutterRate" type="number" placeholder="Gutter Rate">
+<input id="windowCount" type="number" placeholder="Window Count">
+<input id="windowRate" type="number" placeholder="Window Rate">
+<input id="drivewayPrice" type="number" placeholder="Driveway Price">
+<input id="waterMonthly" type="number" placeholder="Water Feature Monthly">
+</div>
+
+<button onclick="calculate()">Calculate Pricing</button>
 
 <div class="results" id="results">
 <p><strong>Annual Retail:</strong> <span id="annualRetail"></span></p>
-<p><strong>Membership Monthly:</strong> <span id="memberMonthly"></span></p>
-<p><strong>Activation Due Today:</strong> <span id="activationDisplay"></span></p>
+<p><strong>Retail Monthly:</strong> <span id="retailMonthly"></span></p>
+<p><strong>Non-Member Monthly:</strong> <span id="nonMemberMonthly"></span></p>
+<p class="highlight"><strong>Membership Monthly:</strong> <span id="memberMonthly"></span></p>
+<p><strong>Activation Fee Due Today:</strong> <span id="activationDisplay"></span></p>
+<p><strong>Year 1 Total Collected:</strong> <span id="yearOneTotal"></span></p>
+<p><strong>Annual Savings vs Retail:</strong> <span id="annualSavings"></span></p>
 </div>
 
 <h3>Client Signature</h3>
 <canvas id="signaturePad"></canvas>
 <button onclick="clearSignature()">Clear Signature</button>
 
-<button onclick="generatePDF()">Generate Contract PDF</button>
+<button onclick="generatePDF()">Generate 12-Month Contract PDF</button>
 
 </div>
 
@@ -106,7 +121,7 @@ const { jsPDF } = window.jspdf;
 const canvas = document.getElementById("signaturePad");
 const signaturePad = new SignaturePad(canvas);
 
-function resizeCanvas() {
+function resizeCanvas(){
   const ratio = Math.max(window.devicePixelRatio || 1, 1);
   canvas.width = canvas.offsetWidth * ratio;
   canvas.height = 200 * ratio;
@@ -114,9 +129,7 @@ function resizeCanvas() {
 }
 resizeCanvas();
 
-function get(id){
-  return parseFloat(document.getElementById(id).value) || 0;
-}
+function get(id){ return parseFloat(document.getElementById(id).value) || 0; }
 
 function currency(val){
   return new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(val);
@@ -128,57 +141,64 @@ function calculate(){
     get("softWash") +
     get("gutterFeet") * get("gutterRate") +
     get("windowCount") * get("windowRate") +
-    get("drivewayPrice");
+    get("drivewayPrice") +
+    (get("waterMonthly") * 12);
 
-  const monthly = (annual / 12) * 0.85;
+  const retailMonthly = annual / 12;
+
+  const premium = get("premiumPercent") / 100;
+  const discount = get("discountPercent") / 100;
   const activation = get("activationFee");
 
+  const nonMemberMonthly = retailMonthly * (1 + premium);
+  const memberMonthly = retailMonthly * (1 - discount);
+  const yearOneTotal = activation + (memberMonthly * 12);
+  const annualSavings = annual - (memberMonthly * 12);
+
   document.getElementById("annualRetail").textContent = currency(annual);
-  document.getElementById("memberMonthly").textContent = currency(monthly);
+  document.getElementById("retailMonthly").textContent = currency(retailMonthly);
+  document.getElementById("nonMemberMonthly").textContent = currency(nonMemberMonthly);
+  document.getElementById("memberMonthly").textContent = currency(memberMonthly);
   document.getElementById("activationDisplay").textContent = currency(activation);
+  document.getElementById("yearOneTotal").textContent = currency(yearOneTotal);
+  document.getElementById("annualSavings").textContent = currency(annualSavings);
+
   document.getElementById("results").style.display = "block";
 }
 
-function clearSignature(){
-  signaturePad.clear();
-}
+function clearSignature(){ signaturePad.clear(); }
 
 function generatePDF(){
 
   if(signaturePad.isEmpty()){
-    alert("Please capture client signature first.");
+    alert("Client must sign before generating contract.");
     return;
   }
 
   const doc = new jsPDF();
-
   const name = document.getElementById("clientName").value;
   const address = document.getElementById("clientAddress").value;
-  const activation = get("activationFee");
-  const annual = document.getElementById("annualRetail").textContent;
-  const monthly = document.getElementById("memberMonthly").textContent;
 
   doc.setFontSize(12);
-  doc.text("12-Month Exterior Service Membership Agreement", 20, 20);
-  doc.text("Client: " + name, 20, 35);
-  doc.text("Address: " + address, 20, 45);
+  doc.text("HydroBlast 12-Month Membership Agreement",20,20);
+  doc.text("Client: " + name,20,35);
+  doc.text("Address: " + address,20,45);
 
-  doc.text("Annual Retail Value: " + annual, 20, 60);
-  doc.text("Membership Monthly Payment: " + monthly, 20, 70);
-  doc.text("Activation Fee Due Today: " + currency(activation), 20, 80);
+  doc.text("Annual Retail: " + document.getElementById("annualRetail").textContent,20,60);
+  doc.text("Membership Monthly: " + document.getElementById("memberMonthly").textContent,20,70);
+  doc.text("Activation Fee: " + document.getElementById("activationDisplay").textContent,20,80);
 
-  doc.text("Term: 12 Months (Auto-Renewal Unless Cancelled in Writing)", 20, 95);
-
-  doc.text("Client agrees to a 12-month subscription term.", 20, 110);
-  doc.text("Early cancellation requires payment of remaining balance.", 20, 120);
-  doc.text("Activation fee is non-refundable.", 20, 130);
+  doc.text("Term: 12 Months",20,95);
+  doc.text("Auto-pay required.",20,105);
+  doc.text("Early cancellation requires payment of remaining term.",20,115);
+  doc.text("Activation fee is non-refundable.",20,125);
 
   const signatureImage = signaturePad.toDataURL("image/png");
-  doc.addImage(signatureImage, "PNG", 20, 150, 60, 30);
+  doc.addImage(signatureImage,"PNG",20,145,60,30);
 
-  doc.text("Client Signature", 20, 145);
+  doc.text("Client Signature",20,140);
 
-  doc.save(name + "_Membership_Contract.pdf");
+  doc.save(name + "_HydroBlast_Membership.pdf");
 }
 </script>
 
