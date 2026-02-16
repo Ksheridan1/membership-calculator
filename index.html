@@ -66,34 +66,19 @@
       font-size: 0.92rem;
     }
 
-    input,
-    select {
+    input {
       width: 100%;
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 10px 12px;
       font-size: 1rem;
       transition: border-color 0.15s ease;
-      background: #fff;
     }
 
-    input:focus,
-    select:focus {
+    input:focus {
       outline: none;
       border-color: var(--accent);
       box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
-    }
-
-    .checkbox-field {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 600;
-    }
-
-    .checkbox-field input[type="checkbox"] {
-      width: auto;
-      margin: 0;
     }
 
     button {
@@ -143,50 +128,14 @@
     .amount {
       font-weight: 700;
     }
-
-    .tier-section {
-      margin-top: 16px;
-      padding-top: 12px;
-      border-top: 1px solid #d7def4;
-    }
-
-    .tier-section h3 {
-      margin: 0 0 10px;
-      font-size: 1rem;
-    }
-
-    .tier-grid {
-      display: grid;
-      gap: 10px;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    }
-
-    .tier-card {
-      border: 1px solid #dbe5ff;
-      border-radius: 8px;
-      background: #ffffff;
-      padding: 10px;
-    }
-
-    .tier-name {
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .tier-price {
-      margin: 6px 0 0;
-      font-size: 1.05rem;
-      font-weight: 700;
-    }
   </style>
 </head>
 <body>
   <main class="calculator">
     <h1>Annual Membership Price Calculator</h1>
     <p class="subtext">
-      Enter service pricing, frequencies, add-ons, and discount, then click <strong>Calculate</strong>
-      to see annual retail value, discount amount, final annual membership price, and monthly subscription.
+      Enter your service pricing inputs, then click <strong>Calculate</strong> to get the annual retail value
+      and the monthly membership price (with a 15% premium).
     </p>
 
     <div class="grid">
@@ -194,87 +143,35 @@
         <label for="softWash">Soft wash price ($)</label>
         <input id="softWash" type="number" min="0" step="0.01" placeholder="0.00" />
       </div>
-      <div class="field">
-        <label for="softWashFrequency">Soft wash frequency</label>
-        <select id="softWashFrequency">
-          <option value="1">1x per year</option>
-          <option value="2">2x per year</option>
-        </select>
-      </div>
 
       <div class="field">
         <label for="gutterFeet">Gutter linear feet</label>
         <input id="gutterFeet" type="number" min="0" step="1" placeholder="0" />
       </div>
+
       <div class="field">
         <label for="gutterRate">Price per gutter foot ($)</label>
         <input id="gutterRate" type="number" min="0" step="0.01" placeholder="0.00" />
       </div>
+
       <div class="field">
-        <label for="gutterFrequency">Gutter cleaning frequency</label>
-        <select id="gutterFrequency">
-          <option value="1">1x per year</option>
-          <option value="2">2x per year</option>
-        </select>
+        <label for="windowCount">Window count</label>
+        <input id="windowCount" type="number" min="0" step="1" placeholder="0" />
       </div>
 
       <div class="field">
-        <label for="windowCount">Exterior window count</label>
-        <input id="windowCount" type="number" min="0" step="1" placeholder="0" />
-      </div>
-      <div class="field">
-        <label for="windowRate">Price per exterior window ($)</label>
+        <label for="windowRate">Price per window ($)</label>
         <input id="windowRate" type="number" min="0" step="0.01" placeholder="0.00" />
-      </div>
-      <div class="field">
-        <label for="windowFrequency">Exterior windows frequency</label>
-        <select id="windowFrequency">
-          <option value="1">1x per year</option>
-          <option value="2">2x per year</option>
-          <option value="3">3x per year</option>
-        </select>
       </div>
 
       <div class="field">
         <label for="drivewayPrice">Driveway pressure wash price ($)</label>
         <input id="drivewayPrice" type="number" min="0" step="0.01" placeholder="0.00" />
       </div>
-      <div class="field">
-        <label for="drivewayFrequency">Driveway frequency</label>
-        <select id="drivewayFrequency">
-          <option value="0">0x per year</option>
-          <option value="1">1x per year</option>
-        </select>
-      </div>
 
       <div class="field">
-        <label class="checkbox-field" for="waterFeatureEnabled"><input id="waterFeatureEnabled" type="checkbox" /> Water feature maintenance</label>
-        <input id="waterMonthly" type="number" min="0" step="0.01" placeholder="Monthly price (0.00)" disabled />
-      </div>
-
-      <div class="field">
-        <label class="checkbox-field" for="gutterGuardEnabled"><input id="gutterGuardEnabled" type="checkbox" /> Gutter guard install</label>
-        <input id="gutterGuardPrice" type="number" min="0" step="0.01" placeholder="Add-on price (0.00)" disabled />
-      </div>
-
-      <div class="field">
-        <label class="checkbox-field" for="interiorWindowsEnabled"><input id="interiorWindowsEnabled" type="checkbox" /> Interior windows</label>
-        <input id="interiorWindowsPrice" type="number" min="0" step="0.01" placeholder="Add-on price (0.00)" disabled />
-      </div>
-
-      <div class="field">
-        <label class="checkbox-field" for="annualInspectionEnabled"><input id="annualInspectionEnabled" type="checkbox" /> Annual inspection</label>
-        <input id="annualInspectionPrice" type="number" min="0" step="0.01" placeholder="Add-on price (0.00)" disabled />
-      </div>
-
-      <div class="field">
-        <label for="discountRate">Membership discount</label>
-        <select id="discountRate">
-          <option value="0">0%</option>
-          <option value="0.05">5%</option>
-          <option value="0.10">10%</option>
-          <option value="0.15">15%</option>
-        </select>
+        <label for="waterMonthly">Water feature monthly price ($)</label>
+        <input id="waterMonthly" type="number" min="0" step="0.01" placeholder="0.00" />
       </div>
     </div>
 
@@ -287,34 +184,8 @@
         <span class="amount" id="annualRetailValue">$0.00</span>
       </div>
       <div class="result-row">
-        <span>Discount amount</span>
-        <span class="amount" id="discountAmount">$0.00</span>
-      </div>
-      <div class="result-row">
-        <span>Final annual membership price</span>
-        <span class="amount" id="finalAnnualMembershipPrice">$0.00</span>
-      </div>
-      <div class="result-row">
-        <span>Monthly subscription price</span>
-        <span class="amount" id="monthlySubscriptionPrice">$0.00</span>
-      </div>
-
-      <div class="tier-section">
-        <h3>Membership Tiers</h3>
-        <div class="tier-grid">
-          <div class="tier-card">
-            <p class="tier-name">Basic</p>
-            <p class="tier-price" id="basicTierMonthly">$0.00/mo</p>
-          </div>
-          <div class="tier-card">
-            <p class="tier-name">Premium</p>
-            <p class="tier-price" id="premiumTierMonthly">$0.00/mo</p>
-          </div>
-          <div class="tier-card">
-            <p class="tier-name">Elite</p>
-            <p class="tier-price" id="eliteTierMonthly">$0.00/mo</p>
-          </div>
-        </div>
+        <span>Membership monthly price (retail × 1.15 ÷ 12)</span>
+        <span class="amount" id="membershipMonthlyPrice">$0.00</span>
       </div>
     </section>
   </main>
@@ -323,9 +194,6 @@
     // Returns a numeric value from an input. If blank/invalid, it safely defaults to 0.
     const getInputNumber = (id) => Number.parseFloat(document.getElementById(id).value) || 0;
 
-    // Reads a <select> value as a number.
-    const getSelectNumber = (id) => Number.parseFloat(document.getElementById(id).value) || 0;
-
     // Formats numbers as USD currency for clean display.
     const asCurrency = (value) =>
       new Intl.NumberFormat("en-US", {
@@ -333,89 +201,32 @@
         currency: "USD"
       }).format(value);
 
-    // Enables or disables an add-on amount input based on its checkbox.
-    function toggleAddonInput(checkboxId, inputId) {
-      const checked = document.getElementById(checkboxId).checked;
-      const input = document.getElementById(inputId);
-      input.disabled = !checked;
-      if (!checked) input.value = "";
-    }
-
     function calculateMembershipPricing() {
-      // 1) Collect base service pricing and selected service frequencies.
+      // 1) Collect all numeric inputs from the form.
       const softWashPrice = getInputNumber("softWash");
       const gutterLinearFeet = getInputNumber("gutterFeet");
       const gutterPricePerFoot = getInputNumber("gutterRate");
       const windowCount = getInputNumber("windowCount");
       const pricePerWindow = getInputNumber("windowRate");
-      const drivewayPrice = getInputNumber("drivewayPrice");
+      const drivewayPressureWashPrice = getInputNumber("drivewayPrice");
+      const waterFeatureMonthlyPrice = getInputNumber("waterMonthly");
 
-      const softWashFrequency = getSelectNumber("softWashFrequency");
-      const gutterFrequency = getSelectNumber("gutterFrequency");
-      const windowFrequency = getSelectNumber("windowFrequency");
-      const drivewayFrequency = getSelectNumber("drivewayFrequency");
-
-      // 2) Calculate base annual service totals with frequency multipliers.
-      const softWashAnnual = softWashPrice * softWashFrequency;
-      const gutterAnnual = gutterLinearFeet * gutterPricePerFoot * gutterFrequency;
-      const exteriorWindowsAnnual = windowCount * pricePerWindow * windowFrequency;
-      const drivewayAnnual = drivewayPrice * drivewayFrequency;
-
-      // 3) Include selected add-ons.
-      const waterFeatureAnnual = document.getElementById("waterFeatureEnabled").checked
-        ? getInputNumber("waterMonthly") * 12
-        : 0;
-      const gutterGuardAnnual = document.getElementById("gutterGuardEnabled").checked
-        ? getInputNumber("gutterGuardPrice")
-        : 0;
-      const interiorWindowsAnnual = document.getElementById("interiorWindowsEnabled").checked
-        ? getInputNumber("interiorWindowsPrice")
-        : 0;
-      const annualInspectionAnnual = document.getElementById("annualInspectionEnabled").checked
-        ? getInputNumber("annualInspectionPrice")
-        : 0;
-
-      // 4) Calculate annual retail total before discount.
+      // 2) Calculate annual retail total from the requested formula.
       const annualRetailTotal =
-        softWashAnnual +
-        gutterAnnual +
-        exteriorWindowsAnnual +
-        drivewayAnnual +
-        waterFeatureAnnual +
-        gutterGuardAnnual +
-        interiorWindowsAnnual +
-        annualInspectionAnnual;
+        softWashPrice +
+        gutterLinearFeet * gutterPricePerFoot +
+        windowCount * pricePerWindow +
+        drivewayPressureWashPrice +
+        waterFeatureMonthlyPrice * 12;
 
-      // 5) Apply discount after annual retail is calculated.
-      const discountRate = getSelectNumber("discountRate");
-      const discountAmount = annualRetailTotal * discountRate;
-      const finalAnnualMembershipPrice = annualRetailTotal - discountAmount;
-      const monthlySubscriptionPrice = finalAnnualMembershipPrice / 12;
+      // 3) Apply the 15% membership premium and convert to monthly pricing.
+      const membershipMonthlyPrice = (annualRetailTotal * 1.15) / 12;
 
-      // 6) Show updated output values.
+      // 4) Show the output values in the result section.
       document.getElementById("annualRetailValue").textContent = asCurrency(annualRetailTotal);
-      document.getElementById("discountAmount").textContent = asCurrency(discountAmount);
-      document.getElementById("finalAnnualMembershipPrice").textContent = asCurrency(finalAnnualMembershipPrice);
-      document.getElementById("monthlySubscriptionPrice").textContent = asCurrency(monthlySubscriptionPrice);
-      document.getElementById("basicTierMonthly").textContent = `${asCurrency(monthlySubscriptionPrice)}/mo`;
-      document.getElementById("premiumTierMonthly").textContent = `${asCurrency(monthlySubscriptionPrice)}/mo`;
-      document.getElementById("eliteTierMonthly").textContent = `${asCurrency(monthlySubscriptionPrice)}/mo`;
+      document.getElementById("membershipMonthlyPrice").textContent = asCurrency(membershipMonthlyPrice);
       document.getElementById("results").style.display = "block";
     }
-
-    // Wire add-on checkboxes to enable/disable their corresponding manual amount inputs.
-    document.getElementById("waterFeatureEnabled").addEventListener("change", () =>
-      toggleAddonInput("waterFeatureEnabled", "waterMonthly")
-    );
-    document.getElementById("gutterGuardEnabled").addEventListener("change", () =>
-      toggleAddonInput("gutterGuardEnabled", "gutterGuardPrice")
-    );
-    document.getElementById("interiorWindowsEnabled").addEventListener("change", () =>
-      toggleAddonInput("interiorWindowsEnabled", "interiorWindowsPrice")
-    );
-    document.getElementById("annualInspectionEnabled").addEventListener("change", () =>
-      toggleAddonInput("annualInspectionEnabled", "annualInspectionPrice")
-    );
 
     // Wire the Calculate button to the calculation function.
     document.getElementById("calculateBtn").addEventListener("click", calculateMembershipPricing);
