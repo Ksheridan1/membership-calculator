@@ -1,258 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Exterior Service Membership Calculator</title>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
+
 <style>
-:root {
-  --bg: #f3f6fb;
-  --card: #ffffff;
-  --text: #1f2937;
-  --muted: #6b7280;
-  --accent: #0f766e;
-  --accent-hover: #115e59;
-  --border: #d1d5db;
-}
-
-* { box-sizing: border-box; }
-
 body {
-  margin: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(180deg, #eaf2ff 0%, var(--bg) 100%);
-  color: var(--text);
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  padding: 24px;
+  font-family: Arial, sans-serif;
+  background:#f3f6fb;
+  padding:20px;
 }
-
 .calculator {
-  width: min(850px, 100%);
-  background: var(--card);
-  border-radius: 14px;
-  box-shadow: 0 12px 30px rgba(31, 41, 55, 0.12);
-  padding: 26px;
+  max-width:900px;
+  margin:auto;
+  background:#fff;
+  padding:25px;
+  border-radius:12px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
 }
-
-h1 { margin: 0 0 8px; font-size: 1.7rem; }
-
-.subtext {
-  margin: 0 0 20px;
-  color: var(--muted);
-  line-height: 1.4;
-}
-
 .grid {
-  display: grid;
-  gap: 14px;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  display:grid;
+  gap:12px;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
 }
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-label {
-  font-weight: 600;
-  font-size: 0.92rem;
-}
-
 input, select {
-  width: 100%;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px 12px;
-  font-size: 1rem;
+  padding:8px;
+  border:1px solid #ccc;
+  border-radius:6px;
 }
-
 button {
-  margin-top: 20px;
-  width: 100%;
-  border: none;
-  border-radius: 9px;
-  background: var(--accent);
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 700;
-  padding: 12px;
-  cursor: pointer;
+  margin-top:15px;
+  padding:10px;
+  width:100%;
+  background:#0f766e;
+  color:white;
+  border:none;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
 }
-
-button:hover {
-  background: var(--accent-hover);
-}
-
 .results {
-  margin-top: 20px;
-  border: 1px solid #dbe5ff;
-  background: #f8fbff;
-  border-radius: 10px;
-  padding: 14px;
-  display: none;
+  margin-top:20px;
+  padding:15px;
+  background:#f8fbff;
+  border-radius:8px;
+  display:none;
 }
-
-.result-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 6px 0;
-  border-bottom: 1px dashed #d7def4;
+canvas {
+  border:1px solid #ccc;
+  border-radius:6px;
+  margin-top:10px;
+  width:100%;
+  height:200px;
 }
-
-.result-row:last-child {
-  border-bottom: none;
-}
-
-.amount { font-weight: 700; }
-.highlight { font-size: 1.05rem; }
 </style>
 </head>
 
 <body>
-<main class="calculator">
+<div class="calculator">
 
-<h1>Annual Membership Price Calculator</h1>
-<p class="subtext">
-Enter raw retail pricing. We calculate retail, non-member pricing, membership pricing,
-and required activation fee.
-</p>
+<h2>Membership Calculator + Contract</h2>
 
 <div class="grid">
 
-<div class="field">
-<label>Activation Tier</label>
+<input id="clientName" placeholder="Client Full Name">
+<input id="clientAddress" placeholder="Client Address">
+
 <select id="activationFee">
-  <option value="100">Low – $100</option>
-  <option value="199">Mid – $199</option>
-  <option value="299">High – $299</option>
+<option value="100">Activation – $100</option>
+<option value="199">Activation – $199</option>
+<option value="299">Activation – $299</option>
 </select>
-</div>
 
-<div class="field">
-<label>Non-member monthly premium (%)</label>
-<input id="premiumPercent" type="number" value="15" />
-</div>
-
-<div class="field">
-<label>Membership discount (%)</label>
-<input id="discountPercent" type="number" value="15" />
-</div>
-
-<div class="field">
-<label>Soft wash price ($)</label>
-<input id="softWash" type="number" />
-</div>
-
-<div class="field">
-<label>Gutter linear feet</label>
-<input id="gutterFeet" type="number" />
-</div>
-
-<div class="field">
-<label>Price per gutter foot ($)</label>
-<input id="gutterRate" type="number" />
-</div>
-
-<div class="field">
-<label>Window count</label>
-<input id="windowCount" type="number" />
-</div>
-
-<div class="field">
-<label>Price per window ($)</label>
-<input id="windowRate" type="number" />
-</div>
-
-<div class="field">
-<label>Driveway pressure wash ($)</label>
-<input id="drivewayPrice" type="number" />
-</div>
-
-<div class="field">
-<label>Water feature monthly ($)</label>
-<input id="waterMonthly" type="number" />
-</div>
+<input id="softWash" placeholder="Soft Wash Price" type="number">
+<input id="gutterFeet" placeholder="Gutter Feet" type="number">
+<input id="gutterRate" placeholder="Gutter Rate" type="number">
+<input id="windowCount" placeholder="Window Count" type="number">
+<input id="windowRate" placeholder="Window Rate" type="number">
+<input id="drivewayPrice" placeholder="Driveway Price" type="number">
 
 </div>
 
 <button onclick="calculate()">Calculate</button>
 
-<section class="results" id="results">
-
-<div class="result-row">
-<span>Annual retail value</span>
-<span class="amount" id="annualRetail"></span>
+<div class="results" id="results">
+<p><strong>Annual Retail:</strong> <span id="annualRetail"></span></p>
+<p><strong>Membership Monthly:</strong> <span id="memberMonthly"></span></p>
+<p><strong>Activation Due Today:</strong> <span id="activationDisplay"></span></p>
 </div>
 
-<div class="result-row">
-<span>Retail monthly (annual ÷ 12)</span>
-<span class="amount" id="retailMonthly"></span>
-</div>
+<h3>Client Signature</h3>
+<canvas id="signaturePad"></canvas>
+<button onclick="clearSignature()">Clear Signature</button>
 
-<div class="result-row">
-<span>Non-member monthly (retail + premium)</span>
-<span class="amount" id="nonMemberMonthly"></span>
-</div>
+<button onclick="generatePDF()">Generate Contract PDF</button>
 
-<div class="result-row">
-<span>Membership monthly (retail - discount)</span>
-<span class="amount highlight" id="memberMonthly"></span>
 </div>
-
-<div class="result-row">
-<span>Activation fee (due today)</span>
-<span class="amount highlight" id="activationDisplay"></span>
-</div>
-
-<div class="result-row">
-<span>Total collected Year 1 (activation + membership × 12)</span>
-<span class="amount" id="yearOneTotal"></span>
-</div>
-
-</section>
-</main>
 
 <script>
+const { jsPDF } = window.jspdf;
+const canvas = document.getElementById("signaturePad");
+const signaturePad = new SignaturePad(canvas);
 
-const get = id => parseFloat(document.getElementById(id).value) || 0;
+function resizeCanvas() {
+  const ratio = Math.max(window.devicePixelRatio || 1, 1);
+  canvas.width = canvas.offsetWidth * ratio;
+  canvas.height = 200 * ratio;
+  canvas.getContext("2d").scale(ratio, ratio);
+}
+resizeCanvas();
 
-const currency = val =>
-new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(val);
-
-function calculate() {
-
-const premium = get("premiumPercent") / 100;
-const discount = get("discountPercent") / 100;
-const activation = get("activationFee");
-
-const annualRetail =
-get("softWash") +
-get("gutterFeet") * get("gutterRate") +
-get("windowCount") * get("windowRate") +
-get("drivewayPrice") +
-(get("waterMonthly") * 12);
-
-const retailMonthly = annualRetail / 12;
-const nonMemberMonthly = retailMonthly * (1 + premium);
-const memberMonthly = retailMonthly * (1 - discount);
-const yearOneTotal = activation + (memberMonthly * 12);
-
-document.getElementById("annualRetail").textContent = currency(annualRetail);
-document.getElementById("retailMonthly").textContent = currency(retailMonthly);
-document.getElementById("nonMemberMonthly").textContent = currency(nonMemberMonthly);
-document.getElementById("memberMonthly").textContent = currency(memberMonthly);
-document.getElementById("activationDisplay").textContent = currency(activation);
-document.getElementById("yearOneTotal").textContent = currency(yearOneTotal);
-
-document.getElementById("results").style.display = "block";
+function get(id){
+  return parseFloat(document.getElementById(id).value) || 0;
 }
 
+function currency(val){
+  return new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(val);
+}
+
+function calculate(){
+
+  const annual =
+    get("softWash") +
+    get("gutterFeet") * get("gutterRate") +
+    get("windowCount") * get("windowRate") +
+    get("drivewayPrice");
+
+  const monthly = (annual / 12) * 0.85;
+  const activation = get("activationFee");
+
+  document.getElementById("annualRetail").textContent = currency(annual);
+  document.getElementById("memberMonthly").textContent = currency(monthly);
+  document.getElementById("activationDisplay").textContent = currency(activation);
+  document.getElementById("results").style.display = "block";
+}
+
+function clearSignature(){
+  signaturePad.clear();
+}
+
+function generatePDF(){
+
+  if(signaturePad.isEmpty()){
+    alert("Please capture client signature first.");
+    return;
+  }
+
+  const doc = new jsPDF();
+
+  const name = document.getElementById("clientName").value;
+  const address = document.getElementById("clientAddress").value;
+  const activation = get("activationFee");
+  const annual = document.getElementById("annualRetail").textContent;
+  const monthly = document.getElementById("memberMonthly").textContent;
+
+  doc.setFontSize(12);
+  doc.text("12-Month Exterior Service Membership Agreement", 20, 20);
+  doc.text("Client: " + name, 20, 35);
+  doc.text("Address: " + address, 20, 45);
+
+  doc.text("Annual Retail Value: " + annual, 20, 60);
+  doc.text("Membership Monthly Payment: " + monthly, 20, 70);
+  doc.text("Activation Fee Due Today: " + currency(activation), 20, 80);
+
+  doc.text("Term: 12 Months (Auto-Renewal Unless Cancelled in Writing)", 20, 95);
+
+  doc.text("Client agrees to a 12-month subscription term.", 20, 110);
+  doc.text("Early cancellation requires payment of remaining balance.", 20, 120);
+  doc.text("Activation fee is non-refundable.", 20, 130);
+
+  const signatureImage = signaturePad.toDataURL("image/png");
+  doc.addImage(signatureImage, "PNG", 20, 150, 60, 30);
+
+  doc.text("Client Signature", 20, 145);
+
+  doc.save(name + "_Membership_Contract.pdf");
+}
 </script>
 
 </body>
 </html>
+
 
