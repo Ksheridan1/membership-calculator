@@ -80,10 +80,22 @@ h2,h3 { margin-top:30px; }
   <option value="299">Activation – $299</option>
 </select>
 
-<input id="premiumPercent" type="number" value="15" placeholder="Non-member premium %">
-
-<input id="discountPercent" type="number" value="15" placeholder="Membership discount %">
+<div class="field">
+  <label for="premiumPercent">
+    <strong>Non-Member Monthly Premium (%)</strong>
+  </label>
+  <input id="premiumPercent" type="number" value="15" min="0" step="1" />
+  <small>Used to increase retail monthly pricing for non-members.</small>
 </div>
+
+<div class="field">
+  <label for="discountPercent">
+    <strong>Membership Discount (%)</strong>
+  </label>
+  <input id="discountPercent" type="number" value="15" min="0" step="1" />
+  <small>Applied to retail monthly for 12-month members.</small>
+</div>
+
 
 <h3>Service Pricing Inputs</h3>
 <div class="grid">
