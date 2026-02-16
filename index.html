@@ -1,115 +1,424 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>HydroBlast Membership Calculator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exterior Service Membership Calculator</title>
   <style>
+    :root {
+      --bg: #f3f6fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --accent: #0f766e;
+      --accent-hover: #115e59;
+      --border: #d1d5db;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f6f8;
-      padding: 40px;
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(180deg, #eaf2ff 0%, var(--bg) 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
     }
-    .container {
-      max-width: 600px;
-      background: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+
+    .calculator {
+      width: min(760px, 100%);
+      background: var(--card);
+      border-radius: 14px;
+      box-shadow: 0 12px 30px rgba(31, 41, 55, 0.12);
+      padding: 26px;
     }
+
     h1 {
-      margin-bottom: 20px;
+      margin: 0 0 8px;
+      font-size: 1.7rem;
     }
+
+    .subtext {
+      margin: 0 0 20px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
     label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
+      font-weight: 600;
+      font-size: 0.92rem;
     }
-    input {
+
+    input,
+    select {
       width: 100%;
-      padding: 8px;
-      margin-top: 5px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 1rem;
+      transition: border-color 0.15s ease;
+      background: #fff;
     }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+    }
+
+    .checkbox-field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+
+    .checkbox-field input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+    }
+
     button {
-      margin-top: 20px;
-      padding: 12px;
+      margin-top: 18px;
       width: 100%;
-      background: #007bff;
-      color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 9px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 12px;
       cursor: pointer;
-      font-size: 16px;
+      transition: background 0.15s ease;
     }
+
+    button:hover {
+      background: var(--accent-hover);
+    }
+
     .results {
       margin-top: 20px;
-      background: #f1f1f1;
-      padding: 15px;
-      border-radius: 5px;
+      border: 1px solid #dbe5ff;
+      background: #f8fbff;
+      border-radius: 10px;
+      padding: 14px;
+      display: none;
+    }
+
+    .results h2 {
+      margin: 0 0 10px;
+      font-size: 1.1rem;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 7px 0;
+      border-bottom: 1px dashed #d7def4;
+    }
+
+    .result-row:last-child {
+      border-bottom: none;
+    }
+
+    .amount {
+      font-weight: 700;
+    }
+
+    .tier-section {
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid #d7def4;
+    }
+
+    .tier-section h3 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+    }
+
+    .tier-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+
+    .tier-card {
+      border: 1px solid #dbe5ff;
+      border-radius: 8px;
+      background: #ffffff;
+      padding: 10px;
+    }
+
+    .tier-name {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .tier-price {
+      margin: 6px 0 0;
+      font-size: 1.05rem;
+      font-weight: 700;
     }
   </style>
 </head>
 <body>
+  <main class="calculator">
+    <h1>Annual Membership Price Calculator</h1>
+    <p class="subtext">
+      Enter service pricing, frequencies, add-ons, and discount, then click <strong>Calculate</strong>
+      to see annual retail value, discount amount, final annual membership price, and monthly subscription.
+    </p>
 
-<div class="container">
-  <h1>HydroBlast Annual Care Calculator</h1>
+    <div class="grid">
+      <div class="field">
+        <label for="softWash">Soft wash price ($)</label>
+        <input id="softWash" type="number" min="0" step="0.01" placeholder="0.00" />
+      </div>
+      <div class="field">
+        <label for="softWashFrequency">Soft wash frequency</label>
+        <select id="softWashFrequency">
+          <option value="1">1x per year</option>
+          <option value="2">2x per year</option>
+        </select>
+      </div>
 
-  <label>Soft Wash Price ($)</label>
-  <input type="number" id="softwash">
+      <div class="field">
+        <label for="gutterFeet">Gutter linear feet</label>
+        <input id="gutterFeet" type="number" min="0" step="1" placeholder="0" />
+      </div>
+      <div class="field">
+        <label for="gutterRate">Price per gutter foot ($)</label>
+        <input id="gutterRate" type="number" min="0" step="0.01" placeholder="0.00" />
+      </div>
+      <div class="field">
+        <label for="gutterFrequency">Gutter cleaning frequency</label>
+        <select id="gutterFrequency">
+          <option value="1">1x per year</option>
+          <option value="2">2x per year</option>
+        </select>
+      </div>
 
-  <label>Gutter Linear Feet</label>
-  <input type="number" id="gutterFeet">
+      <div class="field">
+        <label for="windowCount">Exterior window count</label>
+        <input id="windowCount" type="number" min="0" step="1" placeholder="0" />
+      </div>
+      <div class="field">
+        <label for="windowRate">Price per exterior window ($)</label>
+        <input id="windowRate" type="number" min="0" step="0.01" placeholder="0.00" />
+      </div>
+      <div class="field">
+        <label for="windowFrequency">Exterior windows frequency</label>
+        <select id="windowFrequency">
+          <option value="1">1x per year</option>
+          <option value="2">2x per year</option>
+          <option value="3">3x per year</option>
+        </select>
+      </div>
 
-  <label>Price per Gutter Foot ($)</label>
-  <input type="number" id="gutterRate" value="1">
+      <div class="field">
+        <label for="drivewayPrice">Driveway pressure wash price ($)</label>
+        <input id="drivewayPrice" type="number" min="0" step="0.01" placeholder="0.00" />
+      </div>
+      <div class="field">
+        <label for="drivewayFrequency">Driveway frequency</label>
+        <select id="drivewayFrequency">
+          <option value="0">0x per year</option>
+          <option value="1">1x per year</option>
+        </select>
+      </div>
 
-  <label>Number of Exterior Windows</label>
-  <input type="number" id="windows">
+      <div class="field">
+        <label class="checkbox-field" for="waterFeatureEnabled"><input id="waterFeatureEnabled" type="checkbox" /> Water feature maintenance</label>
+        <input id="waterMonthly" type="number" min="0" step="0.01" placeholder="Monthly price (0.00)" disabled />
+      </div>
 
-  <label>Price per Window ($)</label>
-  <input type="number" id="windowRate" value="4">
+      <div class="field">
+        <label class="checkbox-field" for="gutterGuardEnabled"><input id="gutterGuardEnabled" type="checkbox" /> Gutter guard install</label>
+        <input id="gutterGuardPrice" type="number" min="0" step="0.01" placeholder="Add-on price (0.00)" disabled />
+      </div>
 
-  <label>Driveway Price ($)</label>
-  <input type="number" id="driveway">
+      <div class="field">
+        <label class="checkbox-field" for="interiorWindowsEnabled"><input id="interiorWindowsEnabled" type="checkbox" /> Interior windows</label>
+        <input id="interiorWindowsPrice" type="number" min="0" step="0.01" placeholder="Add-on price (0.00)" disabled />
+      </div>
 
-  <label>Water Feature Monthly Price ($)</label>
-  <input type="number" id="waterMonthly">
+      <div class="field">
+        <label class="checkbox-field" for="annualInspectionEnabled"><input id="annualInspectionEnabled" type="checkbox" /> Annual inspection</label>
+        <input id="annualInspectionPrice" type="number" min="0" step="0.01" placeholder="Add-on price (0.00)" disabled />
+      </div>
 
-  <button onclick="calculate()">Calculate Membership</button>
+      <div class="field">
+        <label for="discountRate">Membership discount</label>
+        <select id="discountRate">
+          <option value="0">0%</option>
+          <option value="0.05">5%</option>
+          <option value="0.10">10%</option>
+          <option value="0.15">15%</option>
+        </select>
+      </div>
+    </div>
 
-  <div class="results" id="results" style="display:none;">
-    <p><strong>Annual Retail Total:</strong> $<span id="retail"></span></p>
-    <p><strong>Annual Membership (15% Premium):</strong> $<span id="membershipAnnual"></span></p>
-    <p><strong>Monthly Membership Price:</strong> $<span id="monthly"></span></p>
-  </div>
-</div>
+    <button id="calculateBtn" type="button">Calculate</button>
 
-<script>
-function calculate() {
-  let softwash = parseFloat(document.getElementById('softwash').value) || 0;
-  let gutterFeet = parseFloat(document.getElementById('gutterFeet').value) || 0;
-  let gutterRate = parseFloat(document.getElementById('gutterRate').value) || 0;
-  let windows = parseFloat(document.getElementById('windows').value) || 0;
-  let windowRate = parseFloat(document.getElementById('windowRate').value) || 0;
-  let driveway = parseFloat(document.getElementById('driveway').value) || 0;
-  let waterMonthly = parseFloat(document.getElementById('waterMonthly').value) || 0;
+    <section class="results" id="results" aria-live="polite">
+      <h2>Results</h2>
+      <div class="result-row">
+        <span>Annual retail value</span>
+        <span class="amount" id="annualRetailValue">$0.00</span>
+      </div>
+      <div class="result-row">
+        <span>Discount amount</span>
+        <span class="amount" id="discountAmount">$0.00</span>
+      </div>
+      <div class="result-row">
+        <span>Final annual membership price</span>
+        <span class="amount" id="finalAnnualMembershipPrice">$0.00</span>
+      </div>
+      <div class="result-row">
+        <span>Monthly subscription price</span>
+        <span class="amount" id="monthlySubscriptionPrice">$0.00</span>
+      </div>
 
-  let retailTotal = 
-    softwash +
-    (gutterFeet * gutterRate) +
-    (windows * windowRate) +
-    driveway +
-    (waterMonthly * 12);
+      <div class="tier-section">
+        <h3>Membership Tiers</h3>
+        <div class="tier-grid">
+          <div class="tier-card">
+            <p class="tier-name">Basic</p>
+            <p class="tier-price" id="basicTierMonthly">$0.00/mo</p>
+          </div>
+          <div class="tier-card">
+            <p class="tier-name">Premium</p>
+            <p class="tier-price" id="premiumTierMonthly">$0.00/mo</p>
+          </div>
+          <div class="tier-card">
+            <p class="tier-name">Elite</p>
+            <p class="tier-price" id="eliteTierMonthly">$0.00/mo</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 
-  let membershipAnnual = retailTotal * 1.15;
-  let monthlyPrice = membershipAnnual / 12;
+  <script>
+    // Returns a numeric value from an input. If blank/invalid, it safely defaults to 0.
+    const getInputNumber = (id) => Number.parseFloat(document.getElementById(id).value) || 0;
 
-  document.getElementById('retail').innerText = retailTotal.toFixed(2);
-  document.getElementById('membershipAnnual').innerText = membershipAnnual.toFixed(2);
-  document.getElementById('monthly').innerText = monthlyPrice.toFixed(2);
+    // Reads a <select> value as a number.
+    const getSelectNumber = (id) => Number.parseFloat(document.getElementById(id).value) || 0;
 
-  document.getElementById('results').style.display = 'block';
-}
-</script>
+    // Formats numbers as USD currency for clean display.
+    const asCurrency = (value) =>
+      new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD"
+      }).format(value);
 
+    // Enables or disables an add-on amount input based on its checkbox.
+    function toggleAddonInput(checkboxId, inputId) {
+      const checked = document.getElementById(checkboxId).checked;
+      const input = document.getElementById(inputId);
+      input.disabled = !checked;
+      if (!checked) input.value = "";
+    }
+
+    function calculateMembershipPricing() {
+      // 1) Collect base service pricing and selected service frequencies.
+      const softWashPrice = getInputNumber("softWash");
+      const gutterLinearFeet = getInputNumber("gutterFeet");
+      const gutterPricePerFoot = getInputNumber("gutterRate");
+      const windowCount = getInputNumber("windowCount");
+      const pricePerWindow = getInputNumber("windowRate");
+      const drivewayPrice = getInputNumber("drivewayPrice");
+
+      const softWashFrequency = getSelectNumber("softWashFrequency");
+      const gutterFrequency = getSelectNumber("gutterFrequency");
+      const windowFrequency = getSelectNumber("windowFrequency");
+      const drivewayFrequency = getSelectNumber("drivewayFrequency");
+
+      // 2) Calculate base annual service totals with frequency multipliers.
+      const softWashAnnual = softWashPrice * softWashFrequency;
+      const gutterAnnual = gutterLinearFeet * gutterPricePerFoot * gutterFrequency;
+      const exteriorWindowsAnnual = windowCount * pricePerWindow * windowFrequency;
+      const drivewayAnnual = drivewayPrice * drivewayFrequency;
+
+      // 3) Include selected add-ons.
+      const waterFeatureAnnual = document.getElementById("waterFeatureEnabled").checked
+        ? getInputNumber("waterMonthly") * 12
+        : 0;
+      const gutterGuardAnnual = document.getElementById("gutterGuardEnabled").checked
+        ? getInputNumber("gutterGuardPrice")
+        : 0;
+      const interiorWindowsAnnual = document.getElementById("interiorWindowsEnabled").checked
+        ? getInputNumber("interiorWindowsPrice")
+        : 0;
+      const annualInspectionAnnual = document.getElementById("annualInspectionEnabled").checked
+        ? getInputNumber("annualInspectionPrice")
+        : 0;
+
+      // 4) Calculate annual retail total before discount.
+      const annualRetailTotal =
+        softWashAnnual +
+        gutterAnnual +
+        exteriorWindowsAnnual +
+        drivewayAnnual +
+        waterFeatureAnnual +
+        gutterGuardAnnual +
+        interiorWindowsAnnual +
+        annualInspectionAnnual;
+
+      // 5) Apply discount after annual retail is calculated.
+      const discountRate = getSelectNumber("discountRate");
+      const discountAmount = annualRetailTotal * discountRate;
+      const finalAnnualMembershipPrice = annualRetailTotal - discountAmount;
+      const monthlySubscriptionPrice = finalAnnualMembershipPrice / 12;
+
+      // 6) Show updated output values.
+      document.getElementById("annualRetailValue").textContent = asCurrency(annualRetailTotal);
+      document.getElementById("discountAmount").textContent = asCurrency(discountAmount);
+      document.getElementById("finalAnnualMembershipPrice").textContent = asCurrency(finalAnnualMembershipPrice);
+      document.getElementById("monthlySubscriptionPrice").textContent = asCurrency(monthlySubscriptionPrice);
+      document.getElementById("basicTierMonthly").textContent = `${asCurrency(monthlySubscriptionPrice)}/mo`;
+      document.getElementById("premiumTierMonthly").textContent = `${asCurrency(monthlySubscriptionPrice)}/mo`;
+      document.getElementById("eliteTierMonthly").textContent = `${asCurrency(monthlySubscriptionPrice)}/mo`;
+      document.getElementById("results").style.display = "block";
+    }
+
+    // Wire add-on checkboxes to enable/disable their corresponding manual amount inputs.
+    document.getElementById("waterFeatureEnabled").addEventListener("change", () =>
+      toggleAddonInput("waterFeatureEnabled", "waterMonthly")
+    );
+    document.getElementById("gutterGuardEnabled").addEventListener("change", () =>
+      toggleAddonInput("gutterGuardEnabled", "gutterGuardPrice")
+    );
+    document.getElementById("interiorWindowsEnabled").addEventListener("change", () =>
+      toggleAddonInput("interiorWindowsEnabled", "interiorWindowsPrice")
+    );
+    document.getElementById("annualInspectionEnabled").addEventListener("change", () =>
+      toggleAddonInput("annualInspectionEnabled", "annualInspectionPrice")
+    );
+
+    // Wire the Calculate button to the calculation function.
+    document.getElementById("calculateBtn").addEventListener("click", calculateMembershipPricing);
+  </script>
 </body>
 </html>
