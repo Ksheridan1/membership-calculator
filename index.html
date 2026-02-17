@@ -599,12 +599,31 @@
         driveway +
         (waterMonthly * 12);
 
-      const retailMonthly = annualRetail / 12;
-      const nonMemberMonthly = retailMonthly * (1 + premiumPct);
-      const memberMonthly = retailMonthly * (1 - discountPct);
+// Retail monthly still useful for comparison display
+const retailMonthly = annualRetail / 12;
 
-      const yearOneTotal = activation + (memberMonthly * 12);
-      const annualSavings = annualRetail - (memberMonthly * 12);
+// Non-member monthly (optional comparison only)
+const nonMemberMonthly = retailMonthly * (1 + premiumPct);
+
+// Remaining balance after activation
+let remainingBalance = Math.max(annualRetail - activation, 0);
+
+// Apply optional discount ONLY to remaining balance
+remainingBalance = remainingBalance * (1 - discountPct);
+
+// Divide remaining balance into 12 monthly payments
+let memberMonthly = remainingBalance / 12;
+
+// Optional safety minimum
+const minimumMonthly = 0; // Set to 99 if you want protection
+memberMonthly = Math.max(memberMonthly, minimumMonthly);
+
+// Year one total collected
+const yearOneTotal = activation + (memberMonthly * 12);
+
+// Annual savings (only if discount applied)
+const annualSavings = annualRetail - yearOneTotal;
+
 
       // Save state
       state.annualRetail = annualRetail;
