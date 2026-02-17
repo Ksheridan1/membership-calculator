@@ -24,7 +24,7 @@
     *{box-sizing:border-box;}
     body{
       margin:0;
-      font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(180deg, #eaf2ff 0%, var(--bg) 100%);
       color:var(--text);
       min-height:100vh;
@@ -76,7 +76,7 @@
       font-weight:700;
       font-size:0.9rem;
       white-space:nowrap;
-      height:fit-content;
+      height: fit-content;
     }
 
     .section-title{
@@ -117,6 +117,219 @@
       outline:none;
       border-color:var(--accent);
       box-shadow:0 0 0 3px rgba(15,118,110,0.15);
+    }
+
+    .actions{
+      margin-top:16px;
+      display:grid;
+      gap:12px;
+      grid-template-columns: 1fr 1fr;
+    }
+    @media(max-width:680px){
+      .actions{ grid-template-columns: 1fr; }
+    }
+    button{
+      border:none;
+      border-radius:10px;
+      padding:12px 14px;
+      font-weight:800;
+      font-size:1rem;
+      cursor:pointer;
+    }
+    .btn-primary{
+      background:var(--accent);
+      color:#fff;
+    }
+    .btn-primary:hover{ background:var(--accent-hover); }
+    .btn-secondary{
+      background:#eef2ff;
+      color:#1e3a8a;
+    }
+    .btn-secondary:hover{ background:#e0e7ff; }
+
+    .results{
+      margin-top:18px;
+      border:1px solid var(--softBorder);
+      background:var(--soft);
+      border-radius:12px;
+      padding:14px;
+      display:none;
+    }
+    .results h2{
+      margin:0 0 10px;
+      font-size:1.05rem;
+    }
+    .result-row{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      padding:8px 0;
+      border-bottom:1px dashed #d7def4;
+    }
+    .result-row:last-child{ border-bottom:none; }
+    .amount{ font-weight:900; }
+    .emph{
+      font-size:1.05rem;
+    }
+
+    .divider{
+      margin:18px 0;
+      height:1px;
+      background:#e5e7eb;
+      border:0;
+    }
+
+    /* Modal */
+    .modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      z-index:999;
+    }
+    .modal-card{
+      width:min(980px, 100%);
+      height:min(92vh, 900px);
+      background:#fff;
+      border-radius:14px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.35);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+    }
+    .modal-header{
+      padding:14px 16px;
+      background:#0b3b37;
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .modal-header .title{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .modal-header .title strong{
+      font-size:1.05rem;
+      letter-spacing: 0.2px;
+    }
+    .modal-header .title span{
+      font-size:0.9rem;
+      opacity:0.9;
+    }
+    .modal-header .x{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.45);
+      color:#fff;
+      border-radius:10px;
+      padding:8px 10px;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    .modal-body{
+      padding:16px;
+      overflow:auto;
+      display:grid;
+      gap:14px;
+      grid-template-columns: 1.2fr 0.8fr;
+      align-items:start;
+    }
+    @media(max-width:860px){
+      .modal-body{ grid-template-columns: 1fr; }
+    }
+
+    .contract-box{
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      padding:14px;
+      background:#fff;
+    }
+    .contract-box h3{
+      margin:0 0 8px;
+      font-size:1.05rem;
+    }
+    .contract-box p{
+      margin:8px 0;
+      color:#111827;
+      line-height:1.45;
+      font-size:0.95rem;
+    }
+    .contract-box ul{
+      margin:8px 0 8px 18px;
+      padding:0;
+      color:#111827;
+      line-height:1.45;
+      font-size:0.95rem;
+    }
+    .summary{
+      border:1px solid #dbeafe;
+      background:#eff6ff;
+      border-radius:12px;
+      padding:14px;
+    }
+    .summary h3{
+      margin:0 0 10px;
+      font-size:1.05rem;
+    }
+    .summary .kv{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      padding:6px 0;
+      border-bottom:1px dashed #bfdbfe;
+    }
+    .summary .kv:last-child{ border-bottom:none; }
+    .summary .kv b{ font-weight:900; }
+
+    .sign-box{
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      padding:14px;
+      background:#fff;
+    }
+    .sign-box h3{
+      margin:0 0 10px;
+      font-size:1.05rem;
+    }
+    canvas{
+      width:100%;
+      height:180px;
+      border:1px solid #d1d5db;
+      border-radius:10px;
+      background:#fff;
+      touch-action: none;
+    }
+    .sign-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .sign-actions button{
+      flex:1 1 180px;
+    }
+    .agree{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      margin-top:10px;
+    }
+    .agree input{ margin-top:3px; width:auto; }
+    .agree label{ font-weight:700; }
+    .jump{
+      margin-top:10px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .jump button{
+      flex:1 1 220px;
     }
 
     .actions{
@@ -340,23 +553,53 @@
       <div class="field">
         <label for="premiumPercent">Non-Member Monthly Premium (%)</label>
         <input id="premiumPercent" type="number" min="0" step="1" value="15" />
+        <small>Pay-as-you-go monthly = retail monthly × (1 + premium).</small>
       </div>
 
       <div class="field">
         <label for="discountPercent">Membership Discount (%)</label>
         <input id="discountPercent" type="number" min="0" step="1" value="15" />
+        <small>Membership monthly = retail monthly × (1 − discount).</small>
       </div>
     </div>
 
     <h2 class="section-title">Service Pricing Inputs</h2>
     <div class="grid">
-      <div class="field"><label for="softWash">Soft wash price ($)</label><input id="softWash" type="number" min="0" step="0.01" placeholder="0.00" /></div>
-      <div class="field"><label for="gutterFeet">Gutter linear feet</label><input id="gutterFeet" type="number" min="0" step="1" placeholder="0" /></div>
-      <div class="field"><label for="gutterRate">Price per gutter foot ($)</label><input id="gutterRate" type="number" min="0" step="0.01" placeholder="0.00" /></div>
-      <div class="field"><label for="windowCount">Window count</label><input id="windowCount" type="number" min="0" step="1" placeholder="0" /></div>
-      <div class="field"><label for="windowRate">Price per window ($)</label><input id="windowRate" type="number" min="0" step="0.01" placeholder="0.00" /></div>
-      <div class="field"><label for="drivewayPrice">Driveway pressure wash price ($)</label><input id="drivewayPrice" type="number" min="0" step="0.01" placeholder="0.00" /></div>
-      <div class="field"><label for="waterMonthly">Water feature monthly price ($)</label><input id="waterMonthly" type="number" min="0" step="0.01" placeholder="0.00" /><small>Annualized automatically (× 12).</small></div>
+      <div class="field">
+        <label for="softWash">Soft wash price ($)</label>
+        <input id="softWash" type="number" min="0" step="0.01" placeholder="0.00" />
+      </div>
+
+      <div class="field">
+        <label for="gutterFeet">Gutter linear feet</label>
+        <input id="gutterFeet" type="number" min="0" step="1" placeholder="0" />
+      </div>
+
+      <div class="field">
+        <label for="gutterRate">Price per gutter foot ($)</label>
+        <input id="gutterRate" type="number" min="0" step="0.01" placeholder="0.00" />
+      </div>
+
+      <div class="field">
+        <label for="windowCount">Window count</label>
+        <input id="windowCount" type="number" min="0" step="1" placeholder="0" />
+      </div>
+
+      <div class="field">
+        <label for="windowRate">Price per window ($)</label>
+        <input id="windowRate" type="number" min="0" step="0.01" placeholder="0.00" />
+      </div>
+
+      <div class="field">
+        <label for="drivewayPrice">Driveway pressure wash price ($)</label>
+        <input id="drivewayPrice" type="number" min="0" step="0.01" placeholder="0.00" />
+      </div>
+
+      <div class="field">
+        <label for="waterMonthly">Water feature monthly price ($)</label>
+        <input id="waterMonthly" type="number" min="0" step="0.01" placeholder="0.00" />
+        <small>Annualized automatically (× 12).</small>
+      </div>
     </div>
 
     <div class="actions">
@@ -366,16 +609,45 @@
 
     <section class="results" id="results" aria-live="polite">
       <h2>Results</h2>
-      <div class="result-row"><span>Annual retail value</span><span class="amount" id="annualRetail">$0.00</span></div>
-      <div class="result-row"><span>Retail monthly (annual ÷ 12)</span><span class="amount" id="retailMonthly">$0.00</span></div>
-      <div class="result-row"><span>Non-member monthly (retail × premium)</span><span class="amount" id="nonMemberMonthly">$0.00</span></div>
-      <div class="result-row"><span class="emph">Membership monthly (retail − discount)</span><span class="amount emph" id="memberMonthly">$0.00</span></div>
-      <div class="result-row"><span>Activation fee due today</span><span class="amount" id="activationDisplay">$0.00</span></div>
-      <div class="result-row"><span>Total collected Year 1 (activation + membership × 12)</span><span class="amount" id="yearOneTotal">$0.00</span></div>
-      <div class="result-row"><span>Annual savings vs retail</span><span class="amount" id="annualSavings">$0.00</span></div>
+
+      <div class="result-row">
+        <span>Annual retail value</span>
+        <span class="amount" id="annualRetail">$0.00</span>
+      </div>
+
+      <div class="result-row">
+        <span>Retail monthly (annual ÷ 12)</span>
+        <span class="amount" id="retailMonthly">$0.00</span>
+      </div>
+
+      <div class="result-row">
+        <span>Non-member monthly (retail × premium)</span>
+        <span class="amount" id="nonMemberMonthly">$0.00</span>
+      </div>
+
+      <div class="result-row">
+        <span class="emph">Membership monthly (retail − discount)</span>
+        <span class="amount emph" id="memberMonthly">$0.00</span>
+      </div>
+
+      <div class="result-row">
+        <span>Activation fee due today</span>
+        <span class="amount" id="activationDisplay">$0.00</span>
+      </div>
+
+      <div class="result-row">
+        <span>Total collected Year 1 (activation + membership × 12)</span>
+        <span class="amount" id="yearOneTotal">$0.00</span>
+      </div>
+
+      <div class="result-row">
+        <span>Annual savings vs retail</span>
+        <span class="amount" id="annualSavings">$0.00</span>
+      </div>
     </section>
   </main>
 
+  <!-- Contract Modal -->
   <div class="modal" id="contractModal" role="dialog" aria-modal="true" aria-label="Membership Agreement">
     <div class="modal-card">
       <div class="modal-header">
@@ -389,16 +661,25 @@
       <div class="modal-body">
         <div class="contract-box" id="contractTop">
           <h3>Agreement Terms</h3>
-          <p><b>Term:</b> This Agreement is for twelve (12) months from the Effective Date and auto-renews unless cancelled in writing before renewal.</p>
-          <p><b>Activation Fee:</b> Non-refundable and due at signing.</p>
-          <p><b>Payments:</b> Monthly payments are due monthly and intended to be processed via Square.</p>
+
+          <p><b>Term:</b> This Agreement is for twelve (12) months from the Effective Date and auto-renews for successive 12-month terms unless Client provides written notice of cancellation prior to renewal.</p>
+
+          <p><b>Activation Fee:</b> Non-refundable and due at signing. Intended to cover onboarding, scheduling allocation, and initial mobilization.</p>
+
+          <p><b>Payments:</b> Monthly membership payments are due monthly and are intended to be processed using Square (card on file / subscription). Payments more than ten (10) days past due may result in service suspension and late fees.</p>
+
+          <p><b>Late Payment:</b> 10-day grace period. After 10 days, Company may suspend service until the account is brought current.</p>
+
           <p><b>Cancellation / Early Termination:</b></p>
           <ul>
-            <li>Services rendered are recalculated at standard retail pricing.</li>
-            <li>Client pays the difference between retail value and payments made.</li>
-            <li>If cancelled in first 6 months: $250 administrative cancellation fee applies.</li>
+            <li>If Client cancels before completing the 12-month term, all services rendered will be recalculated at standard retail pricing.</li>
+            <li>Client agrees to pay the difference between retail value of services rendered and payments made to date.</li>
+            <li>If cancellation occurs within the first six (6) months, a <b>$250 administrative cancellation fee</b> applies.</li>
+            <li>If cancellation occurs after six (6) months but prior to completion of the term, the $250 fee does not apply (retail recalculation still applies).</li>
           </ul>
+
           <p><b>Governing Law:</b> State of Idaho.</p>
+
           <div class="jump">
             <button class="btn-secondary" type="button" id="skipToSignBtn">Skip to Signature</button>
             <button class="btn-secondary" type="button" id="backToTopBtn">Back to Terms</button>
@@ -419,17 +700,28 @@
 
           <div class="sign-box" id="signBox" style="margin-top:14px;">
             <h3>Sign to Enroll</h3>
+
             <div class="agree">
               <input id="agreeBox" type="checkbox" />
               <div>
                 <label for="agreeBox">I have read and agree to the Membership Agreement terms above.</label>
+                <div style="color:var(--muted); font-size:0.9rem; margin-top:4px;">
+                  Electronic signature is intended to be legally binding.
+                </div>
               </div>
             </div>
 
-            <div style="margin-top:10px;"><canvas id="signaturePad"></canvas></div>
+            <div style="margin-top:10px;">
+              <canvas id="signaturePad"></canvas>
+            </div>
+
             <div class="sign-actions">
               <button class="btn-secondary" type="button" id="clearSigBtn">Clear Signature</button>
               <button class="btn-primary" type="button" id="generatePdfBtn">Generate Signed PDF</button>
+            </div>
+
+            <div style="margin-top:10px; color:var(--muted); font-size:0.9rem;">
+              After generating the PDF, switch to Square to charge activation and set up the subscription.
             </div>
           </div>
         </div>
@@ -439,102 +731,316 @@
 
   <script>
     const { jsPDF } = window.jspdf;
+
     const getNum = (id) => Number.parseFloat(document.getElementById(id).value) || 0;
     const asMoney = (val) => new Intl.NumberFormat("en-US", { style:"currency", currency:"USD" }).format(val);
 
-    const state = { annualRetail: 0, retailMonthly: 0, nonMemberMonthly: 0, memberMonthly: 0, activation: 0 };
+    // State cache (so PDF uses what was calculated)
+    const state = {
+      annualRetail: 0,
+      retailMonthly: 0,
+      nonMemberMonthly: 0,
+      memberMonthly: 0,
+      activation: 0
+    };
+
+    // Signature pad
     let signaturePad = null;
 
     function resizeSigCanvas() {
       const canvas = document.getElementById("signaturePad");
       const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      // Set explicit pixel size based on element size
       const rect = canvas.getBoundingClientRect();
       canvas.width = rect.width * ratio;
       canvas.height = rect.height * ratio;
-      canvas.getContext("2d").setTransform(ratio, 0, 0, ratio, 0, 0);
+      const ctx = canvas.getContext("2d");
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
       if (signaturePad) signaturePad.clear();
     }
 
-    function calculate() {
-      const annualRetail = getNum("softWash") + (getNum("gutterFeet") * getNum("gutterRate")) + (getNum("windowCount") * getNum("windowRate")) + getNum("drivewayPrice") + (getNum("waterMonthly") * 12);
-      const retailMonthly = annualRetail / 12;
-      const nonMemberMonthly = retailMonthly * (1 + getNum("premiumPercent") / 100);
-      const memberMonthly = retailMonthly * (1 - getNum("discountPercent") / 100);
-      const activation = getNum("activationFee");
-      const yearOneTotal = activation + (memberMonthly * 12);
-      const annualSavings = annualRetail - (memberMonthly * 12);
+function calculate() {
+  /* -------------------------------
+     STEP 1 — BASE SERVICE CALCULATIONS
+  -------------------------------- */
 
-      state.annualRetail = annualRetail;
-      state.retailMonthly = retailMonthly;
-      state.nonMemberMonthly = nonMemberMonthly;
-      state.memberMonthly = memberMonthly;
-      state.activation = activation;
+  const softWashPrice = getNum("softWash");
+  const gutterFeet = getNum("gutterFeet");
+  const gutterRate = getNum("gutterRate");
+  const windowCount = getNum("windowCount");
+  const windowRate = getNum("windowRate");
+  const drivewayPrice = getNum("drivewayPrice");
 
-      document.getElementById("annualRetail").textContent = asMoney(annualRetail);
-      document.getElementById("retailMonthly").textContent = asMoney(retailMonthly);
-      document.getElementById("nonMemberMonthly").textContent = asMoney(nonMemberMonthly);
-      document.getElementById("memberMonthly").textContent = asMoney(memberMonthly);
-      document.getElementById("activationDisplay").textContent = asMoney(activation);
-      document.getElementById("yearOneTotal").textContent = asMoney(yearOneTotal);
-      document.getElementById("annualSavings").textContent = asMoney(Math.max(0, annualSavings));
+  // Annual base services
+  const annualSoftWash = softWashPrice;
+  const annualGutters = gutterFeet * gutterRate;
+  const annualExteriorWindows = windowCount * windowRate;
+  const annualDriveway = drivewayPrice;
 
-      document.getElementById("results").style.display = "block";
-      document.getElementById("openContractBtn").disabled = false;
-    }
+  /* -------------------------------
+     STEP 2 — ADD-ONS
+  -------------------------------- */
 
-    function openContract() {
-      if (document.getElementById("results").style.display !== "block") return alert("Please calculate pricing first.");
-      const name = document.getElementById("clientName").value.trim();
-      const address = document.getElementById("clientAddress").value.trim();
-      if (!name || !address) return alert("Please enter client name and service address first.");
+  const waterMonthly = getNum("waterMonthly");
 
+  const annualWaterFeature = waterMonthly * 12;
+  const annualGutterGuard = 0;
+  const annualInteriorWindows = 0;
+  const annualInspection = 0;
+
+  /* -------------------------------
+     STEP 3 — ANNUAL RETAIL TOTAL
+  -------------------------------- */
+
+  const annualRetailTotal =
+    annualSoftWash +
+    annualGutters +
+    annualExteriorWindows +
+    annualDriveway +
+    annualWaterFeature +
+    annualGutterGuard +
+    annualInteriorWindows +
+    annualInspection;
+
+  /* -------------------------------
+     STEP 4 — APPLY MEMBERSHIP DISCOUNT
+  -------------------------------- */
+
+  const discountRate = getNum("discountPercent") / 100;
+  const discountAmount = annualRetailTotal * discountRate;
+
+  const finalAnnualMembershipPrice =
+    annualRetailTotal - discountAmount;
+
+  /* -------------------------------
+     STEP 5 — MONTHLY SUBSCRIPTION
+  -------------------------------- */
+
+  const monthlySubscriptionPrice =
+    finalAnnualMembershipPrice / 12;
+
+  /* -------------------------------
+     STEP 6 — NON-MEMBER MONTHLY (ADMIN ONLY)
+  -------------------------------- */
+
+  const nonMemberPremiumRate = getNum("premiumPercent") / 100;
+
+  const retailMonthlyValue = annualRetailTotal / 12;
+
+  const nonMemberMonthlyPrice =
+    retailMonthlyValue * (1 + nonMemberPremiumRate);
+
+  /* -------------------------------
+     STEP 7 — SAVINGS
+  -------------------------------- */
+
+  const annualSavingsVsRetail =
+    annualRetailTotal - finalAnnualMembershipPrice;
+
+  /* -------------------------------
+     FINAL OUTPUTS
+  -------------------------------- */
+
+  const activation = getNum("activationFee");
+  const yearOneTotal = activation + finalAnnualMembershipPrice;
+
+  // Populate UI
+  document.getElementById("annualRetail").textContent =
+    asMoney(annualRetailTotal);
+
+  document.getElementById("retailMonthly").textContent =
+    asMoney(retailMonthlyValue);
+
+  document.getElementById("nonMemberMonthly").textContent =
+    asMoney(nonMemberMonthlyPrice);
+
+  document.getElementById("memberMonthly").textContent =
+    asMoney(monthlySubscriptionPrice);
+
+  document.getElementById("activationDisplay").textContent =
+    asMoney(activation);
+
+  document.getElementById("yearOneTotal").textContent =
+    asMoney(yearOneTotal);
+
+  document.getElementById("annualSavings").textContent =
+    asMoney(annualSavingsVsRetail);
+
+  document.getElementById("results").style.display = "block";
+  document.getElementById("openContractBtn").disabled = false;
+
+  // Save to state for PDF
+  state.annualRetail = annualRetailTotal;
+  state.retailMonthly = retailMonthlyValue;
+  state.nonMemberMonthly = nonMemberMonthlyPrice;
+  state.memberMonthly = monthlySubscriptionPrice;
+  state.activation = activation;
+}
+
+   function openContract() {
+      // Must have results first
+      if (!document.getElementById("results").style.display || document.getElementById("results").style.display === "none") {
+        alert("Please calculate pricing first.");
+        return;
+      }
+
+      const name = (document.getElementById("clientName").value || "").trim();
+      const address = (document.getElementById("clientAddress").value || "").trim();
+
+      // Minimal guardrails
+      if (!name || !address) {
+        alert("Please enter client name and service address first.");
+        return;
+      }
+
+      // Populate summary
+      const now = new Date();
+      const effectiveDate = now.toLocaleDateString();
       document.getElementById("sumClient").textContent = name;
       document.getElementById("sumAddress").textContent = address;
-      document.getElementById("sumDate").textContent = new Date().toLocaleDateString();
+      document.getElementById("sumDate").textContent = effectiveDate;
       document.getElementById("sumActivation").textContent = asMoney(state.activation);
       document.getElementById("sumMonthly").textContent = asMoney(state.memberMonthly);
       document.getElementById("sumRetailMonthly").textContent = asMoney(state.retailMonthly);
       document.getElementById("sumNonMemberMonthly").textContent = asMoney(state.nonMemberMonthly);
 
+      // Open modal
       document.getElementById("contractModal").style.display = "flex";
-      signaturePad = new SignaturePad(document.getElementById("signaturePad"));
+
+      // Init signature pad
+      const canvas = document.getElementById("signaturePad");
+      signaturePad = new SignaturePad(canvas);
       resizeSigCanvas();
+
+      // Reset agreement checkbox
       document.getElementById("agreeBox").checked = false;
     }
 
-    const closeContract = () => (document.getElementById("contractModal").style.display = "none");
-    const clearSignature = () => signaturePad && signaturePad.clear();
-
-    function generateSignedPDF() {
-      if (!document.getElementById("agreeBox").checked) return alert("Client must agree to the terms before generating the PDF.");
-      if (!signaturePad || signaturePad.isEmpty()) return alert("Client signature is required.");
-
-      const name = document.getElementById("clientName").value.trim();
-      const address = document.getElementById("clientAddress").value.trim();
-      const doc = new jsPDF({ unit: "pt", format: "letter" });
-      let y = 58;
-      const left = 54;
-
-      doc.setFont("helvetica", "bold"); doc.setFontSize(14); doc.text("HydroBlast Solutions", left, y); y += 20;
-      doc.setFont("helvetica", "normal"); doc.setFontSize(10);
-      doc.text(`Client: ${name}`, left, y); y += 14;
-      doc.text(`Address: ${address}`, left, y); y += 14;
-      doc.text(`Date: ${new Date().toLocaleString()}`, left, y); y += 18;
-      doc.text(`Annual Retail: ${asMoney(state.annualRetail)}`, left, y); y += 14;
-      doc.text(`Retail Monthly: ${asMoney(state.retailMonthly)}`, left, y); y += 14;
-      doc.text(`Non-Member Monthly: ${asMoney(state.nonMemberMonthly)}`, left, y); y += 14;
-      doc.text(`Member Monthly: ${asMoney(state.memberMonthly)}`, left, y); y += 14;
-      doc.text(`Activation Fee: ${asMoney(state.activation)}`, left, y); y += 24;
-
-      doc.setFont("helvetica", "bold"); doc.text("Client Signature:", left, y); y += 10;
-      doc.addImage(signaturePad.toDataURL("image/png"), "PNG", left, y, 220, 70);
-      doc.save(`${name.replaceAll(" ", "_")}_HydroBlast_Membership_Agreement.pdf`);
-      alert("Signed PDF generated.");
+    function closeContract() {
+      document.getElementById("contractModal").style.display = "none";
     }
 
-    const skipToSignature = () => document.getElementById("signBox").scrollIntoView({ behavior: "smooth", block: "start" });
-    const backToTop = () => document.getElementById("contractTop").scrollIntoView({ behavior: "smooth", block: "start" });
+    function clearSignature() {
+      if (signaturePad) signaturePad.clear();
+    }
 
+    function generateSignedPDF() {
+      const agree = document.getElementById("agreeBox").checked;
+      if (!agree) {
+        alert("Client must agree to the terms (checkbox) before generating the PDF.");
+        return;
+      }
+      if (!signaturePad || signaturePad.isEmpty()) {
+        alert("Client signature is required.");
+        return;
+      }
+
+      const name = (document.getElementById("clientName").value || "").trim();
+      const address = (document.getElementById("clientAddress").value || "").trim();
+      const activation = asMoney(state.activation);
+      const memberMonthly = asMoney(state.memberMonthly);
+      const retailMonthly = asMoney(state.retailMonthly);
+      const nonMemberMonthly = asMoney(state.nonMemberMonthly);
+      const annualRetail = asMoney(state.annualRetail);
+
+      const signedAt = new Date();
+      const signedDate = signedAt.toLocaleDateString();
+      const signedTime = signedAt.toLocaleTimeString();
+
+      const doc = new jsPDF({ unit: "pt", format: "letter" });
+      const left = 54;
+      let y = 58;
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.text("HydroBlast Solutions", left, y); y += 16;
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.text("A Division of Brighten Maintenance LLC (Idaho)", left, y); y += 18;
+
+      doc.setDrawColor(200);
+      doc.line(left, y, 560, y); y += 18;
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(12);
+      doc.text("12-Month Exterior Service Membership Agreement", left, y); y += 18;
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.text(`Client: ${name}`, left, y); y += 14;
+      doc.text(`Service Address: ${address}`, left, y); y += 14;
+      doc.text(`Effective Date: ${signedDate}`, left, y); y += 18;
+
+      doc.setFont("helvetica", "bold");
+      doc.text("Pricing Summary", left, y); y += 14;
+
+      doc.setFont("helvetica", "normal");
+      doc.text(`Annual Retail Value: ${annualRetail}`, left, y); y += 14;
+      doc.text(`Retail Monthly (Annual ÷ 12): ${retailMonthly}`, left, y); y += 14;
+      doc.text(`Non-Member Monthly (Retail × Premium): ${nonMemberMonthly}`, left, y); y += 14;
+      doc.text(`Membership Monthly (Retail − Discount): ${memberMonthly}`, left, y); y += 14;
+      doc.text(`Activation Fee Due Today (Non-Refundable): ${activation}`, left, y); y += 18;
+
+      doc.setFont("helvetica", "bold");
+      doc.text("Terms", left, y); y += 14;
+
+      doc.setFont("helvetica", "normal");
+      const terms = [
+        "1. Term: This Agreement is for twelve (12) months from the Effective Date and will auto-renew for successive 12-month terms unless Client provides written notice of cancellation prior to renewal.",
+        "2. Activation Fee: Non-refundable and due at signing. Intended to cover onboarding, scheduling allocation, and initial mobilization. Enrollment is not complete until activation is successfully processed.",
+        "3. Payment Authorization: Client authorizes Company to charge the payment method on file via Square for monthly membership payments and applicable fees.",
+        "4. Late Payments: Payments more than ten (10) days past due may result in service suspension until the account is brought current. Late fees may apply.",
+        "5. Cancellation / Early Termination: If Client cancels before completing the 12-month term, all services rendered will be recalculated at standard retail pricing and Client agrees to pay the difference between retail value and payments made to date. If cancellation occurs within the first six (6) months, a $250 administrative cancellation fee applies. If cancellation occurs after six (6) months but prior to completion of the term, the $250 fee does not apply (retail recalculation still applies).",
+        "6. Scheduling: Service scheduling may be adjusted due to weather, safety conditions, or operational requirements.",
+        "7. Governing Law: This Agreement is governed by the laws of the State of Idaho.",
+        "8. Entire Agreement: This document represents the entire Agreement between the parties."
+      ];
+
+      // Word wrap terms
+      const maxWidth = 500;
+      terms.forEach((t) => {
+        const lines = doc.splitTextToSize(t, maxWidth);
+        lines.forEach((ln) => {
+          if (y > 640) { doc.addPage(); y = 58; }
+          doc.text(ln, left, y);
+          y += 12;
+        });
+        y += 6;
+      });
+
+      if (y > 610) { doc.addPage(); y = 58; }
+
+      doc.setFont("helvetica", "bold");
+      doc.text("Electronic Signatures", left, y); y += 14;
+      doc.setFont("helvetica", "normal");
+      doc.text(`Signed Electronically by Client on: ${signedDate} at ${signedTime}`, left, y); y += 14;
+
+      // Signature image
+      const sigData = signaturePad.toDataURL("image/png");
+      doc.setFont("helvetica", "bold");
+      doc.text("Client Signature:", left, y); y += 10;
+      doc.addImage(sigData, "PNG", left, y, 220, 70);
+      y += 86;
+
+      doc.setFont("helvetica", "normal");
+      doc.text(`Client Printed Name: ${name}`, left, y); y += 16;
+      doc.text("Company Representative: ______________________________", left, y); y += 16;
+
+      doc.save(`${name.replaceAll(" ", "_")}_HydroBlast_Membership_Agreement.pdf`);
+
+      alert("Signed PDF generated. Next: open Square to charge activation and set up monthly subscription.");
+    }
+
+    // Modal navigation
+    function skipToSignature() {
+      document.getElementById("signBox").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    function backToTop() {
+      document.getElementById("contractTop").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    // Wire up buttons
     document.getElementById("calculateBtn").addEventListener("click", calculate);
     document.getElementById("openContractBtn").addEventListener("click", openContract);
     document.getElementById("closeModalBtn").addEventListener("click", closeContract);
@@ -543,13 +1049,20 @@
     document.getElementById("skipToSignBtn").addEventListener("click", skipToSignature);
     document.getElementById("backToTopBtn").addEventListener("click", backToTop);
 
+    // Resize signature canvas on window resize (keeps iPad happy)
     window.addEventListener("resize", () => {
-      if (document.getElementById("contractModal").style.display === "flex") resizeSigCanvas();
+      if (document.getElementById("contractModal").style.display === "flex") {
+        resizeSigCanvas();
+      }
     });
 
+    // Close modal if clicking outside the card
     document.getElementById("contractModal").addEventListener("click", (e) => {
       if (e.target.id === "contractModal") closeContract();
     });
   </script>
 </body>
 </html>
+
+
+
