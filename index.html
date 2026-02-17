@@ -579,26 +579,6 @@
       if (signaturePad) signaturePad.clear();
     }
 
-    function calculate() {
-      const softWash = getNum("softWash");
-      const gutterFeet = getNum("gutterFeet");
-      const gutterRate = getNum("gutterRate");
-      const windowCount = getNum("windowCount");
-      const windowRate = getNum("windowRate");
-      const driveway = getNum("drivewayPrice");
-      const waterMonthly = getNum("waterMonthly");
-
-      const premiumPct = getNum("premiumPercent") / 100;
-      const discountPct = getNum("discountPercent") / 100;
-      const activation = getNum("activationFee");
-
-      const annualRetail =
-        softWash +
-        (gutterFeet * gutterRate) +
-        (windowCount * windowRate) +
-        driveway +
-        (waterMonthly * 12);
-
 function calculate() {
   /* -------------------------------
      STEP 1 — BASE SERVICE CALCULATIONS
