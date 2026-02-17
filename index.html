@@ -1,115 +1,555 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>HydroBlast Membership Calculator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HydroBlast Membership Calculator + Contract</title>
+
+  <!-- PDF + Signature -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
+
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f6f8;
-      padding: 40px;
+    :root{
+      --bg:#f3f6fb;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --accent:#0f766e;
+      --accent-hover:#115e59;
+      --border:#d1d5db;
+      --soft:#f8fbff;
+      --softBorder:#dbe5ff;
     }
-    .container {
-      max-width: 600px;
-      background: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(180deg, #eaf2ff 0%, var(--bg) 100%);
+      color:var(--text);
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:24px;
     }
-    h1 {
-      margin-bottom: 20px;
+    .calculator{
+      width:min(980px, 100%);
+      background:var(--card);
+      border-radius:14px;
+      box-shadow:0 12px 30px rgba(31,41,55,0.12);
+      padding:26px;
     }
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
+
+    .topbar{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
     }
-    input {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
+    .brand{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
     }
-    button {
-      margin-top: 20px;
-      padding: 12px;
-      width: 100%;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
+    .brand h1{
+      margin:0;
+      font-size:1.6rem;
+      letter-spacing:0.2px;
     }
-    .results {
-      margin-top: 20px;
-      background: #f1f1f1;
-      padding: 15px;
-      border-radius: 5px;
+    .brand .subtext{
+      margin:0;
+      color:var(--muted);
+      line-height:1.4;
+      max-width:680px;
     }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      background:#ecfeff;
+      border:1px solid #a5f3fc;
+      color:#155e75;
+      font-weight:700;
+      font-size:0.9rem;
+      white-space:nowrap;
+      height:fit-content;
+    }
+
+    .section-title{
+      margin:18px 0 10px;
+      font-size:1.1rem;
+      letter-spacing:0.2px;
+    }
+
+    .grid{
+      display:grid;
+      gap:14px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      align-items:end;
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    label{
+      font-weight:700;
+      font-size:0.92rem;
+    }
+    small{
+      color:var(--muted);
+      line-height:1.25;
+    }
+    input, select{
+      width:100%;
+      border:1px solid var(--border);
+      border-radius:8px;
+      padding:10px 12px;
+      font-size:1rem;
+      background:#fff;
+    }
+    input:focus, select:focus{
+      outline:none;
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(15,118,110,0.15);
+    }
+
+    .actions{
+      margin-top:16px;
+      display:grid;
+      gap:12px;
+      grid-template-columns: 1fr 1fr;
+    }
+    @media(max-width:680px){
+      .actions{ grid-template-columns: 1fr; }
+    }
+    button{
+      border:none;
+      border-radius:10px;
+      padding:12px 14px;
+      font-weight:800;
+      font-size:1rem;
+      cursor:pointer;
+    }
+    .btn-primary{
+      background:var(--accent);
+      color:#fff;
+    }
+    .btn-primary:hover{ background:var(--accent-hover); }
+    .btn-secondary{
+      background:#eef2ff;
+      color:#1e3a8a;
+    }
+    .btn-secondary:hover{ background:#e0e7ff; }
+
+    .results{
+      margin-top:18px;
+      border:1px solid var(--softBorder);
+      background:var(--soft);
+      border-radius:12px;
+      padding:14px;
+      display:none;
+    }
+    .results h2{
+      margin:0 0 10px;
+      font-size:1.05rem;
+    }
+    .result-row{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      padding:8px 0;
+      border-bottom:1px dashed #d7def4;
+    }
+    .result-row:last-child{ border-bottom:none; }
+    .amount{ font-weight:900; }
+    .emph{ font-size:1.05rem; }
+
+    .modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      z-index:999;
+    }
+    .modal-card{
+      width:min(980px, 100%);
+      height:min(92vh, 900px);
+      background:#fff;
+      border-radius:14px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.35);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+    }
+    .modal-header{
+      padding:14px 16px;
+      background:#0b3b37;
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .modal-header .title{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .modal-header .title strong{
+      font-size:1.05rem;
+      letter-spacing:0.2px;
+    }
+    .modal-header .title span{
+      font-size:0.9rem;
+      opacity:0.9;
+    }
+    .modal-header .x{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.45);
+      color:#fff;
+      border-radius:10px;
+      padding:8px 10px;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    .modal-body{
+      padding:16px;
+      overflow:auto;
+      display:grid;
+      gap:14px;
+      grid-template-columns: 1.2fr 0.8fr;
+      align-items:start;
+    }
+    @media(max-width:860px){
+      .modal-body{ grid-template-columns: 1fr; }
+    }
+
+    .contract-box,
+    .sign-box{
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      padding:14px;
+      background:#fff;
+    }
+    .contract-box h3,
+    .summary h3,
+    .sign-box h3{
+      margin:0 0 10px;
+      font-size:1.05rem;
+    }
+    .contract-box p,
+    .contract-box ul{
+      margin:8px 0;
+      color:#111827;
+      line-height:1.45;
+      font-size:0.95rem;
+    }
+    .contract-box ul{ margin-left:18px; padding:0; }
+
+    .summary{
+      border:1px solid #dbeafe;
+      background:#eff6ff;
+      border-radius:12px;
+      padding:14px;
+    }
+    .summary .kv{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      padding:6px 0;
+      border-bottom:1px dashed #bfdbfe;
+    }
+    .summary .kv:last-child{ border-bottom:none; }
+    .summary .kv b{ font-weight:900; }
+
+    canvas{
+      width:100%;
+      height:180px;
+      border:1px solid #d1d5db;
+      border-radius:10px;
+      background:#fff;
+      touch-action:none;
+    }
+    .sign-actions,
+    .jump{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .sign-actions button{ flex:1 1 180px; }
+    .jump button{ flex:1 1 220px; }
+
+    .agree{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      margin-top:10px;
+    }
+    .agree input{ margin-top:3px; width:auto; }
+    .agree label{ font-weight:700; }
   </style>
 </head>
 <body>
+  <main class="calculator">
+    <div class="topbar">
+      <div class="brand">
+        <h1>HydroBlast Membership Calculator</h1>
+        <p class="subtext">
+          Enter raw retail inputs. System calculates retail monthly, non-member premium monthly, membership monthly (discounted),
+          activation due today, year-1 total, and savings. Then generate a signed 12-month agreement PDF.
+        </p>
+      </div>
+      <div class="badge">12-Month Agreement • Signature + PDF</div>
+    </div>
 
-<div class="container">
-  <h1>HydroBlast Annual Care Calculator</h1>
+    <h2 class="section-title">Client Information</h2>
+    <div class="grid">
+      <div class="field">
+        <label for="clientName">Client Full Name</label>
+        <input id="clientName" type="text" placeholder="Jane Doe" />
+      </div>
+      <div class="field">
+        <label for="clientAddress">Service Address</label>
+        <input id="clientAddress" type="text" placeholder="123 Main St, Meridian, ID" />
+      </div>
+    </div>
 
-  <label>Soft Wash Price ($)</label>
-  <input type="number" id="softwash">
+    <h2 class="section-title">Membership Controls</h2>
+    <div class="grid">
+      <div class="field">
+        <label for="activationFee">Activation Fee (non-refundable)</label>
+        <select id="activationFee">
+          <option value="100">Low – $100</option>
+          <option value="199" selected>Mid – $199</option>
+          <option value="299">High – $299</option>
+        </select>
+        <small>Due at signing. Intended to be less than first service value.</small>
+      </div>
 
-  <label>Gutter Linear Feet</label>
-  <input type="number" id="gutterFeet">
+      <div class="field">
+        <label for="premiumPercent">Non-Member Monthly Premium (%)</label>
+        <input id="premiumPercent" type="number" min="0" step="1" value="15" />
+      </div>
 
-  <label>Price per Gutter Foot ($)</label>
-  <input type="number" id="gutterRate" value="1">
+      <div class="field">
+        <label for="discountPercent">Membership Discount (%)</label>
+        <input id="discountPercent" type="number" min="0" step="1" value="15" />
+      </div>
+    </div>
 
-  <label>Number of Exterior Windows</label>
-  <input type="number" id="windows">
+    <h2 class="section-title">Service Pricing Inputs</h2>
+    <div class="grid">
+      <div class="field"><label for="softWash">Soft wash price ($)</label><input id="softWash" type="number" min="0" step="0.01" placeholder="0.00" /></div>
+      <div class="field"><label for="gutterFeet">Gutter linear feet</label><input id="gutterFeet" type="number" min="0" step="1" placeholder="0" /></div>
+      <div class="field"><label for="gutterRate">Price per gutter foot ($)</label><input id="gutterRate" type="number" min="0" step="0.01" placeholder="0.00" /></div>
+      <div class="field"><label for="windowCount">Window count</label><input id="windowCount" type="number" min="0" step="1" placeholder="0" /></div>
+      <div class="field"><label for="windowRate">Price per window ($)</label><input id="windowRate" type="number" min="0" step="0.01" placeholder="0.00" /></div>
+      <div class="field"><label for="drivewayPrice">Driveway pressure wash price ($)</label><input id="drivewayPrice" type="number" min="0" step="0.01" placeholder="0.00" /></div>
+      <div class="field"><label for="waterMonthly">Water feature monthly price ($)</label><input id="waterMonthly" type="number" min="0" step="0.01" placeholder="0.00" /><small>Annualized automatically (× 12).</small></div>
+    </div>
 
-  <label>Price per Window ($)</label>
-  <input type="number" id="windowRate" value="4">
+    <div class="actions">
+      <button class="btn-primary" id="calculateBtn" type="button">Calculate Pricing</button>
+      <button class="btn-secondary" id="openContractBtn" type="button" disabled>Review & Sign Agreement</button>
+    </div>
 
-  <label>Driveway Price ($)</label>
-  <input type="number" id="driveway">
+    <section class="results" id="results" aria-live="polite">
+      <h2>Results</h2>
+      <div class="result-row"><span>Annual retail value</span><span class="amount" id="annualRetail">$0.00</span></div>
+      <div class="result-row"><span>Retail monthly (annual ÷ 12)</span><span class="amount" id="retailMonthly">$0.00</span></div>
+      <div class="result-row"><span>Non-member monthly (retail × premium)</span><span class="amount" id="nonMemberMonthly">$0.00</span></div>
+      <div class="result-row"><span class="emph">Membership monthly (retail − discount)</span><span class="amount emph" id="memberMonthly">$0.00</span></div>
+      <div class="result-row"><span>Activation fee due today</span><span class="amount" id="activationDisplay">$0.00</span></div>
+      <div class="result-row"><span>Total collected Year 1 (activation + membership × 12)</span><span class="amount" id="yearOneTotal">$0.00</span></div>
+      <div class="result-row"><span>Annual savings vs retail</span><span class="amount" id="annualSavings">$0.00</span></div>
+    </section>
+  </main>
 
-  <label>Water Feature Monthly Price ($)</label>
-  <input type="number" id="waterMonthly">
+  <div class="modal" id="contractModal" role="dialog" aria-modal="true" aria-label="Membership Agreement">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="title">
+          <strong>HydroBlast Solutions • 12-Month Membership Agreement</strong>
+          <span>A Division of Brighten Maintenance LLC (Idaho)</span>
+        </div>
+        <button class="x" id="closeModalBtn" type="button">Close</button>
+      </div>
 
-  <button onclick="calculate()">Calculate Membership</button>
+      <div class="modal-body">
+        <div class="contract-box" id="contractTop">
+          <h3>Agreement Terms</h3>
+          <p><b>Term:</b> This Agreement is for twelve (12) months from the Effective Date and auto-renews unless cancelled in writing before renewal.</p>
+          <p><b>Activation Fee:</b> Non-refundable and due at signing.</p>
+          <p><b>Payments:</b> Monthly payments are due monthly and intended to be processed via Square.</p>
+          <p><b>Cancellation / Early Termination:</b></p>
+          <ul>
+            <li>Services rendered are recalculated at standard retail pricing.</li>
+            <li>Client pays the difference between retail value and payments made.</li>
+            <li>If cancelled in first 6 months: $250 administrative cancellation fee applies.</li>
+          </ul>
+          <p><b>Governing Law:</b> State of Idaho.</p>
+          <div class="jump">
+            <button class="btn-secondary" type="button" id="skipToSignBtn">Skip to Signature</button>
+            <button class="btn-secondary" type="button" id="backToTopBtn">Back to Terms</button>
+          </div>
+        </div>
 
-  <div class="results" id="results" style="display:none;">
-    <p><strong>Annual Retail Total:</strong> $<span id="retail"></span></p>
-    <p><strong>Annual Membership (15% Premium):</strong> $<span id="membershipAnnual"></span></p>
-    <p><strong>Monthly Membership Price:</strong> $<span id="monthly"></span></p>
+        <div>
+          <div class="summary">
+            <h3>Enrollment Summary</h3>
+            <div class="kv"><span>Client</span><b id="sumClient">—</b></div>
+            <div class="kv"><span>Address</span><b id="sumAddress">—</b></div>
+            <div class="kv"><span>Effective Date</span><b id="sumDate">—</b></div>
+            <div class="kv"><span>Activation Due Today</span><b id="sumActivation">—</b></div>
+            <div class="kv"><span>Membership Monthly</span><b id="sumMonthly">—</b></div>
+            <div class="kv"><span>Retail Monthly</span><b id="sumRetailMonthly">—</b></div>
+            <div class="kv"><span>Non-Member Monthly</span><b id="sumNonMemberMonthly">—</b></div>
+          </div>
+
+          <div class="sign-box" id="signBox" style="margin-top:14px;">
+            <h3>Sign to Enroll</h3>
+            <div class="agree">
+              <input id="agreeBox" type="checkbox" />
+              <div>
+                <label for="agreeBox">I have read and agree to the Membership Agreement terms above.</label>
+              </div>
+            </div>
+
+            <div style="margin-top:10px;"><canvas id="signaturePad"></canvas></div>
+            <div class="sign-actions">
+              <button class="btn-secondary" type="button" id="clearSigBtn">Clear Signature</button>
+              <button class="btn-primary" type="button" id="generatePdfBtn">Generate Signed PDF</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
 
-<script>
-function calculate() {
-  let softwash = parseFloat(document.getElementById('softwash').value) || 0;
-  let gutterFeet = parseFloat(document.getElementById('gutterFeet').value) || 0;
-  let gutterRate = parseFloat(document.getElementById('gutterRate').value) || 0;
-  let windows = parseFloat(document.getElementById('windows').value) || 0;
-  let windowRate = parseFloat(document.getElementById('windowRate').value) || 0;
-  let driveway = parseFloat(document.getElementById('driveway').value) || 0;
-  let waterMonthly = parseFloat(document.getElementById('waterMonthly').value) || 0;
+  <script>
+    const { jsPDF } = window.jspdf;
+    const getNum = (id) => Number.parseFloat(document.getElementById(id).value) || 0;
+    const asMoney = (val) => new Intl.NumberFormat("en-US", { style:"currency", currency:"USD" }).format(val);
 
-  let retailTotal = 
-    softwash +
-    (gutterFeet * gutterRate) +
-    (windows * windowRate) +
-    driveway +
-    (waterMonthly * 12);
+    const state = { annualRetail: 0, retailMonthly: 0, nonMemberMonthly: 0, memberMonthly: 0, activation: 0 };
+    let signaturePad = null;
 
-  let membershipAnnual = retailTotal * 1.15;
-  let monthlyPrice = membershipAnnual / 12;
+    function resizeSigCanvas() {
+      const canvas = document.getElementById("signaturePad");
+      const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * ratio;
+      canvas.height = rect.height * ratio;
+      canvas.getContext("2d").setTransform(ratio, 0, 0, ratio, 0, 0);
+      if (signaturePad) signaturePad.clear();
+    }
 
-  document.getElementById('retail').innerText = retailTotal.toFixed(2);
-  document.getElementById('membershipAnnual').innerText = membershipAnnual.toFixed(2);
-  document.getElementById('monthly').innerText = monthlyPrice.toFixed(2);
+    function calculate() {
+      const annualRetail = getNum("softWash") + (getNum("gutterFeet") * getNum("gutterRate")) + (getNum("windowCount") * getNum("windowRate")) + getNum("drivewayPrice") + (getNum("waterMonthly") * 12);
+      const retailMonthly = annualRetail / 12;
+      const nonMemberMonthly = retailMonthly * (1 + getNum("premiumPercent") / 100);
+      const memberMonthly = retailMonthly * (1 - getNum("discountPercent") / 100);
+      const activation = getNum("activationFee");
+      const yearOneTotal = activation + (memberMonthly * 12);
+      const annualSavings = annualRetail - (memberMonthly * 12);
 
-  document.getElementById('results').style.display = 'block';
-}
-</script>
+      state.annualRetail = annualRetail;
+      state.retailMonthly = retailMonthly;
+      state.nonMemberMonthly = nonMemberMonthly;
+      state.memberMonthly = memberMonthly;
+      state.activation = activation;
 
+      document.getElementById("annualRetail").textContent = asMoney(annualRetail);
+      document.getElementById("retailMonthly").textContent = asMoney(retailMonthly);
+      document.getElementById("nonMemberMonthly").textContent = asMoney(nonMemberMonthly);
+      document.getElementById("memberMonthly").textContent = asMoney(memberMonthly);
+      document.getElementById("activationDisplay").textContent = asMoney(activation);
+      document.getElementById("yearOneTotal").textContent = asMoney(yearOneTotal);
+      document.getElementById("annualSavings").textContent = asMoney(Math.max(0, annualSavings));
+
+      document.getElementById("results").style.display = "block";
+      document.getElementById("openContractBtn").disabled = false;
+    }
+
+    function openContract() {
+      if (document.getElementById("results").style.display !== "block") return alert("Please calculate pricing first.");
+      const name = document.getElementById("clientName").value.trim();
+      const address = document.getElementById("clientAddress").value.trim();
+      if (!name || !address) return alert("Please enter client name and service address first.");
+
+      document.getElementById("sumClient").textContent = name;
+      document.getElementById("sumAddress").textContent = address;
+      document.getElementById("sumDate").textContent = new Date().toLocaleDateString();
+      document.getElementById("sumActivation").textContent = asMoney(state.activation);
+      document.getElementById("sumMonthly").textContent = asMoney(state.memberMonthly);
+      document.getElementById("sumRetailMonthly").textContent = asMoney(state.retailMonthly);
+      document.getElementById("sumNonMemberMonthly").textContent = asMoney(state.nonMemberMonthly);
+
+      document.getElementById("contractModal").style.display = "flex";
+      signaturePad = new SignaturePad(document.getElementById("signaturePad"));
+      resizeSigCanvas();
+      document.getElementById("agreeBox").checked = false;
+    }
+
+    const closeContract = () => (document.getElementById("contractModal").style.display = "none");
+    const clearSignature = () => signaturePad && signaturePad.clear();
+
+    function generateSignedPDF() {
+      if (!document.getElementById("agreeBox").checked) return alert("Client must agree to the terms before generating the PDF.");
+      if (!signaturePad || signaturePad.isEmpty()) return alert("Client signature is required.");
+
+      const name = document.getElementById("clientName").value.trim();
+      const address = document.getElementById("clientAddress").value.trim();
+      const doc = new jsPDF({ unit: "pt", format: "letter" });
+      let y = 58;
+      const left = 54;
+
+      doc.setFont("helvetica", "bold"); doc.setFontSize(14); doc.text("HydroBlast Solutions", left, y); y += 20;
+      doc.setFont("helvetica", "normal"); doc.setFontSize(10);
+      doc.text(`Client: ${name}`, left, y); y += 14;
+      doc.text(`Address: ${address}`, left, y); y += 14;
+      doc.text(`Date: ${new Date().toLocaleString()}`, left, y); y += 18;
+      doc.text(`Annual Retail: ${asMoney(state.annualRetail)}`, left, y); y += 14;
+      doc.text(`Retail Monthly: ${asMoney(state.retailMonthly)}`, left, y); y += 14;
+      doc.text(`Non-Member Monthly: ${asMoney(state.nonMemberMonthly)}`, left, y); y += 14;
+      doc.text(`Member Monthly: ${asMoney(state.memberMonthly)}`, left, y); y += 14;
+      doc.text(`Activation Fee: ${asMoney(state.activation)}`, left, y); y += 24;
+
+      doc.setFont("helvetica", "bold"); doc.text("Client Signature:", left, y); y += 10;
+      doc.addImage(signaturePad.toDataURL("image/png"), "PNG", left, y, 220, 70);
+      doc.save(`${name.replaceAll(" ", "_")}_HydroBlast_Membership_Agreement.pdf`);
+      alert("Signed PDF generated.");
+    }
+
+    const skipToSignature = () => document.getElementById("signBox").scrollIntoView({ behavior: "smooth", block: "start" });
+    const backToTop = () => document.getElementById("contractTop").scrollIntoView({ behavior: "smooth", block: "start" });
+
+    document.getElementById("calculateBtn").addEventListener("click", calculate);
+    document.getElementById("openContractBtn").addEventListener("click", openContract);
+    document.getElementById("closeModalBtn").addEventListener("click", closeContract);
+    document.getElementById("clearSigBtn").addEventListener("click", clearSignature);
+    document.getElementById("generatePdfBtn").addEventListener("click", generateSignedPDF);
+    document.getElementById("skipToSignBtn").addEventListener("click", skipToSignature);
+    document.getElementById("backToTopBtn").addEventListener("click", backToTop);
+
+    window.addEventListener("resize", () => {
+      if (document.getElementById("contractModal").style.display === "flex") resizeSigCanvas();
+    });
+
+    document.getElementById("contractModal").addEventListener("click", (e) => {
+      if (e.target.id === "contractModal") closeContract();
+    });
+  </script>
 </body>
 </html>
