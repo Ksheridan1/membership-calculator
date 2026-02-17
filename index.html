@@ -599,30 +599,161 @@
         driveway +
         (waterMonthly * 12);
 
-// Retail monthly still useful for comparison display
-const retailMonthly = annualRetail / 12;
+/* ---------------------------------------------------
+   STEP 1 — BASE SERVICE CALCULATIONS
+--------------------------------------------------- */
 
-// Non-member monthly (optional comparison only)
-const nonMemberMonthly = retailMonthly * (1 + premiumPct);
+// Frequencies (default to 1 if not present in UI)
+const softWashFrequency = getNum("softWashFrequency") || 1;
+const gutterFrequency = getNum("gutterFrequency") || 1;
+const windowFrequency = getNum("windowFrequency") || 1;
+const drivewayFrequency = getNum("drivewayFrequency") || 1;
 
-// Remaining balance after activation
-let remainingBalance = Math.max(annualRetail - activation, 0);
+// Base service pricing inputs
+const softWashPrice = getNum("softWash");
+const gutterLinearFeet = getNum("gutterFeet");
+const gutterRate = getNum("gutterRate");
+const windowCount = getNum("windowCount");
+const windowRate = getNum("windowRate");
+const drivewayPrice = getNum("drivewayPrice");
 
-// Apply optional discount ONLY to remaining balance
-remainingBalance = remainingBalance * (1 - discountPct);
+// Annual base services
+const annualSoftWash = softWashPrice * softWashFrequency;
+const annualGutters = gutterLinearFeet * gutterRate * gutterFrequency;
+const annualExteriorWindows = windowCount * windowRate * windowFrequency;
+const annualDriveway = drivewayPrice * drivewayFrequency;
 
-// Divide remaining balance into 12 monthly payments
-let memberMonthly = remainingBalance / 12;
 
-// Optional safety minimum
-const minimumMonthly = 0; // Set to 99 if you want protection
-memberMonthly = Math.max(memberMonthly, minimumMonthly);
+/* ---------------------------------------------------
+   STEP 2 — ADD-ONS
+--------------------------------------------------- */
 
-// Year one total collected
-const yearOneTotal = activation + (memberMonthly * 12);
+// These default to 0 if fields do not exist
+const waterMonthly = getNum("waterMonthly");
+const gutterGuardPrice = getNum("gutterGuardPrice");
+const interiorWindowsPrice = getNum("interiorWindowsPrice");
+const annualInspectionPrice = getNum("annualInspectionPrice");
 
-// Annual savings (only if discount applied)
-const annualSavings = annualRetail - yearOneTotal;
+// Annual add-ons
+const annualWaterFeature = waterMonthly * 12;
+const annualGutterGuard = gutterGuardPrice;
+const annualInteriorWindows = interiorWindowsPrice;
+const annualInspection = annualInspectionPrice;
+
+
+/* ---------------------------------------------------
+   STEP 3 — ANNUAL RETAIL TOTAL
+--------------------------------------------------- */
+
+const annualRetailTotal =
+  annualSoftWash +
+  annualGutters +
+  annualExteriorWindows +
+  annualDriveway +
+  annualWaterFeature +
+  annualGutterGuard +
+  annualInteriorWindows +
+  annualInspection;
+
+
+/* ---------------------------------------------------
+   STEP 4 — APPLY MEMBERSHIP DISCOUNT
+--------------------------------------------------- */
+
+const discountRate = (getNum("discountPercent") || 0) / 100;
+const discountAmount = annualRetailTotal * discountRate;
+
+const finalAnnualMembershipPrice =
+  annualRetailTotal - discountAmount;
+
+
+/* ---------------------------------------------------
+   STEP 5 — MONTHLY SUBSCRIPTION
+--------------------------------------------------- */
+
+const monthlySubscriptionPrice =
+  finalAnnualMembershipPrice / 12;
+
+
+/* ---------------------------------------------------
+   STEP 6 — NON-MEMBER MONTHLY (ADMIN ONLY)
+--------------------------------------------------- */
+
+const nonMemberPremiumRate = (getNum("premiumPercent") || 0) / 100;
+
+const retailMonthlyValue = annualRetailTotal / 12;
+
+const nonMemberMonthlyPrice =
+  retailMonthlyValue * (1 + nonMemberPremiumRate);
+
+
+/* ---------------------------------------------------
+   STEP 7 — SAVINGS
+--------------------------------------------------- */
+
+const annualSavingsVsRetail =
+  annualRetailTotal - finalAnnualMembershipPrice;
+
+
+/* ---------------------------------------------------
+   STATE UPDATE (Preserve Existing Behavior)
+--------------------------------------------------- */
+
+state.annualRetail = annualRetailTotal;
+state.retailMonthly = retailMonthlyValue;
+state.nonMemberMonthly = nonMemberMonthlyPrice;
+state.memberMonthly = monthlySubscriptionPrice;
+state.activation = getNum("activationFee");
+
+
+/* ---------------------------------------------------
+   DISPLAY OUTPUTS
+--------------------------------------------------- */
+
+document.getElementById("annualRetail").textContent =
+  asMoney(annualRetailTotal);
+
+if (document.getElementById("discountAmount")) {
+  document.getElementById("discountAmount").textContent =
+    asMoney(discountAmount);
+}
+
+if (document.getElementById("finalAnnualMembership")) {
+  document.getElementById("finalAnnualMembership").textContent =
+    asMoney(finalAnnualMembershipPrice);
+}
+
+document.getElementById("memberMonthly").textContent =
+  asMoney(monthlySubscriptionPrice);
+
+document.getElementById("nonMemberMonthly").textContent =
+  asMoney(nonMemberMonthlyPrice);
+
+if (document.getElementById("annualSavings")) {
+  document.getElementById("annualSavings").textContent =
+    asMoney(annualSavingsVsRetail);
+}
+
+
+/* ---------------------------------------------------
+   MEMBERSHIP TIERS (Visual Only — No Math Change)
+--------------------------------------------------- */
+
+if (document.getElementById("tierBasic")) {
+  document.getElementById("tierBasic").textContent =
+    asMoney(monthlySubscriptionPrice);
+}
+
+if (document.getElementById("tierPremium")) {
+  document.getElementById("tierPremium").textContent =
+    asMoney(monthlySubscriptionPrice);
+}
+
+if (document.getElementById("tierElite")) {
+  document.getElementById("tierElite").textContent =
+    asMoney(monthlySubscriptionPrice);
+}
+
 
 
       // Save state
