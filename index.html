@@ -607,52 +607,6 @@
       const annualSavings = annualRetail - (memberMonthly * 12);
 
 
-document.getElementById("annualRetail").textContent =
-  asMoney(annualRetailTotal);
-
-if (document.getElementById("discountAmount")) {
-  document.getElementById("discountAmount").textContent =
-    asMoney(discountAmount);
-}
-
-if (document.getElementById("finalAnnualMembership")) {
-  document.getElementById("finalAnnualMembership").textContent =
-    asMoney(finalAnnualMembershipPrice);
-}
-
-document.getElementById("memberMonthly").textContent =
-  asMoney(monthlySubscriptionPrice);
-
-document.getElementById("nonMemberMonthly").textContent =
-  asMoney(nonMemberMonthlyPrice);
-
-if (document.getElementById("annualSavings")) {
-  document.getElementById("annualSavings").textContent =
-    asMoney(annualSavingsVsRetail);
-}
-
-
-/* ---------------------------------------------------
-   MEMBERSHIP TIERS (Visual Only — No Math Change)
---------------------------------------------------- */
-
-if (document.getElementById("tierBasic")) {
-  document.getElementById("tierBasic").textContent =
-    asMoney(monthlySubscriptionPrice);
-}
-
-if (document.getElementById("tierPremium")) {
-  document.getElementById("tierPremium").textContent =
-    asMoney(monthlySubscriptionPrice);
-}
-
-if (document.getElementById("tierElite")) {
-  document.getElementById("tierElite").textContent =
-    asMoney(monthlySubscriptionPrice);
-}
-
-
-
       // Save state
       state.annualRetail = annualRetail;
       state.retailMonthly = retailMonthly;
