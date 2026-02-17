@@ -599,33 +599,137 @@
         driveway +
         (waterMonthly * 12);
 
-      const retailMonthly = annualRetail / 12;
-      const nonMemberMonthly = retailMonthly * (1 + premiumPct);
-      const memberMonthly = retailMonthly * (1 - discountPct);
+function calculate() {
 
-      const yearOneTotal = activation + (memberMonthly * 12);
-      const annualSavings = annualRetail - (memberMonthly * 12);
+  /* -------------------------------
+     STEP 1 — BASE SERVICES
+  -------------------------------- */
+
+  const softWashPrice = getNum("softWash");
+  const gutterFeet = getNum("gutterFeet");
+  const gutterRate = getNum("gutterRate");
+  const windowCount = getNum("windowCount");
+  const windowRate = getNum("windowRate");
+  const drivewayPrice = getNum("drivewayPrice");
+
+  const annualSoftWash = softWashPrice;
+  const annualGutters = gutterFeet * gutterRate;
+  const annualExteriorWindows = windowCount * windowRate;
+  const annualDriveway = drivewayPrice;
 
 
-      // Save state
-      state.annualRetail = annualRetail;
-      state.retailMonthly = retailMonthly;
-      state.nonMemberMonthly = nonMemberMonthly;
-      state.memberMonthly = memberMonthly;
-      state.activation = activation;
+  /* -------------------------------
+     STEP 2 — ADD ONS
+  -------------------------------- */
 
-      // Render results
-      document.getElementById("annualRetail").textContent = asMoney(annualRetail);
-      document.getElementById("retailMonthly").textContent = asMoney(retailMonthly);
-      document.getElementById("nonMemberMonthly").textContent = asMoney(nonMemberMonthly);
-      document.getElementById("memberMonthly").textContent = asMoney(memberMonthly);
-      document.getElementById("activationDisplay").textContent = asMoney(activation);
-      document.getElementById("yearOneTotal").textContent = asMoney(yearOneTotal);
-      document.getElementById("annualSavings").textContent = asMoney(Math.max(0, annualSavings));
+  const waterMonthly = getNum("waterMonthly");
+  const annualWaterFeature = waterMonthly * 12;
 
-      document.getElementById("results").style.display = "block";
-      document.getElementById("openContractBtn").disabled = false;
-    }
+  const annualGutterGuard = 0;
+  const annualInteriorWindows = 0;
+  const annualInspection = 0;
+
+
+  /* -------------------------------
+     STEP 3 — ANNUAL RETAIL TOTAL
+  -------------------------------- */
+
+  const annualRetailTotal =
+    annualSoftWash +
+    annualGutters +
+    annualExteriorWindows +
+    annualDriveway +
+    annualWaterFeature +
+    annualGutterGuard +
+    annualInteriorWindows +
+    annualInspection;
+
+
+  /* -------------------------------
+     STEP 4 — DISCOUNT
+  -------------------------------- */
+
+  const discountRate = getNum("discountPercent") / 100;
+  const discountAmount = annualRetailTotal * discountRate;
+
+  const finalAnnualMembershipPrice =
+    annualRetailTotal - discountAmount;
+
+
+  /* -------------------------------
+     STEP 5 — MONTHLY SUBSCRIPTION
+  -------------------------------- */
+
+  const monthlySubscriptionPrice =
+    finalAnnualMembershipPrice / 12;
+
+
+  /* -------------------------------
+     STEP 6 — NON MEMBER MONTHLY
+  -------------------------------- */
+
+  const premiumRate = getNum("premiumPercent") / 100;
+
+  const retailMonthlyValue = annualRetailTotal / 12;
+
+  const nonMemberMonthlyPrice =
+    retailMonthlyValue * (1 + premiumRate);
+
+
+  /* -------------------------------
+     STEP 7 — SAVINGS
+  -------------------------------- */
+
+  const annualSavingsVsRetail =
+    annualRetailTotal - finalAnnualMembershipPrice;
+
+
+  const activation = getNum("activationFee");
+
+  const yearOneTotal =
+    activation + finalAnnualMembershipPrice;
+
+
+  /* -------------------------------
+     SAVE STATE
+  -------------------------------- */
+
+  state.annualRetail = annualRetailTotal;
+  state.retailMonthly = retailMonthlyValue;
+  state.nonMemberMonthly = nonMemberMonthlyPrice;
+  state.memberMonthly = monthlySubscriptionPrice;
+  state.activation = activation;
+
+
+  /* -------------------------------
+     RENDER RESULTS
+  -------------------------------- */
+
+  document.getElementById("annualRetail").textContent =
+    asMoney(annualRetailTotal);
+
+  document.getElementById("retailMonthly").textContent =
+    asMoney(retailMonthlyValue);
+
+  document.getElementById("nonMemberMonthly").textContent =
+    asMoney(nonMemberMonthlyPrice);
+
+  document.getElementById("memberMonthly").textContent =
+    asMoney(monthlySubscriptionPrice);
+
+  document.getElementById("activationDisplay").textContent =
+    asMoney(activation);
+
+  document.getElementById("yearOneTotal").textContent =
+    asMoney(yearOneTotal);
+
+  document.getElementById("annualSavings").textContent =
+    asMoney(annualSavingsVsRetail);
+
+  document.getElementById("results").style.display = "block";
+  document.getElementById("openContractBtn").disabled = false;
+}
+
 
     function openContract() {
       // Must have results first
