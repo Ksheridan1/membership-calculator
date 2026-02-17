@@ -600,9 +600,8 @@
         (waterMonthly * 12);
 
 function calculate() {
-
   /* -------------------------------
-     STEP 1 — BASE SERVICES
+     STEP 1 — BASE SERVICE CALCULATIONS
   -------------------------------- */
 
   const softWashPrice = getNum("softWash");
@@ -612,23 +611,22 @@ function calculate() {
   const windowRate = getNum("windowRate");
   const drivewayPrice = getNum("drivewayPrice");
 
+  // Annual base services
   const annualSoftWash = softWashPrice;
   const annualGutters = gutterFeet * gutterRate;
   const annualExteriorWindows = windowCount * windowRate;
   const annualDriveway = drivewayPrice;
 
-
   /* -------------------------------
-     STEP 2 — ADD ONS
+     STEP 2 — ADD-ONS
   -------------------------------- */
 
   const waterMonthly = getNum("waterMonthly");
-  const annualWaterFeature = waterMonthly * 12;
 
+  const annualWaterFeature = waterMonthly * 12;
   const annualGutterGuard = 0;
   const annualInteriorWindows = 0;
   const annualInspection = 0;
-
 
   /* -------------------------------
      STEP 3 — ANNUAL RETAIL TOTAL
@@ -644,9 +642,8 @@ function calculate() {
     annualInteriorWindows +
     annualInspection;
 
-
   /* -------------------------------
-     STEP 4 — DISCOUNT
+     STEP 4 — APPLY MEMBERSHIP DISCOUNT
   -------------------------------- */
 
   const discountRate = getNum("discountPercent") / 100;
@@ -655,7 +652,6 @@ function calculate() {
   const finalAnnualMembershipPrice =
     annualRetailTotal - discountAmount;
 
-
   /* -------------------------------
      STEP 5 — MONTHLY SUBSCRIPTION
   -------------------------------- */
@@ -663,18 +659,16 @@ function calculate() {
   const monthlySubscriptionPrice =
     finalAnnualMembershipPrice / 12;
 
-
   /* -------------------------------
-     STEP 6 — NON MEMBER MONTHLY
+     STEP 6 — NON-MEMBER MONTHLY (ADMIN ONLY)
   -------------------------------- */
 
-  const premiumRate = getNum("premiumPercent") / 100;
+  const nonMemberPremiumRate = getNum("premiumPercent") / 100;
 
   const retailMonthlyValue = annualRetailTotal / 12;
 
   const nonMemberMonthlyPrice =
-    retailMonthlyValue * (1 + premiumRate);
-
+    retailMonthlyValue * (1 + nonMemberPremiumRate);
 
   /* -------------------------------
      STEP 7 — SAVINGS
@@ -683,28 +677,14 @@ function calculate() {
   const annualSavingsVsRetail =
     annualRetailTotal - finalAnnualMembershipPrice;
 
+  /* -------------------------------
+     FINAL OUTPUTS
+  -------------------------------- */
 
   const activation = getNum("activationFee");
+  const yearOneTotal = activation + finalAnnualMembershipPrice;
 
-  const yearOneTotal =
-    activation + finalAnnualMembershipPrice;
-
-
-  /* -------------------------------
-     SAVE STATE
-  -------------------------------- */
-
-  state.annualRetail = annualRetailTotal;
-  state.retailMonthly = retailMonthlyValue;
-  state.nonMemberMonthly = nonMemberMonthlyPrice;
-  state.memberMonthly = monthlySubscriptionPrice;
-  state.activation = activation;
-
-
-  /* -------------------------------
-     RENDER RESULTS
-  -------------------------------- */
-
+  // Populate UI
   document.getElementById("annualRetail").textContent =
     asMoney(annualRetailTotal);
 
@@ -728,10 +708,16 @@ function calculate() {
 
   document.getElementById("results").style.display = "block";
   document.getElementById("openContractBtn").disabled = false;
+
+  // Save to state for PDF
+  state.annualRetail = annualRetailTotal;
+  state.retailMonthly = retailMonthlyValue;
+  state.nonMemberMonthly = nonMemberMonthlyPrice;
+  state.memberMonthly = monthlySubscriptionPrice;
+  state.activation = activation;
 }
 
-
-    function openContract() {
+   function openContract() {
       // Must have results first
       if (!document.getElementById("results").style.display || document.getElementById("results").style.display === "none") {
         alert("Please calculate pricing first.");
