@@ -599,116 +599,13 @@
         driveway +
         (waterMonthly * 12);
 
-/* ---------------------------------------------------
-   STEP 1 — BASE SERVICE CALCULATIONS
---------------------------------------------------- */
+      const retailMonthly = annualRetail / 12;
+      const nonMemberMonthly = retailMonthly * (1 + premiumPct);
+      const memberMonthly = retailMonthly * (1 - discountPct);
 
-// Frequencies (default to 1 if not present in UI)
-const softWashFrequency = getNum("softWashFrequency") || 1;
-const gutterFrequency = getNum("gutterFrequency") || 1;
-const windowFrequency = getNum("windowFrequency") || 1;
-const drivewayFrequency = getNum("drivewayFrequency") || 1;
+      const yearOneTotal = activation + (memberMonthly * 12);
+      const annualSavings = annualRetail - (memberMonthly * 12);
 
-// Base service pricing inputs
-const softWashPrice = getNum("softWash");
-const gutterLinearFeet = getNum("gutterFeet");
-const gutterRate = getNum("gutterRate");
-const windowCount = getNum("windowCount");
-const windowRate = getNum("windowRate");
-const drivewayPrice = getNum("drivewayPrice");
-
-// Annual base services
-const annualSoftWash = softWashPrice * softWashFrequency;
-const annualGutters = gutterLinearFeet * gutterRate * gutterFrequency;
-const annualExteriorWindows = windowCount * windowRate * windowFrequency;
-const annualDriveway = drivewayPrice * drivewayFrequency;
-
-
-/* ---------------------------------------------------
-   STEP 2 — ADD-ONS
---------------------------------------------------- */
-
-// These default to 0 if fields do not exist
-const waterMonthly = getNum("waterMonthly");
-const gutterGuardPrice = getNum("gutterGuardPrice");
-const interiorWindowsPrice = getNum("interiorWindowsPrice");
-const annualInspectionPrice = getNum("annualInspectionPrice");
-
-// Annual add-ons
-const annualWaterFeature = waterMonthly * 12;
-const annualGutterGuard = gutterGuardPrice;
-const annualInteriorWindows = interiorWindowsPrice;
-const annualInspection = annualInspectionPrice;
-
-
-/* ---------------------------------------------------
-   STEP 3 — ANNUAL RETAIL TOTAL
---------------------------------------------------- */
-
-const annualRetailTotal =
-  annualSoftWash +
-  annualGutters +
-  annualExteriorWindows +
-  annualDriveway +
-  annualWaterFeature +
-  annualGutterGuard +
-  annualInteriorWindows +
-  annualInspection;
-
-
-/* ---------------------------------------------------
-   STEP 4 — APPLY MEMBERSHIP DISCOUNT
---------------------------------------------------- */
-
-const discountRate = (getNum("discountPercent") || 0) / 100;
-const discountAmount = annualRetailTotal * discountRate;
-
-const finalAnnualMembershipPrice =
-  annualRetailTotal - discountAmount;
-
-
-/* ---------------------------------------------------
-   STEP 5 — MONTHLY SUBSCRIPTION
---------------------------------------------------- */
-
-const monthlySubscriptionPrice =
-  finalAnnualMembershipPrice / 12;
-
-
-/* ---------------------------------------------------
-   STEP 6 — NON-MEMBER MONTHLY (ADMIN ONLY)
---------------------------------------------------- */
-
-const nonMemberPremiumRate = (getNum("premiumPercent") || 0) / 100;
-
-const retailMonthlyValue = annualRetailTotal / 12;
-
-const nonMemberMonthlyPrice =
-  retailMonthlyValue * (1 + nonMemberPremiumRate);
-
-
-/* ---------------------------------------------------
-   STEP 7 — SAVINGS
---------------------------------------------------- */
-
-const annualSavingsVsRetail =
-  annualRetailTotal - finalAnnualMembershipPrice;
-
-
-/* ---------------------------------------------------
-   STATE UPDATE (Preserve Existing Behavior)
---------------------------------------------------- */
-
-state.annualRetail = annualRetailTotal;
-state.retailMonthly = retailMonthlyValue;
-state.nonMemberMonthly = nonMemberMonthlyPrice;
-state.memberMonthly = monthlySubscriptionPrice;
-state.activation = getNum("activationFee");
-
-
-/* ---------------------------------------------------
-   DISPLAY OUTPUTS
---------------------------------------------------- */
 
 document.getElementById("annualRetail").textContent =
   asMoney(annualRetailTotal);
