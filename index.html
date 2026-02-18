@@ -802,79 +802,57 @@ function calculate() {
     annualInteriorWindows +
     annualInspection;
 
-  /* -------------------------------
-     STEP 4 — APPLY MEMBERSHIP DISCOUNT
-  -------------------------------- */
+/* -------------------------------
+   STEP 4 — APPLY FINANCING PREMIUM
+-------------------------------- */
 
-  const discountRate = getNum("discountPercent") / 100;
-  const discountAmount = annualRetailTotal * discountRate;
+const FINANCING_RATE = 0.15;
 
-  const finalAnnualMembershipPrice =
-    annualRetailTotal - discountAmount;
+const finalAnnualMembershipPrice =
+  annualRetailTotal * (1 + FINANCING_RATE);
 
-  /* -------------------------------
-     STEP 5 — MONTHLY SUBSCRIPTION
-  -------------------------------- */
+/* -------------------------------
+   STEP 5 — MONTHLY (ROUND UP)
+-------------------------------- */
 
-  const monthlySubscriptionPrice =
-    finalAnnualMembershipPrice / 12;
+const monthlySubscriptionPrice =
+  Math.ceil(finalAnnualMembershipPrice / 12);
 
-  /* -------------------------------
-     STEP 6 — NON-MEMBER MONTHLY (ADMIN ONLY)
-  -------------------------------- */
+/* -------------------------------
+   STEP 6 — YEAR ONE TOTAL
+-------------------------------- */
 
-  const nonMemberPremiumRate = getNum("premiumPercent") / 100;
+const activation = getNum("activationFee");
+const yearOneTotal = activation + finalAnnualMembershipPrice;
 
-  const retailMonthlyValue = annualRetailTotal / 12;
 
-  const nonMemberMonthlyPrice =
-    retailMonthlyValue * (1 + nonMemberPremiumRate);
+// Populate UI
 
-  /* -------------------------------
-     STEP 7 — SAVINGS
-  -------------------------------- */
+document.getElementById("annualRetail").textContent =
+  asMoney(annualRetailTotal);
 
-  const annualSavingsVsRetail =
-    annualRetailTotal - finalAnnualMembershipPrice;
+document.getElementById("annualMembership").textContent =
+  asMoney(finalAnnualMembershipPrice);
 
-  /* -------------------------------
-     FINAL OUTPUTS
-  -------------------------------- */
+document.getElementById("memberMonthly").textContent =
+  asMoney(monthlySubscriptionPrice);
 
-  const activation = getNum("activationFee");
-  const yearOneTotal = activation + finalAnnualMembershipPrice;
+document.getElementById("activationDisplay").textContent =
+  asMoney(activation);
 
-  // Populate UI
-  document.getElementById("annualRetail").textContent =
-    asMoney(annualRetailTotal);
+document.getElementById("yearOneTotal").textContent =
+  asMoney(yearOneTotal);
 
-  document.getElementById("retailMonthly").textContent =
-    asMoney(retailMonthlyValue);
+document.getElementById("results").style.display = "block";
+document.getElementById("openContractBtn").disabled = false;
 
-  document.getElementById("nonMemberMonthly").textContent =
-    asMoney(nonMemberMonthlyPrice);
+// Save to state for PDF
 
-  document.getElementById("memberMonthly").textContent =
-    asMoney(monthlySubscriptionPrice);
-
-  document.getElementById("activationDisplay").textContent =
-    asMoney(activation);
-
-  document.getElementById("yearOneTotal").textContent =
-    asMoney(yearOneTotal);
-
-  document.getElementById("annualSavings").textContent =
-    asMoney(annualSavingsVsRetail);
-
-  document.getElementById("results").style.display = "block";
-  document.getElementById("openContractBtn").disabled = false;
-
-  // Save to state for PDF
 state.annualRetail = annualRetailTotal;
-state.retailMonthly = retailMonthlyValue;
-state.nonMemberMonthly = nonMemberMonthlyPrice;
+state.annualMembership = finalAnnualMembershipPrice;
 state.memberMonthly = monthlySubscriptionPrice;
 state.activation = activation;
+
 
 saveInputs();
 }
