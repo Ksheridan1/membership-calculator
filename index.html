@@ -550,18 +550,6 @@
         <small>Due at signing. Intended to be less than first service value.</small>
       </div>
 
-      <div class="field">
-        <label for="premiumPercent">Non-Member Monthly Premium (%)</label>
-        <input id="premiumPercent" type="number" min="0" step="1" value="15" />
-        <small>Pay-as-you-go monthly = retail monthly × (1 + premium).</small>
-      </div>
-
-      <div class="field">
-        <label for="discountPercent">Membership Discount (%)</label>
-        <input id="discountPercent" type="number" min="0" step="1" value="15" />
-        <small>Membership monthly = retail monthly × (1 − discount).</small>
-      </div>
-    </div>
 
     <h2 class="section-title">Service Pricing Inputs</h2>
     <div class="grid">
@@ -721,13 +709,13 @@
     const asMoney = (val) => new Intl.NumberFormat("en-US", { style:"currency", currency:"USD" }).format(val);
 
     // State cache (so PDF uses what was calculated)
-    const state = {
-      annualRetail: 0,
-      retailMonthly: 0,
-      nonMemberMonthly: 0,
-      memberMonthly: 0,
-      activation: 0
-    };
+   const state = {
+  annualRetail: 0,
+  annualMembership: 0,
+  memberMonthly: 0,
+  activation: 0
+};
+
 
     // Signature pad
     let signaturePad = null;
@@ -867,8 +855,7 @@ saveInputs();
       document.getElementById("sumDate").textContent = effectiveDate;
       document.getElementById("sumActivation").textContent = asMoney(state.activation);
       document.getElementById("sumMonthly").textContent = asMoney(state.memberMonthly);
-      document.getElementById("sumRetailMonthly").textContent = asMoney(state.retailMonthly);
-      document.getElementById("sumNonMemberMonthly").textContent = asMoney(state.nonMemberMonthly);
+
 
       // Open modal
       document.getElementById("contractModal").style.display = "flex";
@@ -943,10 +930,17 @@ saveInputs();
 
       doc.setFont("helvetica", "normal");
       doc.text(`Annual Retail Value: ${annualRetail}`, left, y); y += 14;
-      doc.text(`Retail Monthly (Annual ÷ 12): ${retailMonthly}`, left, y); y += 14;
-      doc.text(`Non-Member Monthly (Retail × Premium): ${nonMemberMonthly}`, left, y); y += 14;
-      doc.text(`Membership Monthly (Retail − Discount): ${memberMonthly}`, left, y); y += 14;
-      doc.text(`Activation Fee Due Today (Non-Refundable): ${activation}`, left, y); y += 18;
+      doc.text(`Annual Retail Value: ${annualRetail}`, left, y);
+      y += 14;
+
+      doc.text(`Annual Membership (15% Financing Included): ${annualMembership}`, left, y);
+      y += 14;
+
+      doc.text(`Monthly Membership (Rounded Up): ${memberMonthly}`, left, y);
+      y += 14;
+
+      doc.text(`Activation Fee (Non-Refundable): ${activation}`, left, y);
+
 
       doc.setFont("helvetica", "bold");
       doc.text("Terms", left, y); y += 14;
