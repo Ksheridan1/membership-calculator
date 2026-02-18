@@ -870,12 +870,15 @@ function calculate() {
   document.getElementById("openContractBtn").disabled = false;
 
   // Save to state for PDF
-  state.annualRetail = annualRetailTotal;
-  state.retailMonthly = retailMonthlyValue;
-  state.nonMemberMonthly = nonMemberMonthlyPrice;
-  state.memberMonthly = monthlySubscriptionPrice;
-  state.activation = activation;
+state.annualRetail = annualRetailTotal;
+state.retailMonthly = retailMonthlyValue;
+state.nonMemberMonthly = nonMemberMonthlyPrice;
+state.memberMonthly = monthlySubscriptionPrice;
+state.activation = activation;
+
+saveInputs();
 }
+
 
    function openContract() {
       // Must have results first
@@ -1056,16 +1059,21 @@ function calculate() {
     document.getElementById("backToTopBtn").addEventListener("click", backToTop);
 
     // Resize signature canvas on window resize (keeps iPad happy)
-    window.addEventListener("resize", () => {
-      if (document.getElementById("contractModal").style.display === "flex") {
-        resizeSigCanvas();
-      }
-    });
+window.addEventListener("resize", () => {
+  if (document.getElementById("contractModal").style.display === "flex") {
+    resizeSigCanvas();
+  }
+});
 
-    // Close modal if clicking outside the card
-    document.getElementById("contractModal").addEventListener("click", (e) => {
-      if (e.target.id === "contractModal") closeContract();
-    });
-  </script>
+// Close modal if clicking outside the card
+document.getElementById("contractModal").addEventListener("click", (e) => {
+  if (e.target.id === "contractModal") closeContract();
+});
+
+// INITIAL LOAD
+loadInputs();
+calculate();
+</script>
 </body>
 </html>
+
