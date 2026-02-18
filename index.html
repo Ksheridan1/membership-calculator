@@ -1040,6 +1040,12 @@ function calculate() {
       document.getElementById("contractTop").scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
+    // Auto calculate on input changes
+    document.querySelectorAll("input, select").forEach(el => {
+    el.addEventListener("input", calculate);
+    el.addEventListener("change", calculate);
+    });
+
     // Wire up buttons
     document.getElementById("calculateBtn").addEventListener("click", calculate);
     document.getElementById("openContractBtn").addEventListener("click", openContract);
