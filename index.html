@@ -892,9 +892,8 @@ saveInputs();
       const address = (document.getElementById("clientAddress").value || "").trim();
       const activation = asMoney(state.activation);
       const memberMonthly = asMoney(state.memberMonthly);
-      const retailMonthly = asMoney(state.retailMonthly);
-      const nonMemberMonthly = asMoney(state.nonMemberMonthly);
       const annualRetail = asMoney(state.annualRetail);
+      const annualMembership = asMoney(state.annualMembership);
 
       const signedAt = new Date();
       const signedDate = signedAt.toLocaleDateString();
@@ -904,42 +903,23 @@ saveInputs();
       const left = 54;
       let y = 58;
 
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(14);
-      doc.text("HydroBlast Solutions", left, y); y += 16;
+doc.setFont("Helvetica", "bold");
+doc.text("Pricing Summary", left, y);
+y += 14;
 
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(10);
-      doc.text("A Division of Brighten Maintenance LLC (Idaho)", left, y); y += 18;
+doc.setFont("Helvetica", "normal");
 
-      doc.setDrawColor(200);
-      doc.line(left, y, 560, y); y += 18;
+doc.text(`Annual Retail Value: ${annualRetail}`, left, y);
+y += 14;
 
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(12);
-      doc.text("12-Month Exterior Service Membership Agreement", left, y); y += 18;
+doc.text(`Annual Membership (15% Financing Included): ${annualMembership}`, left, y);
+y += 14;
 
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(10);
-      doc.text(`Client: ${name}`, left, y); y += 14;
-      doc.text(`Service Address: ${address}`, left, y); y += 14;
-      doc.text(`Effective Date: ${signedDate}`, left, y); y += 18;
+doc.text(`Monthly Membership (Rounded Up): ${memberMonthly}`, left, y);
+y += 14;
 
-      doc.setFont("helvetica", "bold");
-      doc.text("Pricing Summary", left, y); y += 14;
-
-      doc.setFont("helvetica", "normal");
-      doc.text(`Annual Retail Value: ${annualRetail}`, left, y); y += 14;
-      doc.text(`Annual Retail Value: ${annualRetail}`, left, y);
-      y += 14;
-
-      doc.text(`Annual Membership (15% Financing Included): ${annualMembership}`, left, y);
-      y += 14;
-
-      doc.text(`Monthly Membership (Rounded Up): ${memberMonthly}`, left, y);
-      y += 14;
-
-      doc.text(`Activation Fee (Non-Refundable): ${activation}`, left, y);
+doc.text(`Activation Fee (Non-Refundable): ${activation}`, left, y);
+y += 18;
 
 
       doc.setFont("helvetica", "bold");
