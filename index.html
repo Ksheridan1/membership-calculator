@@ -39,7 +39,6 @@
       box-shadow:0 12px 30px rgba(31,41,55,0.12);
       padding:26px;
     }
-
     .topbar{
       display:flex;
       align-items:flex-start;
@@ -78,20 +77,17 @@
       white-space:nowrap;
       height: fit-content;
     }
-
     .section-title{
       margin:18px 0 10px;
       font-size:1.1rem;
       letter-spacing:0.2px;
     }
-
     .grid{
       display:grid;
       gap:14px;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       align-items:end;
     }
-
     .field{
       display:flex;
       flex-direction:column;
@@ -118,7 +114,6 @@
       border-color:var(--accent);
       box-shadow:0 0 0 3px rgba(15,118,110,0.15);
     }
-
     .actions{
       margin-top:16px;
       display:grid;
@@ -168,16 +163,6 @@
     }
     .result-row:last-child{ border-bottom:none; }
     .amount{ font-weight:900; }
-    .emph{
-      font-size:1.05rem;
-    }
-
-    .divider{
-      margin:18px 0;
-      height:1px;
-      background:#e5e7eb;
-      border:0;
-    }
 
     /* Modal */
     .modal{
@@ -231,7 +216,6 @@
       font-weight:900;
       cursor:pointer;
     }
-
     .modal-body{
       padding:16px;
       overflow:auto;
@@ -243,210 +227,6 @@
     @media(max-width:860px){
       .modal-body{ grid-template-columns: 1fr; }
     }
-
-    .contract-box{
-      border:1px solid #e5e7eb;
-      border-radius:12px;
-      padding:14px;
-      background:#fff;
-    }
-    .contract-box h3{
-      margin:0 0 8px;
-      font-size:1.05rem;
-    }
-    .contract-box p{
-      margin:8px 0;
-      color:#111827;
-      line-height:1.45;
-      font-size:0.95rem;
-    }
-    .contract-box ul{
-      margin:8px 0 8px 18px;
-      padding:0;
-      color:#111827;
-      line-height:1.45;
-      font-size:0.95rem;
-    }
-    .summary{
-      border:1px solid #dbeafe;
-      background:#eff6ff;
-      border-radius:12px;
-      padding:14px;
-    }
-    .summary h3{
-      margin:0 0 10px;
-      font-size:1.05rem;
-    }
-    .summary .kv{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      padding:6px 0;
-      border-bottom:1px dashed #bfdbfe;
-    }
-    .summary .kv:last-child{ border-bottom:none; }
-    .summary .kv b{ font-weight:900; }
-
-    .sign-box{
-      border:1px solid #e5e7eb;
-      border-radius:12px;
-      padding:14px;
-      background:#fff;
-    }
-    .sign-box h3{
-      margin:0 0 10px;
-      font-size:1.05rem;
-    }
-    canvas{
-      width:100%;
-      height:180px;
-      border:1px solid #d1d5db;
-      border-radius:10px;
-      background:#fff;
-      touch-action: none;
-    }
-    .sign-actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
-    .sign-actions button{
-      flex:1 1 180px;
-    }
-    .agree{
-      display:flex;
-      align-items:flex-start;
-      gap:10px;
-      margin-top:10px;
-    }
-    .agree input{ margin-top:3px; width:auto; }
-    .agree label{ font-weight:700; }
-    .jump{
-      margin-top:10px;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .jump button{
-      flex:1 1 220px;
-    }
-
-    .actions{
-      margin-top:16px;
-      display:grid;
-      gap:12px;
-      grid-template-columns: 1fr 1fr;
-    }
-    @media(max-width:680px){
-      .actions{ grid-template-columns: 1fr; }
-    }
-    button{
-      border:none;
-      border-radius:10px;
-      padding:12px 14px;
-      font-weight:800;
-      font-size:1rem;
-      cursor:pointer;
-    }
-    .btn-primary{
-      background:var(--accent);
-      color:#fff;
-    }
-    .btn-primary:hover{ background:var(--accent-hover); }
-    .btn-secondary{
-      background:#eef2ff;
-      color:#1e3a8a;
-    }
-    .btn-secondary:hover{ background:#e0e7ff; }
-
-    .results{
-      margin-top:18px;
-      border:1px solid var(--softBorder);
-      background:var(--soft);
-      border-radius:12px;
-      padding:14px;
-      display:none;
-    }
-    .results h2{
-      margin:0 0 10px;
-      font-size:1.05rem;
-    }
-    .result-row{
-      display:flex;
-      justify-content:space-between;
-      gap:16px;
-      padding:8px 0;
-      border-bottom:1px dashed #d7def4;
-    }
-    .result-row:last-child{ border-bottom:none; }
-    .amount{ font-weight:900; }
-    .emph{ font-size:1.05rem; }
-
-    .modal{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,0.55);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding:16px;
-      z-index:999;
-    }
-    .modal-card{
-      width:min(980px, 100%);
-      height:min(92vh, 900px);
-      background:#fff;
-      border-radius:14px;
-      box-shadow:0 20px 60px rgba(0,0,0,0.35);
-      overflow:hidden;
-      display:flex;
-      flex-direction:column;
-    }
-    .modal-header{
-      padding:14px 16px;
-      background:#0b3b37;
-      color:#fff;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-    }
-    .modal-header .title{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-    }
-    .modal-header .title strong{
-      font-size:1.05rem;
-      letter-spacing:0.2px;
-    }
-    .modal-header .title span{
-      font-size:0.9rem;
-      opacity:0.9;
-    }
-    .modal-header .x{
-      background:transparent;
-      border:1px solid rgba(255,255,255,0.45);
-      color:#fff;
-      border-radius:10px;
-      padding:8px 10px;
-      font-weight:900;
-      cursor:pointer;
-    }
-
-    .modal-body{
-      padding:16px;
-      overflow:auto;
-      display:grid;
-      gap:14px;
-      grid-template-columns: 1.2fr 0.8fr;
-      align-items:start;
-    }
-    @media(max-width:860px){
-      .modal-body{ grid-template-columns: 1fr; }
-    }
-
     .contract-box,
     .sign-box{
       border:1px solid #e5e7eb;
@@ -502,7 +282,6 @@
     }
     .sign-actions button{ flex:1 1 180px; }
     .jump button{ flex:1 1 220px; }
-
     .agree{
       display:flex;
       align-items:flex-start;
@@ -513,14 +292,15 @@
     .agree label{ font-weight:700; }
   </style>
 </head>
+
 <body>
   <main class="calculator">
     <div class="topbar">
       <div class="brand">
         <h1>HydroBlast Membership Calculator</h1>
         <p class="subtext">
-          Enter raw retail inputs. System calculates retail monthly, non-member premium monthly, membership monthly (discounted),
-          activation due today, year-1 total, and savings. Then generate a signed 12-month agreement PDF.
+          Enter raw retail inputs. System calculates annual retail, financed value (+15%), membership monthly (rounded up),
+          activation due today, and total collected year 1. Then generate a signed 12-month agreement PDF.
         </p>
       </div>
       <div class="badge">12-Month Agreement • Signature + PDF</div>
@@ -542,50 +322,50 @@
     <div class="grid">
       <div class="field">
         <label for="activationFee">Activation Fee (non-refundable)</label>
-        <select id="activationFee">
+        <select id="activationFee" class="calc-input">
           <option value="100">Low – $100</option>
           <option value="199" selected>Mid – $199</option>
           <option value="299">High – $299</option>
         </select>
         <small>Due at signing. Intended to be less than first service value.</small>
       </div>
-
+    </div><!-- ✅ FIX: close Membership Controls grid -->
 
     <h2 class="section-title">Service Pricing Inputs</h2>
     <div class="grid">
       <div class="field">
         <label for="softWash">Soft wash price ($)</label>
-        <input id="softWash" type="number" min="0" step="0.01" placeholder="0.00" />
+        <input id="softWash" class="calc-input" type="number" min="0" step="0.01" placeholder="0.00" />
       </div>
 
       <div class="field">
         <label for="gutterFeet">Gutter linear feet</label>
-        <input id="gutterFeet" type="number" min="0" step="1" placeholder="0" />
+        <input id="gutterFeet" class="calc-input" type="number" min="0" step="1" placeholder="0" />
       </div>
 
       <div class="field">
         <label for="gutterRate">Price per gutter foot ($)</label>
-        <input id="gutterRate" type="number" min="0" step="0.01" placeholder="0.00" />
+        <input id="gutterRate" class="calc-input" type="number" min="0" step="0.01" placeholder="0.00" />
       </div>
 
       <div class="field">
         <label for="windowCount">Window count</label>
-        <input id="windowCount" type="number" min="0" step="1" placeholder="0" />
+        <input id="windowCount" class="calc-input" type="number" min="0" step="1" placeholder="0" />
       </div>
 
       <div class="field">
         <label for="windowRate">Price per window ($)</label>
-        <input id="windowRate" type="number" min="0" step="0.01" placeholder="0.00" />
+        <input id="windowRate" class="calc-input" type="number" min="0" step="0.01" placeholder="0.00" />
       </div>
 
       <div class="field">
         <label for="drivewayPrice">Driveway pressure wash price ($)</label>
-        <input id="drivewayPrice" type="number" min="0" step="0.01" placeholder="0.00" />
+        <input id="drivewayPrice" class="calc-input" type="number" min="0" step="0.01" placeholder="0.00" />
       </div>
 
       <div class="field">
         <label for="waterMonthly">Water feature monthly price ($)</label>
-        <input id="waterMonthly" type="number" min="0" step="0.01" placeholder="0.00" />
+        <input id="waterMonthly" class="calc-input" type="number" min="0" step="0.01" placeholder="0.00" />
         <small>Annualized automatically (× 12).</small>
       </div>
     </div>
@@ -603,11 +383,17 @@
         <span class="amount" id="annualRetail">$0.00</span>
       </div>
 
-     <div class="result-row">
-       <span>Monthly Membership (Rounded Up)</span>
-       <span class="amount" id="memberMonthly">$0.00</span>
-     </div>
-      
+      <!-- ✅ FIX: this ID exists now, and matches billing (monthly × 12) -->
+      <div class="result-row">
+        <span>Annual membership billed (Monthly × 12)</span>
+        <span class="amount" id="annualMembership">$0.00</span>
+      </div>
+
+      <div class="result-row">
+        <span>Monthly Membership (Rounded Up)</span>
+        <span class="amount" id="memberMonthly">$0.00</span>
+      </div>
+
       <div class="result-row">
         <span>Activation fee due today</span>
         <span class="amount" id="activationDisplay">$0.00</span>
@@ -668,7 +454,7 @@
             <div class="kv"><span>Activation Due Today</span><b id="sumActivation">—</b></div>
             <div class="kv"><span>Membership Monthly</span><b id="sumMonthly">—</b></div>
             <div class="kv"><span>Retail Monthly</span><b id="sumRetailMonthly">—</b></div>
-            <div class="kv"><span>Non-Member Monthly</span><b id="sumNonMemberMonthly">—</b></div>
+            <div class="kv"><span>Non-Member Monthly (Retail + 15%)</span><b id="sumNonMemberMonthly">—</b></div>
           </div>
 
           <div class="sign-box" id="signBox" style="margin-top:14px;">
@@ -705,135 +491,150 @@
   <script>
     const { jsPDF } = window.jspdf;
 
-    const getNum = (id) => Number.parseFloat(document.getElementById(id).value) || 0;
-    const asMoney = (val) => new Intl.NumberFormat("en-US", { style:"currency", currency:"USD" }).format(val);
+    const getNum = (id) => Number.parseFloat(document.getElementById(id)?.value) || 0;
+    const asMoney = (val) =>
+      new Intl.NumberFormat("en-US", { style:"currency", currency:"USD" }).format(Number(val) || 0);
 
-    // State cache (so PDF uses what was calculated)
-   const state = {
-  annualRetail: 0,
-  annualMembership: 0,
-  memberMonthly: 0,
-  activation: 0
-};
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
 
+    // ---------------------------
+    // Local storage (saveInputs/loadInputs)
+    // ---------------------------
+    const STORAGE_KEY = "hydroblast_membership_calc_v1";
+    const INPUT_IDS = [
+      "clientName", "clientAddress",
+      "activationFee",
+      "softWash", "gutterFeet", "gutterRate",
+      "windowCount", "windowRate",
+      "drivewayPrice",
+      "waterMonthly"
+    ];
+
+    function saveInputs() {
+      try {
+        const data = {};
+        INPUT_IDS.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) data[id] = el.value;
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      } catch (_) {}
+    }
+
+    function loadInputs() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        INPUT_IDS.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el && data[id] !== undefined) el.value = data[id];
+        });
+      } catch (_) {}
+    }
+
+    // ---------------------------
+    // State cache (for modal + PDF)
+    // ---------------------------
+    const state = {
+      annualRetail: 0,
+      annualFinanced: 0,   // retail * 1.15
+      memberMonthly: 0,    // rounded up whole dollars
+      annualMembership: 0, // memberMonthly * 12 (billing-aligned)
+      activation: 0,
+      yearOneTotal: 0
+    };
 
     // Signature pad
     let signaturePad = null;
 
+    // Preserve signature on resize/rotation (iPad-safe)
     function resizeSigCanvas() {
       const canvas = document.getElementById("signaturePad");
+      if (!canvas) return;
+
       const ratio = Math.max(window.devicePixelRatio || 1, 1);
-      // Set explicit pixel size based on element size
+
+      const data = (signaturePad && !signaturePad.isEmpty())
+        ? signaturePad.toData()
+        : null;
+
       const rect = canvas.getBoundingClientRect();
       canvas.width = rect.width * ratio;
       canvas.height = rect.height * ratio;
+
       const ctx = canvas.getContext("2d");
       ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-      if (signaturePad) signaturePad.clear();
+
+      if (signaturePad) {
+        signaturePad.clear();
+        if (data) signaturePad.fromData(data);
+      }
     }
 
-function calculate() {
-  /* -------------------------------
-     STEP 1 — BASE SERVICE CALCULATIONS
-  -------------------------------- */
+    function calculate() {
+      // STEP 1 — BASE SERVICE CALCULATIONS
+      const softWashPrice = getNum("softWash");
+      const gutterFeet = getNum("gutterFeet");
+      const gutterRate = getNum("gutterRate");
+      const windowCount = getNum("windowCount");
+      const windowRate = getNum("windowRate");
+      const drivewayPrice = getNum("drivewayPrice");
 
-  const softWashPrice = getNum("softWash");
-  const gutterFeet = getNum("gutterFeet");
-  const gutterRate = getNum("gutterRate");
-  const windowCount = getNum("windowCount");
-  const windowRate = getNum("windowRate");
-  const drivewayPrice = getNum("drivewayPrice");
+      // STEP 2 — ADD-ONS
+      const waterMonthly = getNum("waterMonthly");
 
-  // Annual base services
-  const annualSoftWash = softWashPrice;
-  const annualGutters = gutterFeet * gutterRate;
-  const annualExteriorWindows = windowCount * windowRate;
-  const annualDriveway = drivewayPrice;
+      // STEP 3 — ANNUAL RETAIL TOTAL
+      const annualRetailTotal =
+        softWashPrice +
+        (gutterFeet * gutterRate) +
+        (windowCount * windowRate) +
+        drivewayPrice +
+        (waterMonthly * 12);
 
-  /* -------------------------------
-     STEP 2 — ADD-ONS
-  -------------------------------- */
+      // STEP 4 — APPLY FINANCING PREMIUM
+      const FINANCING_RATE = 0.15;
+      const annualFinanced = annualRetailTotal * (1 + FINANCING_RATE);
 
-  const waterMonthly = getNum("waterMonthly");
+      // STEP 5 — MONTHLY (ROUND UP TO WHOLE DOLLARS)
+      const memberMonthly = Math.ceil(annualFinanced / 12);
 
-  const annualWaterFeature = waterMonthly * 12;
-  const annualGutterGuard = 0;
-  const annualInteriorWindows = 0;
-  const annualInspection = 0;
+      // ✅ Billing-aligned annual membership (matches Square subscription total)
+      const annualMembershipBilled = memberMonthly * 12;
 
-  /* -------------------------------
-     STEP 3 — ANNUAL RETAIL TOTAL
-  -------------------------------- */
+      // STEP 6 — YEAR ONE TOTAL (activation + membership × 12)
+      const activation = getNum("activationFee");
+      const yearOneTotal = activation + annualMembershipBilled;
 
-  const annualRetailTotal =
-    annualSoftWash +
-    annualGutters +
-    annualExteriorWindows +
-    annualDriveway +
-    annualWaterFeature +
-    annualGutterGuard +
-    annualInteriorWindows +
-    annualInspection;
+      // Populate UI
+      setText("annualRetail", asMoney(annualRetailTotal));
+      setText("annualMembership", asMoney(annualMembershipBilled));
+      setText("memberMonthly", asMoney(memberMonthly));
+      setText("activationDisplay", asMoney(activation));
+      setText("yearOneTotal", asMoney(yearOneTotal));
 
-/* -------------------------------
-   STEP 4 — APPLY FINANCING PREMIUM
--------------------------------- */
+      // Save to state for modal + PDF
+      state.annualRetail = annualRetailTotal;
+      state.annualFinanced = annualFinanced;
+      state.memberMonthly = memberMonthly;
+      state.annualMembership = annualMembershipBilled;
+      state.activation = activation;
+      state.yearOneTotal = yearOneTotal;
 
-const FINANCING_RATE = 0.15;
+      // Show results / enable contract only when there's pricing
+      const hasPricing = annualRetailTotal > 0 && memberMonthly > 0;
+      document.getElementById("results").style.display = hasPricing ? "block" : "none";
+      document.getElementById("openContractBtn").disabled = !hasPricing;
 
-const finalAnnualMembershipPrice =
-  annualRetailTotal * (1 + FINANCING_RATE);
+      saveInputs();
+    }
 
-/* -------------------------------
-   STEP 5 — MONTHLY (ROUND UP)
--------------------------------- */
-
-const monthlySubscriptionPrice =
-  Math.ceil(finalAnnualMembershipPrice / 12);
-
-/* -------------------------------
-   STEP 6 — YEAR ONE TOTAL
--------------------------------- */
-
-const activation = getNum("activationFee");
-const yearOneTotal = activation + finalAnnualMembershipPrice;
-
-
-// Populate UI
-
-document.getElementById("annualRetail").textContent =
-  asMoney(annualRetailTotal);
-
-document.getElementById("annualMembership").textContent =
-  asMoney(finalAnnualMembershipPrice);
-
-document.getElementById("memberMonthly").textContent =
-  asMoney(monthlySubscriptionPrice);
-
-document.getElementById("activationDisplay").textContent =
-  asMoney(activation);
-
-document.getElementById("yearOneTotal").textContent =
-  asMoney(yearOneTotal);
-
-document.getElementById("results").style.display = "block";
-document.getElementById("openContractBtn").disabled = false;
-
-// Save to state for PDF
-
-state.annualRetail = annualRetailTotal;
-state.annualMembership = finalAnnualMembershipPrice;
-state.memberMonthly = monthlySubscriptionPrice;
-state.activation = activation;
-
-
-saveInputs();
-}
-
-
-   function openContract() {
-      // Must have results first
-      if (!document.getElementById("results").style.display || document.getElementById("results").style.display === "none") {
+    function openContract() {
+      // ✅ Robust guard: rely on computed state (not inline style.display)
+      if (!state.memberMonthly || !state.annualMembership) {
         alert("Please calculate pricing first.");
         return;
       }
@@ -841,21 +642,24 @@ saveInputs();
       const name = (document.getElementById("clientName").value || "").trim();
       const address = (document.getElementById("clientAddress").value || "").trim();
 
-      // Minimal guardrails
       if (!name || !address) {
         alert("Please enter client name and service address first.");
         return;
       }
 
-      // Populate summary
       const now = new Date();
       const effectiveDate = now.toLocaleDateString();
-      document.getElementById("sumClient").textContent = name;
-      document.getElementById("sumAddress").textContent = address;
-      document.getElementById("sumDate").textContent = effectiveDate;
-      document.getElementById("sumActivation").textContent = asMoney(state.activation);
-      document.getElementById("sumMonthly").textContent = asMoney(state.memberMonthly);
 
+      // Populate summary
+      setText("sumClient", name);
+      setText("sumAddress", address);
+      setText("sumDate", effectiveDate);
+      setText("sumActivation", asMoney(state.activation));
+      setText("sumMonthly", asMoney(state.memberMonthly));
+
+      // Fill monthly comparisons
+      setText("sumRetailMonthly", asMoney(state.annualRetail / 12));
+      setText("sumNonMemberMonthly", asMoney(state.annualFinanced / 12));
 
       // Open modal
       document.getElementById("contractModal").style.display = "flex";
@@ -863,10 +667,15 @@ saveInputs();
       // Init signature pad
       const canvas = document.getElementById("signaturePad");
       signaturePad = new SignaturePad(canvas);
-      resizeSigCanvas();
 
-      // Reset agreement checkbox
+      // Wait for layout, then size canvas correctly (iPad-safe)
+      requestAnimationFrame(() => {
+        resizeSigCanvas();
+      });
+
       document.getElementById("agreeBox").checked = false;
+
+      saveInputs();
     }
 
     function closeContract() {
@@ -875,6 +684,12 @@ saveInputs();
 
     function clearSignature() {
       if (signaturePad) signaturePad.clear();
+    }
+
+    function addPdfHeader(doc, left) {
+      doc.setFont("helvetica", "bold");
+      doc.text("HydroBlast Membership Agreement", left, 40);
+      doc.setFont("helvetica", "normal");
     }
 
     function generateSignedPDF() {
@@ -890,10 +705,6 @@ saveInputs();
 
       const name = (document.getElementById("clientName").value || "").trim();
       const address = (document.getElementById("clientAddress").value || "").trim();
-      const activation = asMoney(state.activation);
-      const memberMonthly = asMoney(state.memberMonthly);
-      const annualRetail = asMoney(state.annualRetail);
-      const annualMembership = asMoney(state.annualMembership);
 
       const signedAt = new Date();
       const signedDate = signedAt.toLocaleDateString();
@@ -903,24 +714,22 @@ saveInputs();
       const left = 54;
       let y = 58;
 
-doc.setFont("Helvetica", "bold");
-doc.text("Pricing Summary", left, y);
-y += 14;
+      addPdfHeader(doc, left);
 
-doc.setFont("Helvetica", "normal");
+      doc.setFont("helvetica", "bold");
+      doc.text("Pricing Summary", left, y);
+      y += 14;
 
-doc.text(`Annual Retail Value: ${annualRetail}`, left, y);
-y += 14;
+      doc.setFont("helvetica", "normal");
+      doc.text(`Client: ${name}`, left, y); y += 14;
+      doc.text(`Service Address: ${address}`, left, y); y += 18;
 
-doc.text(`Annual Membership (15% Financing Included): ${annualMembership}`, left, y);
-y += 14;
-
-doc.text(`Monthly Membership (Rounded Up): ${memberMonthly}`, left, y);
-y += 14;
-
-doc.text(`Activation Fee (Non-Refundable): ${activation}`, left, y);
-y += 18;
-
+      doc.text(`Annual Retail Value: ${asMoney(state.annualRetail)}`, left, y); y += 14;
+      doc.text(`Annual Value (Retail + 15% financing): ${asMoney(state.annualFinanced)}`, left, y); y += 14;
+      doc.text(`Monthly Membership (Rounded Up): ${asMoney(state.memberMonthly)}`, left, y); y += 14;
+      doc.text(`Annual Membership Billed (Monthly × 12): ${asMoney(state.annualMembership)}`, left, y); y += 14;
+      doc.text(`Activation Fee (Non-Refundable): ${asMoney(state.activation)}`, left, y); y += 14;
+      doc.text(`Total Year 1 Collected: ${asMoney(state.yearOneTotal)}`, left, y); y += 18;
 
       doc.setFont("helvetica", "bold");
       doc.text("Terms", left, y); y += 14;
@@ -937,22 +746,30 @@ y += 18;
         "8. Entire Agreement: This document represents the entire Agreement between the parties."
       ];
 
-      // Word wrap terms
       const maxWidth = 500;
       terms.forEach((t) => {
         const lines = doc.splitTextToSize(t, maxWidth);
         lines.forEach((ln) => {
-          if (y > 640) { doc.addPage(); y = 58; }
+          if (y > 640) {
+            doc.addPage();
+            addPdfHeader(doc, left);
+            y = 58;
+          }
           doc.text(ln, left, y);
           y += 12;
         });
         y += 6;
       });
 
-      if (y > 610) { doc.addPage(); y = 58; }
+      if (y > 610) {
+        doc.addPage();
+        addPdfHeader(doc, left);
+        y = 58;
+      }
 
       doc.setFont("helvetica", "bold");
       doc.text("Electronic Signatures", left, y); y += 14;
+
       doc.setFont("helvetica", "normal");
       doc.text(`Signed Electronically by Client on: ${signedDate} at ${signedTime}`, left, y); y += 14;
 
@@ -967,7 +784,13 @@ y += 18;
       doc.text(`Client Printed Name: ${name}`, left, y); y += 16;
       doc.text("Company Representative: ______________________________", left, y); y += 16;
 
-      doc.save(`${name.replaceAll(" ", "_")}_HydroBlast_Membership_Agreement.pdf`);
+      // ✅ Safer filename than replaceAll (works better across iOS/Safari)
+      const safeName = (name || "Client")
+        .trim()
+        .replace(/\s+/g, "_")
+        .replace(/[^a-zA-Z0-9_\-]/g, "");
+
+      doc.save(`${safeName}_HydroBlast_Membership_Agreement.pdf`);
 
       alert("Signed PDF generated. Next: open Square to charge activation and set up monthly subscription.");
     }
@@ -980,10 +803,18 @@ y += 18;
       document.getElementById("contractTop").scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
-    // Auto calculate on input changes
-    document.querySelectorAll("input, select").forEach(el => {
-    el.addEventListener("input", calculate);
-    el.addEventListener("change", calculate);
+    // ✅ Only auto-recalculate on pricing-related fields
+    document.querySelectorAll(".calc-input").forEach(el => {
+      el.addEventListener("input", calculate);
+      el.addEventListener("change", calculate);
+    });
+
+    // Save client info without forcing recalculation
+    ["clientName", "clientAddress"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener("input", saveInputs);
+      el.addEventListener("change", saveInputs);
     });
 
     // Wire up buttons
@@ -995,22 +826,22 @@ y += 18;
     document.getElementById("skipToSignBtn").addEventListener("click", skipToSignature);
     document.getElementById("backToTopBtn").addEventListener("click", backToTop);
 
-    // Resize signature canvas on window resize (keeps iPad happy)
-window.addEventListener("resize", () => {
-  if (document.getElementById("contractModal").style.display === "flex") {
-    resizeSigCanvas();
-  }
-});
+    // Resize signature canvas on window resize (keeps iPad happy) — preserves signature
+    window.addEventListener("resize", () => {
+      if (document.getElementById("contractModal").style.display === "flex") {
+        resizeSigCanvas();
+      }
+    });
 
-// Close modal if clicking outside the card
-document.getElementById("contractModal").addEventListener("click", (e) => {
-  if (e.target.id === "contractModal") closeContract();
-});
+    // Close modal if clicking outside the card
+    document.getElementById("contractModal").addEventListener("click", (e) => {
+      if (e.target.id === "contractModal") closeContract();
+    });
 
-// INITIAL LOAD
-loadInputs();
-calculate();
-</script>
+    // INITIAL LOAD
+    loadInputs();
+    calculate();
+  </script>
 </body>
 </html>
 
