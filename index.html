@@ -1,5 +1,35 @@
 <script>
+/* ==========================================================
+   HYDROBLAST MEMBERSHIP ENGINE – PRODUCTION BUILD
+   ========================================================== */
+
 const { jsPDF } = window.jspdf;
+
+/* ===========================
+   GLOBAL CONSTANTS
+=========================== */
+
+const FINANCING_PREMIUM = 0.15; // 15%
+const WATER_MONTHS_ACTIVE = 9;
+const MONTHS_IN_YEAR = 12;
+
+/* ===========================
+   STATE MANAGEMENT
+=========================== */
+
+const state = {
+  rawInputs: {},
+  frequencies: {},
+  annualRetail: 0,
+  annualMembership: 0,
+  monthly: 0,
+  activation: 0,
+  membershipType: "basic"
+};
+
+/* ===========================
+   HELPERS
+=========================== */
 
 const getNum = (id) =>
   Number.parseFloat(document.getElementById(id)?.value) || 0;
@@ -10,197 +40,290 @@ const asMoney = (val) =>
     currency: "USD",
   }).format(val);
 
-const state = {
-  rawInputs: {},
-  frequencies: {},
-  annualRetail: 0,
-  annualMembership: 0,
-  monthly: 0,
-  activation: 0,
-  membershipType: "custom"
-};
+function saveState() {
+  localStorage.setItem("hb_membership_state", JSON.stringify(state));
+}
 
-let signaturePad = null;
+function loadState() {
+  const saved = localStorage.getItem("hb_membership_state");
+  if (!saved) return;
+  const parsed = JSON.parse(saved);
 
-/* ==============================
-   CALCULATION ENGINE
-================================ */
+  Object.assign(state, parsed);
+
+  // Restore inputs
+  Object.entries(parsed.rawInputs || {}).forEach(([k, v]) => {
+    const el = document.getElementById(k);
+    if (el) el.value = v;
+  });
+
+  Object.entries(parsed.frequencies || {}).forEach(([k, v]) => {
+    const el = document.getElementById(k);
+    if (el) el.value = v;
+  });
+
+  document.getElementById("activationFee").value = parsed.activation || 199;
+  document.getElementById("membershipType").value =
+    parsed.membershipType || "basic";
+
+  calculate();
+}
+
+/* ===========================
+   MEMBERSHIP PRESETS
+=========================== */
+
+function applyPreset(type) {
+  const presets = {
+    basic: {
+      windowFrequency: 2,
+      gutterFrequency: 1,
+      softWashFrequency: 0,
+      drivewayFrequency: 0,
+      poolFrequency: 0,
+      waterEnabled: false,
+    },
+    homeShield: {
+      windowFrequency: 2,
+      gutterFrequency: 1,
+      softWashFrequency: 1,
+      drivewayFrequency: 0,
+      poolFrequency: 0,
+      waterEnabled: false,
+    },
+    elite: {
+      windowFrequency: 2,
+      gutterFrequency: 1,
+      softWashFrequency: 1,
+      drivewayFrequency: 1,
+      poolFrequency: 1,
+      waterEnabled: true,
+    },
+    custom: {
+      windowFrequency: 0,
+      gutterFrequency: 0,
+      softWashFrequency: 0,
+      drivewayFrequency: 0,
+      poolFrequency: 0,
+      waterEnabled: false,
+    },
+  };
+
+  const p = presets[type] || presets.custom;
+
+  Object.entries(p).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el) {
+      if (el.type === "checkbox") {
+        el.checked = val;
+      } else {
+        el.value = val;
+      }
+    }
+  });
+
+  state.membershipType = type;
+  calculate();
+}
+
+/* ===========================
+   CORE CALCULATION ENGINE
+=========================== */
+
 function calculate() {
+  /* -------------------------
+     RAW INPUT CAPTURE
+  -------------------------- */
 
-  /* RAW INPUTS */
-  const raw = {
-    softWash: getNum("softWash"),
-    gutterFeet: getNum("gutterFeet"),
-    gutterRate: getNum("gutterRate"),
+  const rawInputs = {
     windowCount: getNum("windowCount"),
     windowRate: getNum("windowRate"),
+    gutterFeet: getNum("gutterFeet"),
+    gutterRate: getNum("gutterRate"),
+    softWash: getNum("softWash"),
     drivewayPrice: getNum("drivewayPrice"),
+    poolPrice: getNum("poolPrice"),
     waterMonthly: getNum("waterMonthly"),
-    activation: getNum("activationFee")
+    hourlyRate: getNum("hourlyRate"),
+    openCloseHours: getNum("openCloseHours"),
   };
 
-  /* DEFAULT FREQUENCIES (can expand later) */
-  const freq = {
-    windows: 1,
-    gutters: 1,
-    softWash: 1,
-    driveway: 1,
-    water: raw.waterMonthly > 0 ? 1 : 0
+  const frequencies = {
+    windowFrequency: getNum("windowFrequency"),
+    gutterFrequency: getNum("gutterFrequency"),
+    softWashFrequency: getNum("softWashFrequency"),
+    drivewayFrequency: getNum("drivewayFrequency"),
+    poolFrequency: getNum("poolFrequency"),
   };
 
-  /* ANNUAL SERVICE CALCS */
+  const waterEnabled =
+    document.getElementById("waterEnabled")?.checked || false;
+
+  /* -------------------------
+     SERVICE CALCULATIONS
+  -------------------------- */
+
   const annualWindows =
-    raw.windowCount * raw.windowRate * freq.windows;
+    rawInputs.windowCount *
+    rawInputs.windowRate *
+    frequencies.windowFrequency;
 
   const annualGutters =
-    raw.gutterFeet * raw.gutterRate * freq.gutters;
+    rawInputs.gutterFeet *
+    rawInputs.gutterRate *
+    frequencies.gutterFrequency;
 
   const annualSoftWash =
-    raw.softWash * freq.softWash;
+    rawInputs.softWash * frequencies.softWashFrequency;
 
   const annualDriveway =
-    raw.drivewayPrice * freq.driveway;
+    rawInputs.drivewayPrice * frequencies.drivewayFrequency;
+
+  const annualPool =
+    rawInputs.poolPrice * frequencies.poolFrequency;
+
+  const annualWaterMaintenance =
+    rawInputs.waterMonthly * WATER_MONTHS_ACTIVE;
+
+  const annualOpenClose =
+    rawInputs.hourlyRate *
+    rawInputs.openCloseHours *
+    2;
 
   const annualWater =
-    raw.waterMonthly > 0
-      ? raw.waterMonthly * 9
+    waterEnabled
+      ? annualWaterMaintenance + annualOpenClose
       : 0;
 
-  /* ANNUAL RETAIL */
+  /* -------------------------
+     STEP 2 — ANNUAL RETAIL
+  -------------------------- */
+
   const annualRetail =
     annualWindows +
     annualGutters +
     annualSoftWash +
     annualDriveway +
+    annualPool +
     annualWater;
 
-  /* FINANCING MODEL */
+  /* -------------------------
+     STEP 3 — FINANCING PREMIUM
+  -------------------------- */
+
   const annualMembership =
-    annualRetail * 1.15;
+    annualRetail * (1 + FINANCING_PREMIUM);
+
+  /* -------------------------
+     STEP 4 — MONTHLY
+  -------------------------- */
 
   const monthly =
-    Math.ceil(annualMembership / 12);
+    Math.ceil(annualMembership / MONTHS_IN_YEAR);
 
-  const yearOneTotal =
-    raw.activation + annualMembership;
+  /* -------------------------
+     STEP 5 — YEAR 1
+  -------------------------- */
 
-  /* UPDATE UI */
+  const activation = getNum("activationFee");
+  const yearOneTotal = activation + annualMembership;
+
+  /* -------------------------
+     UPDATE STATE
+  -------------------------- */
+
+  state.rawInputs = rawInputs;
+  state.frequencies = frequencies;
+  state.annualRetail = annualRetail;
+  state.annualMembership = annualMembership;
+  state.monthly = monthly;
+  state.activation = activation;
+
+  saveState();
+
+  /* -------------------------
+     UI OUTPUT
+  -------------------------- */
+
   document.getElementById("annualRetail").textContent =
     asMoney(annualRetail);
 
-  document.getElementById("retailMonthly").textContent =
-    asMoney(annualRetail / 12);
-
-  document.getElementById("nonMemberMonthly").textContent =
-    asMoney(annualRetail / 12);
+  document.getElementById("annualMembership").textContent =
+    asMoney(annualMembership);
 
   document.getElementById("memberMonthly").textContent =
     asMoney(monthly);
 
   document.getElementById("activationDisplay").textContent =
-    asMoney(raw.activation);
+    asMoney(activation);
 
   document.getElementById("yearOneTotal").textContent =
     asMoney(yearOneTotal);
 
-  document.getElementById("annualSavings").textContent =
-    "Financing & Convenience Premium Included";
-
   document.getElementById("results").style.display = "block";
   document.getElementById("openContractBtn").disabled = false;
-
-  /* SAVE STATE */
-  state.rawInputs = raw;
-  state.frequencies = freq;
-  state.annualRetail = annualRetail;
-  state.annualMembership = annualMembership;
-  state.monthly = monthly;
-  state.activation = raw.activation;
-
-  localStorage.setItem("hydroblast_state", JSON.stringify(state));
 }
 
-/* ==============================
-   LOAD SAVED SESSION
-================================ */
-window.addEventListener("load", () => {
-  const saved = localStorage.getItem("hydroblast_state");
-  if (!saved) return;
-
-  const parsed = JSON.parse(saved);
-
-  if (parsed.rawInputs) {
-    Object.keys(parsed.rawInputs).forEach(key => {
-      const el = document.getElementById(key);
-      if (el) el.value = parsed.rawInputs[key];
-    });
-  }
-
-  calculate();
-});
-
-/* ==============================
+/* ===========================
    CONTRACT
-================================ */
+=========================== */
+
 function openContract() {
-  if (!state.monthly) {
-    alert("Please calculate pricing first.");
-    return;
-  }
+  alert(
+    "Membership not valid until activation fee is processed through Square."
+  );
 
-  alert("Membership not valid until activation fee is processed through Square.");
-
-  const name = document.getElementById("clientName").value.trim();
-  const address = document.getElementById("clientAddress").value.trim();
+  const name =
+    document.getElementById("clientName").value.trim();
+  const address =
+    document.getElementById("clientAddress").value.trim();
 
   if (!name || !address) {
-    alert("Please enter client name and address.");
+    alert("Client name and address required.");
     return;
   }
 
   document.getElementById("sumClient").textContent = name;
   document.getElementById("sumAddress").textContent = address;
-  document.getElementById("sumDate").textContent = new Date().toLocaleDateString();
-  document.getElementById("sumActivation").textContent = asMoney(state.activation);
-  document.getElementById("sumMonthly").textContent = asMoney(state.monthly);
-  document.getElementById("sumRetailMonthly").textContent =
-    asMoney(state.annualRetail / 12);
-  document.getElementById("sumNonMemberMonthly").textContent =
-    asMoney(state.annualRetail / 12);
+  document.getElementById("sumDate").textContent =
+    new Date().toLocaleDateString();
+  document.getElementById("sumActivation").textContent =
+    asMoney(state.activation);
+  document.getElementById("sumMonthly").textContent =
+    asMoney(state.monthly);
 
-  document.getElementById("contractModal").style.display = "flex";
-
-  signaturePad = new SignaturePad(document.getElementById("signaturePad"));
-  resizeSigCanvas();
-  document.getElementById("agreeBox").checked = false;
+  document.getElementById("contractModal").style.display =
+    "flex";
 }
 
-function closeContract() {
-  document.getElementById("contractModal").style.display = "none";
-}
+/* ===========================
+   EVENT WIRING
+=========================== */
 
-function clearSignature() {
-  if (signaturePad) signaturePad.clear();
-}
+document
+  .querySelectorAll("input, select")
+  .forEach((el) => {
+    el.addEventListener("change", calculate);
+    el.addEventListener("input", calculate);
+  });
 
-/* ==============================
-   BUTTONS
-================================ */
-document.getElementById("calculateBtn")
-  .addEventListener("click", calculate);
+document
+  .getElementById("membershipType")
+  .addEventListener("change", (e) =>
+    applyPreset(e.target.value)
+  );
 
-document.getElementById("openContractBtn")
+document
+  .getElementById("openContractBtn")
   .addEventListener("click", openContract);
 
-document.getElementById("closeModalBtn")
-  .addEventListener("click", closeContract);
+document
+  .getElementById("calculateBtn")
+  .addEventListener("click", calculate);
 
-document.getElementById("clearSigBtn")
-  .addEventListener("click", clearSignature);
+/* ===========================
+   INITIALIZE
+=========================== */
 
-window.addEventListener("resize", () => {
-  if (document.getElementById("contractModal").style.display === "flex") {
-    resizeSigCanvas();
-  }
-});
+loadState();
 </script>
