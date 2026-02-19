@@ -329,36 +329,22 @@
         </select>
         <small>Due at signing. Intended to be less than first service value.</small>
       </div>
-    </div><!-- ✅ close Membership Controls grid -->
+    </div>
 
-    <!-- ✅ NEW: Membership Type dropdown (controlled extension layer) -->
+    <!-- ✅ Membership Tier dropdown (ONE ONLY, above service inputs) -->
     <h2 class="section-title">Membership Type</h2>
     <div class="grid">
       <div class="field">
         <label for="membershipTier">Select Membership Tier</label>
         <select id="membershipTier">
           <option value="">Custom (Manual Build)</option>
-          <option value="basic">Basic</option>
-          <option value="estate">Estate</option>
-          <option value="crown">Crown</option>
+          <option value="basic">Basic Membership</option>
+          <option value="estate">Estate Membership</option>
+          <option value="crown">Crown Membership</option>
         </select>
-        <small>Selecting a tier will auto-fill recommended service values (manual override still allowed).</small>
+        <small>Selecting a tier will auto-fill recommended service values. You can still override manually.</small>
       </div>
     </div>
-
-    <h2 class="section-title">Membership Type</h2>
-<div class="grid">
-  <div class="field">
-    <label for="membershipTier">Select Membership Tier</label>
-    <select id="membershipTier">
-      <option value="">Custom (Manual Build)</option>
-      <option value="basic">Basic Membership</option>
-      <option value="estate">Estate Membership</option>
-      <option value="crown">Crown Membership</option>
-    </select>
-    <small>Selecting a tier will auto-fill recommended service values. You can still override manually.</small>
-  </div>
-</div>
 
     <h2 class="section-title">Service Pricing Inputs</h2>
     <div class="grid">
@@ -534,7 +520,7 @@
     const STORAGE_KEY = "hydroblast_membership_calc_v1";
     const INPUT_IDS = [
       "clientName", "clientAddress",
-      "membershipTier",   // ✅ NEW: persist the tier selection (does not affect math)
+      "membershipTier",
       "activationFee",
       "softWash", "gutterFeet", "gutterRate",
       "windowCount", "windowRate",
@@ -566,62 +552,64 @@
     }
 
     // ---------------------------
-    // State cache (for modal + PDF)
+    // State cache (for modal + PDF) — STRUCTURE UNCHANGED
     // ---------------------------
     const state = {
       annualRetail: 0,
       annualFinanced: 0,   // retail * 1.15
       memberMonthly: 0,    // rounded up whole dollars
-      annualMembership: 0, // memberMonthly * 12 (billing-aligned)
+      annualMembership: 0, // memberMonthly * 12
       activation: 0,
       yearOneTotal: 0
     };
 
     // ---------------------------
-    // ✅ NEW: Membership Tier Presets (controlled extension layer)
-    // Does NOT modify calculate() math; only pre-fills inputs.
+    // Membership Tier Presets (service presets only)
+    // NO math inside this layer.
     // ---------------------------
     const membershipPresets = {
+      // BASIC: soft wash + windows, no gutters/driveway/water
       basic: {
         softWash: 500,
+        windowCount: 20,
+        // If you want 3 cleanings/year baked in, set windowRate = per-cleaning rate × 3
+        windowRate: 15,
         gutterFeet: 0,
         gutterRate: 0,
-        windowCount: 20,
-        windowRate: 5,
         drivewayPrice: 0,
         waterMonthly: 0
       },
+      // ESTATE: soft wash + windows + gutters + driveway + optional water
       estate: {
         softWash: 650,
-        gutterFeet: 200,
-        gutterRate: 1,
         windowCount: 30,
-        windowRate: 6,
+        windowRate: 18,
+        gutterFeet: 200,
+        gutterRate: 1.00,
         drivewayPrice: 300,
         waterMonthly: 25
       },
+      // CROWN: premium volume everywhere
       crown: {
         softWash: 800,
+        windowCount: 40,
+        windowRate: 21,
         gutterFeet: 300,
         gutterRate: 1.25,
-        windowCount: 40,
-        windowRate: 7,
         drivewayPrice: 500,
         waterMonthly: 50
       }
     };
 
     function applyMembershipPreset(tier) {
+      // Custom (empty) = do NOT overwrite fields
       if (!tier || !membershipPresets[tier]) return;
 
       const preset = membershipPresets[tier];
-
       Object.keys(preset).forEach((key) => {
         const el = document.getElementById(key);
         if (el) el.value = preset[key];
       });
-      // No calculate() call here to keep it purely "prefill";
-      // the dropdown change handler calls calculate() once after prefill.
     }
 
     // Signature pad
@@ -651,65 +639,10 @@
       }
     }
 
-    const membershipPresets = {
-  // BASIC MEMBERSHIP:
-  // - 1 Soft Wash / year
-  // - 3 Exterior Window Cleanings / year (annualized into windowRate below)
-  // - No gutters, no driveway, no water feature
-  basic: {
-    softWash: 500,
-    windowCount: 20,
-    windowRate: 15,      // example annualized rate (e.g., $5 per cleaning × 3)
-    gutterFeet: 0,
-    gutterRate: 0,
-    drivewayPrice: 0,
-    waterMonthly: 0
-  },
-
-  // ESTATE MEMBERSHIP:
-  // - 1 Soft Wash / year
-  // - 3 Exterior Window Cleanings / year (annualized)
-  // - Gutters included
-  // - Driveway included
-  // - Optional water feature (default set here; can be overridden)
-  estate: {
-    softWash: 650,
-    windowCount: 30,
-    windowRate: 18,      // example annualized rate (e.g., $6 × 3)
-    gutterFeet: 200,
-    gutterRate: 1.00,
-    drivewayPrice: 300,
-    waterMonthly: 25     // optional default; set to 0 if not included
-  },
-
-  // CROWN MEMBERSHIP:
-  // - Premium volume across all services
-  crown: {
-    softWash: 800,
-    windowCount: 40,
-    windowRate: 21,      // example annualized rate (e.g., $7 × 3)
-    gutterFeet: 300,
-    gutterRate: 1.25,
-    drivewayPrice: 500,
-    waterMonthly: 50
-  }
-};
-
-    function applyMembershipPreset(tier) {
-  // Selecting "Custom" (empty value) must not overwrite fields
-  if (!tier || !membershipPresets[tier]) return;
-
-  const preset = membershipPresets[tier];
-
-  // Fill only known existing input IDs
-  Object.keys(preset).forEach((key) => {
-    const el = document.getElementById(key);
-    if (el) el.value = preset[key];
-  });
-}
-
+    // ---------------------------
+    // calculate() — LOGIC UNCHANGED from your current working engine
+    // ---------------------------
     function calculate() {
-      // STEP 1 — BASE SERVICE CALCULATIONS
       const softWashPrice = getNum("softWash");
       const gutterFeet = getNum("gutterFeet");
       const gutterRate = getNum("gutterRate");
@@ -717,10 +650,8 @@
       const windowRate = getNum("windowRate");
       const drivewayPrice = getNum("drivewayPrice");
 
-      // STEP 2 — ADD-ONS
       const waterMonthly = getNum("waterMonthly");
 
-      // STEP 3 — ANNUAL RETAIL TOTAL
       const annualRetailTotal =
         softWashPrice +
         (gutterFeet * gutterRate) +
@@ -728,28 +659,22 @@
         drivewayPrice +
         (waterMonthly * 12);
 
-      // STEP 4 — APPLY FINANCING PREMIUM
       const FINANCING_RATE = 0.15;
       const annualFinanced = annualRetailTotal * (1 + FINANCING_RATE);
 
-      // STEP 5 — MONTHLY (ROUND UP TO WHOLE DOLLARS)
       const memberMonthly = Math.ceil(annualFinanced / 12);
 
-      // Billing-aligned annual membership (matches Square subscription total)
       const annualMembershipBilled = memberMonthly * 12;
 
-      // STEP 6 — YEAR ONE TOTAL (activation + membership × 12)
       const activation = getNum("activationFee");
       const yearOneTotal = activation + annualMembershipBilled;
 
-      // Populate UI
       setText("annualRetail", asMoney(annualRetailTotal));
       setText("annualMembership", asMoney(annualMembershipBilled));
       setText("memberMonthly", asMoney(memberMonthly));
       setText("activationDisplay", asMoney(activation));
       setText("yearOneTotal", asMoney(yearOneTotal));
 
-      // Save to state for modal + PDF
       state.annualRetail = annualRetailTotal;
       state.annualFinanced = annualFinanced;
       state.memberMonthly = memberMonthly;
@@ -757,7 +682,6 @@
       state.activation = activation;
       state.yearOneTotal = yearOneTotal;
 
-      // Show results / enable contract only when there's pricing
       const hasPricing = annualRetailTotal > 0 && memberMonthly > 0;
       document.getElementById("results").style.display = hasPricing ? "block" : "none";
       document.getElementById("openContractBtn").disabled = !hasPricing;
@@ -766,7 +690,6 @@
     }
 
     function openContract() {
-      // Robust guard: rely on computed state (not inline style.display)
       if (!state.memberMonthly || !state.annualMembership) {
         alert("Please calculate pricing first.");
         return;
@@ -783,29 +706,20 @@
       const now = new Date();
       const effectiveDate = now.toLocaleDateString();
 
-      // Populate summary
       setText("sumClient", name);
       setText("sumAddress", address);
       setText("sumDate", effectiveDate);
       setText("sumActivation", asMoney(state.activation));
       setText("sumMonthly", asMoney(state.memberMonthly));
-
-      // Fill monthly comparisons
       setText("sumRetailMonthly", asMoney(state.annualRetail / 12));
       setText("sumNonMemberMonthly", asMoney(state.annualFinanced / 12));
 
-      // Open modal
       document.getElementById("contractModal").style.display = "flex";
 
-      // Init signature pad
       const canvas = document.getElementById("signaturePad");
       signaturePad = new SignaturePad(canvas);
 
-      // Wait for layout, then size canvas correctly (iPad-safe)
-      requestAnimationFrame(() => {
-        resizeSigCanvas();
-      });
-
+      requestAnimationFrame(() => resizeSigCanvas());
       document.getElementById("agreeBox").checked = false;
 
       saveInputs();
@@ -906,7 +820,6 @@
       doc.setFont("helvetica", "normal");
       doc.text(`Signed Electronically by Client on: ${signedDate} at ${signedTime}`, left, y); y += 14;
 
-      // Signature image
       const sigData = signaturePad.toDataURL("image/png");
       doc.setFont("helvetica", "bold");
       doc.text("Client Signature:", left, y); y += 10;
@@ -917,7 +830,6 @@
       doc.text(`Client Printed Name: ${name}`, left, y); y += 16;
       doc.text("Company Representative: ______________________________", left, y); y += 16;
 
-      // Safer filename than replaceAll (works better across iOS/Safari)
       const safeName = (name || "Client")
         .trim()
         .replace(/\s+/g, "_")
@@ -928,7 +840,6 @@
       alert("Signed PDF generated. Next: open Square to charge activation and set up monthly subscription.");
     }
 
-    // Modal navigation
     function skipToSignature() {
       document.getElementById("signBox").scrollIntoView({ behavior: "smooth", block: "start" });
     }
@@ -936,13 +847,12 @@
       document.getElementById("contractTop").scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
-    // Only auto-recalculate on pricing-related fields
+    // Existing calculate listeners (unchanged)
     document.querySelectorAll(".calc-input").forEach(el => {
       el.addEventListener("input", calculate);
       el.addEventListener("change", calculate);
     });
 
-    // Save client info without forcing recalculation
     ["clientName", "clientAddress"].forEach((id) => {
       const el = document.getElementById(id);
       if (!el) return;
@@ -950,32 +860,17 @@
       el.addEventListener("change", saveInputs);
     });
 
-    // ✅ NEW: Wire membership tier dropdown (prefill -> calculate; does not touch calculate math)
+    // ✅ Tier wiring: prefill -> calculate (no math in preset layer)
     const membershipTierEl = document.getElementById("membershipTier");
-    membershipTierEl.addEventListener("change", function () {
-      applyMembershipPreset(this.value); // fills inputs (if tier selected)
-      calculate();                       // run existing pricing math once
-    });
+    if (membershipTierEl) {
+      membershipTierEl.addEventListener("change", function () {
+        applyMembershipPreset(this.value);
+        calculate();
+        saveInputs();
+      }, true);
+    }
 
-    const membershipTierEl = document.getElementById("membershipTier");
-
-if (membershipTierEl) {
-  membershipTierEl.addEventListener(
-    "change",
-    function (e) {
-      applyMembershipPreset(this.value);
-
-      // Must run AFTER preset is applied
-      calculate();
-
-      // Optional: persist values if you already use saveInputs()
-      if (typeof saveInputs === "function") saveInputs();
-    },
-    true // capture phase ensures preset happens before other change listeners, if any
-  );
-}
-
-    // Wire up buttons
+    // Buttons
     document.getElementById("calculateBtn").addEventListener("click", calculate);
     document.getElementById("openContractBtn").addEventListener("click", openContract);
     document.getElementById("closeModalBtn").addEventListener("click", closeContract);
@@ -984,14 +879,12 @@ if (membershipTierEl) {
     document.getElementById("skipToSignBtn").addEventListener("click", skipToSignature);
     document.getElementById("backToTopBtn").addEventListener("click", backToTop);
 
-    // Resize signature canvas on window resize (keeps iPad happy) — preserves signature
     window.addEventListener("resize", () => {
       if (document.getElementById("contractModal").style.display === "flex") {
         resizeSigCanvas();
       }
     });
 
-    // Close modal if clicking outside the card
     document.getElementById("contractModal").addEventListener("click", (e) => {
       if (e.target.id === "contractModal") closeContract();
     });
@@ -1002,7 +895,6 @@ if (membershipTierEl) {
   </script>
 </body>
 </html>
-
 
 
 
