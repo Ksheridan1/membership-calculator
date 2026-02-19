@@ -329,7 +329,22 @@
         </select>
         <small>Due at signing. Intended to be less than first service value.</small>
       </div>
-    </div><!-- ✅ FIX: close Membership Controls grid -->
+    </div><!-- ✅ close Membership Controls grid -->
+
+    <!-- ✅ NEW: Membership Type dropdown (controlled extension layer) -->
+    <h2 class="section-title">Membership Type</h2>
+    <div class="grid">
+      <div class="field">
+        <label for="membershipTier">Select Membership Tier</label>
+        <select id="membershipTier">
+          <option value="">Custom (Manual Build)</option>
+          <option value="basic">Basic</option>
+          <option value="estate">Estate</option>
+          <option value="crown">Crown</option>
+        </select>
+        <small>Selecting a tier will auto-fill recommended service values (manual override still allowed).</small>
+      </div>
+    </div>
 
     <h2 class="section-title">Service Pricing Inputs</h2>
     <div class="grid">
@@ -383,7 +398,6 @@
         <span class="amount" id="annualRetail">$0.00</span>
       </div>
 
-      <!-- ✅ FIX: this ID exists now, and matches billing (monthly × 12) -->
       <div class="result-row">
         <span>Annual membership billed (Monthly × 12)</span>
         <span class="amount" id="annualMembership">$0.00</span>
@@ -506,6 +520,7 @@
     const STORAGE_KEY = "hydroblast_membership_calc_v1";
     const INPUT_IDS = [
       "clientName", "clientAddress",
+      "membershipTier",   // ✅ NEW: persist the tier selection (does not affect math)
       "activationFee",
       "softWash", "gutterFeet", "gutterRate",
       "windowCount", "windowRate",
@@ -547,6 +562,53 @@
       activation: 0,
       yearOneTotal: 0
     };
+
+    // ---------------------------
+    // ✅ NEW: Membership Tier Presets (controlled extension layer)
+    // Does NOT modify calculate() math; only pre-fills inputs.
+    // ---------------------------
+    const membershipPresets = {
+      basic: {
+        softWash: 500,
+        gutterFeet: 0,
+        gutterRate: 0,
+        windowCount: 20,
+        windowRate: 5,
+        drivewayPrice: 0,
+        waterMonthly: 0
+      },
+      estate: {
+        softWash: 650,
+        gutterFeet: 200,
+        gutterRate: 1,
+        windowCount: 30,
+        windowRate: 6,
+        drivewayPrice: 300,
+        waterMonthly: 25
+      },
+      crown: {
+        softWash: 800,
+        gutterFeet: 300,
+        gutterRate: 1.25,
+        windowCount: 40,
+        windowRate: 7,
+        drivewayPrice: 500,
+        waterMonthly: 50
+      }
+    };
+
+    function applyMembershipPreset(tier) {
+      if (!tier || !membershipPresets[tier]) return;
+
+      const preset = membershipPresets[tier];
+
+      Object.keys(preset).forEach((key) => {
+        const el = document.getElementById(key);
+        if (el) el.value = preset[key];
+      });
+      // No calculate() call here to keep it purely "prefill";
+      // the dropdown change handler calls calculate() once after prefill.
+    }
 
     // Signature pad
     let signaturePad = null;
@@ -602,7 +664,7 @@
       // STEP 5 — MONTHLY (ROUND UP TO WHOLE DOLLARS)
       const memberMonthly = Math.ceil(annualFinanced / 12);
 
-      // ✅ Billing-aligned annual membership (matches Square subscription total)
+      // Billing-aligned annual membership (matches Square subscription total)
       const annualMembershipBilled = memberMonthly * 12;
 
       // STEP 6 — YEAR ONE TOTAL (activation + membership × 12)
@@ -633,7 +695,7 @@
     }
 
     function openContract() {
-      // ✅ Robust guard: rely on computed state (not inline style.display)
+      // Robust guard: rely on computed state (not inline style.display)
       if (!state.memberMonthly || !state.annualMembership) {
         alert("Please calculate pricing first.");
         return;
@@ -784,7 +846,7 @@
       doc.text(`Client Printed Name: ${name}`, left, y); y += 16;
       doc.text("Company Representative: ______________________________", left, y); y += 16;
 
-      // ✅ Safer filename than replaceAll (works better across iOS/Safari)
+      // Safer filename than replaceAll (works better across iOS/Safari)
       const safeName = (name || "Client")
         .trim()
         .replace(/\s+/g, "_")
@@ -803,7 +865,7 @@
       document.getElementById("contractTop").scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
-    // ✅ Only auto-recalculate on pricing-related fields
+    // Only auto-recalculate on pricing-related fields
     document.querySelectorAll(".calc-input").forEach(el => {
       el.addEventListener("input", calculate);
       el.addEventListener("change", calculate);
@@ -815,6 +877,13 @@
       if (!el) return;
       el.addEventListener("input", saveInputs);
       el.addEventListener("change", saveInputs);
+    });
+
+    // ✅ NEW: Wire membership tier dropdown (prefill -> calculate; does not touch calculate math)
+    const membershipTierEl = document.getElementById("membershipTier");
+    membershipTierEl.addEventListener("change", function () {
+      applyMembershipPreset(this.value); // fills inputs (if tier selected)
+      calculate();                       // run existing pricing math once
     });
 
     // Wire up buttons
@@ -844,4 +913,7 @@
   </script>
 </body>
 </html>
+
+
+
 
