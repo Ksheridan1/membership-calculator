@@ -346,6 +346,20 @@
       </div>
     </div>
 
+    <h2 class="section-title">Membership Type</h2>
+<div class="grid">
+  <div class="field">
+    <label for="membershipTier">Select Membership Tier</label>
+    <select id="membershipTier">
+      <option value="">Custom (Manual Build)</option>
+      <option value="basic">Basic Membership</option>
+      <option value="estate">Estate Membership</option>
+      <option value="crown">Crown Membership</option>
+    </select>
+    <small>Selecting a tier will auto-fill recommended service values. You can still override manually.</small>
+  </div>
+</div>
+
     <h2 class="section-title">Service Pricing Inputs</h2>
     <div class="grid">
       <div class="field">
@@ -637,6 +651,63 @@
       }
     }
 
+    const membershipPresets = {
+  // BASIC MEMBERSHIP:
+  // - 1 Soft Wash / year
+  // - 3 Exterior Window Cleanings / year (annualized into windowRate below)
+  // - No gutters, no driveway, no water feature
+  basic: {
+    softWash: 500,
+    windowCount: 20,
+    windowRate: 15,      // example annualized rate (e.g., $5 per cleaning × 3)
+    gutterFeet: 0,
+    gutterRate: 0,
+    drivewayPrice: 0,
+    waterMonthly: 0
+  },
+
+  // ESTATE MEMBERSHIP:
+  // - 1 Soft Wash / year
+  // - 3 Exterior Window Cleanings / year (annualized)
+  // - Gutters included
+  // - Driveway included
+  // - Optional water feature (default set here; can be overridden)
+  estate: {
+    softWash: 650,
+    windowCount: 30,
+    windowRate: 18,      // example annualized rate (e.g., $6 × 3)
+    gutterFeet: 200,
+    gutterRate: 1.00,
+    drivewayPrice: 300,
+    waterMonthly: 25     // optional default; set to 0 if not included
+  },
+
+  // CROWN MEMBERSHIP:
+  // - Premium volume across all services
+  crown: {
+    softWash: 800,
+    windowCount: 40,
+    windowRate: 21,      // example annualized rate (e.g., $7 × 3)
+    gutterFeet: 300,
+    gutterRate: 1.25,
+    drivewayPrice: 500,
+    waterMonthly: 50
+  }
+};
+
+    function applyMembershipPreset(tier) {
+  // Selecting "Custom" (empty value) must not overwrite fields
+  if (!tier || !membershipPresets[tier]) return;
+
+  const preset = membershipPresets[tier];
+
+  // Fill only known existing input IDs
+  Object.keys(preset).forEach((key) => {
+    const el = document.getElementById(key);
+    if (el) el.value = preset[key];
+  });
+}
+
     function calculate() {
       // STEP 1 — BASE SERVICE CALCULATIONS
       const softWashPrice = getNum("softWash");
@@ -885,6 +956,24 @@
       applyMembershipPreset(this.value); // fills inputs (if tier selected)
       calculate();                       // run existing pricing math once
     });
+
+    const membershipTierEl = document.getElementById("membershipTier");
+
+if (membershipTierEl) {
+  membershipTierEl.addEventListener(
+    "change",
+    function (e) {
+      applyMembershipPreset(this.value);
+
+      // Must run AFTER preset is applied
+      calculate();
+
+      // Optional: persist values if you already use saveInputs()
+      if (typeof saveInputs === "function") saveInputs();
+    },
+    true // capture phase ensures preset happens before other change listeners, if any
+  );
+}
 
     // Wire up buttons
     document.getElementById("calculateBtn").addEventListener("click", calculate);
