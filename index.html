@@ -483,6 +483,37 @@
           <input id="windowsSecondCount" class="calc-input" type="number" min="0" step="1" placeholder="0" />
           <small>Retail rate locked: $10 each (min $100 job)</small>
         </div>
+
+        <!-- WINDOWS MODE -->
+        <div class="field">
+          <label>Windows Mode</label>
+          <select id="windowsMode" class="calc-input">
+            <option value="INSIDE_OUT" selected>Inside & Out (Locked Rates)</option>
+            <option value="EXTERIOR_ONLY">Exterior Only</option>
+            <option value="BOTH">Both</option>
+          </select>
+          <small>Exterior-only requires manual rate entry (no locked rule defined yet).</small>
+        </div>
+
+        <div class="field" id="windowsExteriorFirstWrap" style="display:none;">
+          <label>Windows Exterior Only • 1st Level (count)</label>
+          <input id="windowsExteriorFirstCount" class="calc-input" type="number" min="0" step="1" placeholder="0" />
+        </div>
+
+        <div class="field" id="windowsExteriorFirstRateWrap" style="display:none;">
+          <label>Exterior Only • 1st Level Rate ($)</label>
+          <input id="windowsExteriorFirstRate" class="calc-input" type="number" min="0" step="0.01" placeholder="0.00" />
+        </div>
+
+        <div class="field" id="windowsExteriorSecondWrap" style="display:none;">
+          <label>Windows Exterior Only • 2nd Level (count)</label>
+          <input id="windowsExteriorSecondCount" class="calc-input" type="number" min="0" step="1" placeholder="0" />
+        </div>
+
+        <div class="field" id="windowsExteriorSecondRateWrap" style="display:none;">
+          <label>Exterior Only • 2nd Level Rate ($)</label>
+          <input id="windowsExteriorSecondRate" class="calc-input" type="number" min="0" step="0.01" placeholder="0.00" />
+        </div>
       </div>
 
       <h2 class="section-title">Concrete (Driveway) • Hourly Bypass</h2>
@@ -817,6 +848,7 @@
 
     const getNum = (id) => Number.parseFloat(document.getElementById(id)?.value) || 0;
     const getBool = (id) => !!document.getElementById(id)?.checked;
+    const getWholeNum = (id) => Math.max(0, Math.trunc(getNum(id)));
 
     function setText(id, value) {
       const el = document.getElementById(id);
@@ -839,6 +871,9 @@
       "exteriorSqft","roofSqft",
       "gutterFeetFirst",
       "windowsFirstCount","windowsSecondCount",
+      "windowsMode",
+      "windowsExteriorFirstCount","windowsExteriorSecondCount",
+      "windowsExteriorFirstRate","windowsExteriorSecondRate",
 
       "concreteMode","concreteSqft","concreteRate","concreteHours",
 
@@ -936,23 +971,52 @@
     }
 
     function calcWindowsBaseRetail(builder) {
-      const first = builder.windowsFirstCount || 0;
-      const second = builder.windowsSecondCount || 0;
+      const mode = builder.windowsMode || "INSIDE_OUT";
 
-      const raw = (first * RULES.WINDOWS_IO_FIRST_RATE) + (second * RULES.WINDOWS_IO_SECOND_RATE);
-      const enforced = raw < RULES.WINDOWS_MIN_JOB ? RULES.WINDOWS_MIN_JOB : raw;
+      const ioFirst = builder.windowsFirstCount || 0;
+      const ioSecond = builder.windowsSecondCount || 0;
 
-      const notes = [
-        `Windows base: (${first} × $${RULES.WINDOWS_IO_FIRST_RATE}) + (${second} × $${RULES.WINDOWS_IO_SECOND_RATE})`,
-      ];
-      if (enforced !== raw) notes.push(`Windows minimum enforced: $${RULES.WINDOWS_MIN_JOB}`);
+      const extFirst = builder.windowsExteriorFirstCount || 0;
+      const extSecond = builder.windowsExteriorSecondCount || 0;
 
-      // If counts are zero, do not force a job into existence
-      if ((first + second) === 0) return { baseRetail: 0, notes: ["Windows counts are 0."] };
+      const extFirstRate = builder.windowsExteriorFirstRate || 0;
+      const extSecondRate = builder.windowsExteriorSecondRate || 0;
+
+      let raw = 0;
+      const notes = [];
+
+      if (mode === "INSIDE_OUT" || mode === "BOTH") {
+        const ioRaw =
+          (ioFirst * RULES.WINDOWS_IO_FIRST_RATE) +
+          (ioSecond * RULES.WINDOWS_IO_SECOND_RATE);
+
+        raw += ioRaw;
+        notes.push(`I/O: (${ioFirst} × $${RULES.WINDOWS_IO_FIRST_RATE}) + (${ioSecond} × $${RULES.WINDOWS_IO_SECOND_RATE})`);
+      }
+
+      if (mode === "EXTERIOR_ONLY" || mode === "BOTH") {
+        const extRaw =
+          (extFirst * extFirstRate) +
+          (extSecond * extSecondRate);
+
+        raw += extRaw;
+        notes.push(`Exterior: (${extFirst} × $${extFirstRate}) + (${extSecond} × $${extSecondRate})`);
+      }
+
+      const totalCount =
+        ((mode === "INSIDE_OUT" || mode === "BOTH") ? (ioFirst + ioSecond) : 0) +
+        ((mode === "EXTERIOR_ONLY" || mode === "BOTH") ? (extFirst + extSecond) : 0);
+
+      if (totalCount === 0) return { baseRetail: 0, notes: ["Windows counts are 0."] };
+
+      let enforced = raw;
+      if (enforced < RULES.WINDOWS_MIN_JOB) {
+        enforced = RULES.WINDOWS_MIN_JOB;
+        notes.push(`Windows minimum enforced: $${RULES.WINDOWS_MIN_JOB}`);
+      }
 
       return { baseRetail: enforced, notes };
     }
-
     function calcConcreteBaseRetail(builder) {
       const mode = builder.concreteMode || "SQFT";
       let base = 0;
@@ -988,6 +1052,11 @@
         gutterFeetFirst: getNum("gutterFeetFirst"),
         windowsFirstCount: getNum("windowsFirstCount"),
         windowsSecondCount: getNum("windowsSecondCount"),
+        windowsMode: document.getElementById("windowsMode").value,
+        windowsExteriorFirstCount: getNum("windowsExteriorFirstCount"),
+        windowsExteriorSecondCount: getNum("windowsExteriorSecondCount"),
+        windowsExteriorFirstRate: getNum("windowsExteriorFirstRate"),
+        windowsExteriorSecondRate: getNum("windowsExteriorSecondRate"),
         concreteMode: document.getElementById("concreteMode").value,
         concreteSqft: getNum("concreteSqft"),
         concreteRate: getNum("concreteRate"),
@@ -1025,11 +1094,11 @@
       include.inspection = true; // locked
       include.roof = true; // roof is included ONLY if frequency > 0 (configured below). No UI toggle in this build.
 
-      frequency.windows = getNum("freqWindows");
-      frequency.gutters = getNum("freqGutters");
-      frequency.softWash = getNum("freqSoftWash");
-      frequency.concrete = getNum("freqConcrete");
-      frequency.waterFeature = getNum("freqWater");
+      frequency.windows = getWholeNum("freqWindows");
+      frequency.gutters = getWholeNum("freqGutters");
+      frequency.softWash = getWholeNum("freqSoftWash");
+      frequency.concrete = getWholeNum("freqConcrete");
+      frequency.waterFeature = getWholeNum("freqWater");
       // roof frequency is not present; treat as 0 unless you add it later:
       frequency.roof = 0;
       frequency.inspection = 1;
@@ -1212,6 +1281,21 @@
       }
     }
 
+    function enforceWindowsModeUI() {
+      const mode = document.getElementById("windowsMode").value;
+      const showExt = (mode === "EXTERIOR_ONLY" || mode === "BOTH");
+
+      [
+        "windowsExteriorFirstWrap",
+        "windowsExteriorFirstRateWrap",
+        "windowsExteriorSecondWrap",
+        "windowsExteriorSecondRateWrap"
+      ].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = showExt ? "block" : "none";
+      });
+    }
+
     function renderBreakdown(lineItems) {
       const tbody = document.getElementById("lineItemsBody");
       tbody.innerHTML = "";
@@ -1252,6 +1336,7 @@
 
     function calculateAndRender() {
       enforceConcreteModeUI();
+      enforceWindowsModeUI();
 
       const quote = calculateMembershipQuote();
       state.quote = quote;
@@ -1520,35 +1605,49 @@
       }
 
       doc.setFont("helvetica", "bold");
-      doc.text("Line Item Breakdown (Per-service discount + frequency)", left, y);
-      y += 14;
+      doc.text("Line Item Breakdown", left, y);
+      y += 12;
 
       doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
       const maxWidth = 500;
 
-      lineItems.forEach((li) => {
-        const included = li.included ? "Included" : "Not included";
-        const discPct = li.service === "inspection" ? 0 : Math.round((li.discountPercent || 0) * 100);
-        const freqTxt = li.service === "inspection" ? "N/A" : String(li.frequency || 0);
+      const col = { svc:left, base:left+160, disc:left+240, freq:left+310, annual:left+380 };
 
-        const block = [
-          `${serviceLabel(li.service)} — ${included}`,
-          `Base Retail: ${asMoney(li.baseRetail)} | Discount: ${discPct}% | Discounted: ${asMoney(li.discountedRetail)} | Freq: ${freqTxt} | Annual: ${asMoney(li.annualRetail)}`,
-          ...(li.notes || []).map(n => `• ${n}`)
-        ].join("\n");
+      doc.text("Service", col.svc, y);
+      doc.text("Base", col.base, y);
+      doc.text("Disc", col.disc, y);
+      doc.text("Freq", col.freq, y);
+      doc.text("Annual", col.annual, y);
+      y += 8;
 
-        const lines = doc.splitTextToSize(block, maxWidth);
-        lines.forEach((ln) => {
-          if (y > 640) {
+      doc.line(left, y, left + 500, y);
+      y += 10;
+
+      lineItems
+        .filter(li => li.included || li.service === "inspection")
+        .forEach((li) => {
+
+          if (y > 680) {
             doc.addPage();
             addPdfHeader(doc, left);
             y = 58;
           }
-          doc.text(ln, left, y);
+
+          const discPct = li.service === "inspection" ? 0 : Math.round((li.discountPercent || 0) * 100);
+          const freqTxt = li.service === "inspection" ? "—" : String(li.frequency || 0);
+
+          doc.text(serviceLabel(li.service), col.svc, y);
+          doc.text(asMoney(li.baseRetail), col.base, y);
+          doc.text(`${discPct}%`, col.disc, y);
+          doc.text(freqTxt, col.freq, y);
+          doc.text(asMoney(li.annualRetail), col.annual, y);
+
           y += 12;
         });
-        y += 8;
-      });
+
+      doc.setFontSize(12);
+      y += 6;
 
       if (y > 610) {
         doc.addPage();
@@ -1639,6 +1738,13 @@
       saveInputs();
     });
 
+    // Windows mode
+    document.getElementById("windowsMode").addEventListener("change", () => {
+      enforceWindowsModeUI();
+      calculateAndRender();
+      saveInputs();
+    });
+
     // Save on client fields
     ["clientName", "clientAddress", "scopeNotes"].forEach(id => {
       const el = document.getElementById(id);
@@ -1669,11 +1775,11 @@
     }
 
     enforceConcreteModeUI();
+    enforceWindowsModeUI();
     calculateAndRender();
     setActiveStep(1);
   </script>
 </body>
 </html>
-
 
 
