@@ -437,6 +437,1097 @@
 
       <div class="field">
         <label>Windows Inside & Out • 1st Level (count)</label>
+        <input id="windowsFirstCount" class="calc-input" type="number" min="0" step="1" placeholder="0" />
+        <small>Retail rate locked: $8 each (min $100 job)</small>
+      </div>
+
+      <div class="field">
+        <label>Windows Inside & Out • 2nd Level (count)</label>
+        <input id="windowsSecondCount" class="calc-input" type="number" min="0" step="1" placeholder="0" />
+        <small>Retail rate locked: $10 each (min $100 job)</small>
+      </div>
+    </div>
+
+    <h2 class="section-title">Concrete (Driveway) • Hourly Bypass</h2>
+    <div class="grid">
+      <div class="field">
+        <label>Concrete Mode</label>
+        <select id="concreteMode" class="calc-input">
+          <option value="SQFT" selected>Mode A — SqFt</option>
+          <option value="HOURLY">Mode B — Hourly ($225/hr)</option>
+        </select>
+        <small>Minimum power washing job is locked at $200.</small>
+      </div>
+
+      <div class="field" id="concreteSqftWrap">
+        <label>Concrete SqFt</label>
+        <input id="concreteSqft" class="calc-input" type="number" min="0" step="1" placeholder="0" />
+      </div>
+
+      <div class="field" id="concreteRateWrap">
+        <label>Concrete Rate ($/sqft)</label>
+        <select id="concreteRate" class="calc-input">
+          <option value="0.30" selected>$0.30</option>
+          <option value="0.35">$0.35</option>
+          <option value="0.40">$0.40</option>
+        </select>
+        <small>Allowed: $0.30–$0.40.</small>
+      </div>
+
+      <div class="field" id="concreteHoursWrap" style="display:none;">
+        <label>Concrete Hours</label>
+        <input id="concreteHours" class="calc-input" type="number" min="0" step="0.25" placeholder="0" />
+        <small>Hourly retail: hours × $225/hr (min $200)</small>
+      </div>
+    </div>
+
+    <h2 class="section-title">Optional Water Feature (Retail Rule Pending)</h2>
+    <div class="grid">
+      <div class="field">
+        <label>Water Feature Annual Retail ($)</label>
+        <input id="waterFeatureAnnual" class="calc-input" type="number" min="0" step="0.01" placeholder="0.00" />
+        <small>Included in Crown by default. If you later lock pricing rules, replace this input with rule-based builder inputs.</small>
+      </div>
+    </div>
+
+    <h2 class="section-title">Per-Service Discounts (apply per service only)</h2>
+    <div class="grid">
+      <div class="field">
+        <label>Soft Wash Discount (%)</label>
+        <input id="discSoftWash" class="calc-input" type="number" min="0" max="100" step="1" placeholder="0" />
+        <small>Applies only to Soft Wash retail.</small>
+      </div>
+      <div class="field">
+        <label>Roof Discount (%)</label>
+        <input id="discRoof" class="calc-input" type="number" min="0" max="100" step="1" placeholder="0" />
+        <small>Applies only to Roof retail.</small>
+      </div>
+      <div class="field">
+        <label>Gutters Discount (%)</label>
+        <input id="discGutters" class="calc-input" type="number" min="0" max="100" step="1" placeholder="0" />
+        <small>Applies only to Gutters retail.</small>
+      </div>
+      <div class="field">
+        <label>Windows Discount (%)</label>
+        <input id="discWindows" class="calc-input" type="number" min="0" max="100" step="1" placeholder="0" />
+        <small>Applies only to Windows retail.</small>
+      </div>
+      <div class="field">
+        <label>Concrete Discount (%)</label>
+        <input id="discConcrete" class="calc-input" type="number" min="0" max="100" step="1" placeholder="0" />
+        <small>Applies only to Concrete retail.</small>
+      </div>
+      <div class="field">
+        <label>Water Feature Discount (%)</label>
+        <input id="discWater" class="calc-input" type="number" min="0" max="100" step="1" placeholder="0" />
+        <small>Applies only to Water Feature.</small>
+      </div>
+    </div>
+
+    <h2 class="section-title">Step 2 — Membership Configurator</h2>
+    <div class="grid">
+      <div class="field">
+        <label>Service Inclusion</label>
+        <div class="row">
+          <div class="toggle"><input id="incWindows" class="calc-input" type="checkbox" /> <span>Windows</span></div>
+          <div class="toggle"><input id="incGutters" class="calc-input" type="checkbox" /> <span>Gutters</span></div>
+          <div class="toggle"><input id="incSoftWash" class="calc-input" type="checkbox" /> <span>Soft Wash</span></div>
+          <div class="toggle"><input id="incConcrete" class="calc-input" type="checkbox" /> <span>Concrete</span></div>
+          <div class="toggle"><input id="incWater" class="calc-input" type="checkbox" /> <span>Water Feature</span></div>
+          <div class="toggle" title="Locked included, not removable">
+            <input id="incInspection" type="checkbox" checked disabled />
+            <span>Annual Inspection</span> <span class="pill locked">LOCKED</span>
+          </div>
+        </div>
+        <small>Inspection is always included ($100) and not discountable or frequency-based.</small>
+      </div>
+
+      <div class="field">
+        <label>Annual Frequencies</label>
+        <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px;">
+          <div class="field">
+            <label class="muted">Windows / year</label>
+            <input id="freqWindows" class="calc-input" type="number" min="0" step="1" value="0" />
+          </div>
+          <div class="field">
+            <label class="muted">Gutters / year</label>
+            <input id="freqGutters" class="calc-input" type="number" min="0" step="1" value="0" />
+          </div>
+          <div class="field">
+            <label class="muted">Soft Wash / year</label>
+            <input id="freqSoftWash" class="calc-input" type="number" min="0" step="1" value="0" />
+          </div>
+          <div class="field">
+            <label class="muted">Concrete / year</label>
+            <input id="freqConcrete" class="calc-input" type="number" min="0" step="1" value="0" />
+          </div>
+          <div class="field">
+            <label class="muted">Water / year</label>
+            <input id="freqWater" class="calc-input" type="number" min="0" step="1" value="0" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note" id="warningNote"></div>
+
+    <div class="actions">
+      <button class="btn-primary" id="calculateBtn" type="button">Calculate Pricing</button>
+      <button class="btn-secondary" id="openContractBtn" type="button" disabled>Review & Sign Agreement</button>
+    </div>
+
+    <section class="results" id="results" aria-live="polite">
+      <h2>Step 3 — Financing Summary</h2>
+
+      <div class="result-row">
+        <span>Annual retail value</span>
+        <span class="amount" id="annualRetail">$0.00</span>
+      </div>
+
+      <div class="result-row">
+        <span>Annual financed (Retail × 1.15)</span>
+        <span class="amount" id="annualFinanced">$0.00</span>
+      </div>
+
+      <div class="result-row">
+        <span>Monthly Membership (Rounded Up)</span>
+        <span class="amount" id="memberMonthly">$0.00</span>
+      </div>
+
+      <div class="result-row">
+        <span>Annual membership billed (Monthly × 12)</span>
+        <span class="amount" id="annualMembership">$0.00</span>
+      </div>
+
+      <div class="result-row">
+        <span>Activation fee due today</span>
+        <span class="amount" id="activationDisplay">$0.00</span>
+      </div>
+
+      <div class="result-row">
+        <span>Total collected Year 1 (activation + membership × 12)</span>
+        <span class="amount" id="yearOneTotal">$0.00</span>
+      </div>
+
+      <div class="breakdown" style="margin-top:14px;">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:18%">Service</th>
+              <th style="width:18%">Base Retail</th>
+              <th style="width:14%">Discount</th>
+              <th style="width:18%">Discounted</th>
+              <th style="width:10%">Freq</th>
+              <th style="width:22%">Annual Retail</th>
+            </tr>
+          </thead>
+          <tbody id="lineItemsBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Contract Modal -->
+  <div class="modal" id="contractModal" role="dialog" aria-modal="true" aria-label="Membership Agreement">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="title">
+          <strong>HydroBlast Solutions • 12-Month Membership Agreement</strong>
+          <span>A Division of Brighten Maintenance LLC (Idaho)</span>
+        </div>
+        <button class="x" id="closeModalBtn" type="button">Close</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="contract-box" id="contractTop">
+          <h3>Agreement Terms</h3>
+
+          <p><b>Term:</b> This Agreement is for twelve (12) months from the Effective Date and auto-renews for successive 12-month terms unless Client provides written notice of cancellation prior to renewal.</p>
+
+          <p><b>Activation Fee:</b> Non-refundable and due at signing. Intended to cover onboarding, scheduling allocation, and initial mobilization.</p>
+
+          <p><b>Payments:</b> Monthly membership payments are due monthly and are intended to be processed using Square (card on file / subscription). Payments more than ten (10) days past due may result in service suspension and late fees.</p>
+
+          <p><b>Late Payment:</b> 10-day grace period. After 10 days, Company may suspend service until the account is brought current.</p>
+
+          <p><b>Cancellation / Early Termination:</b></p>
+          <ul>
+            <li>If Client cancels before completing the 12-month term, all services rendered will be recalculated at standard retail pricing.</li>
+            <li>Client agrees to pay the difference between retail value of services rendered and payments made to date.</li>
+            <li>If cancellation occurs within the first six (6) months, a <b>$250 administrative cancellation fee</b> applies.</li>
+            <li>If cancellation occurs after six (6) months but prior to completion of the term, the $250 fee does not apply (retail recalculation still applies).</li>
+          </ul>
+
+          <p><b>Governing Law:</b> State of Idaho.</p>
+
+          <div class="jump">
+            <button class="btn-secondary" type="button" id="skipToSignBtn">Skip to Signature</button>
+            <button class="btn-secondary" type="button" id="backToTopBtn">Back to Terms</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="summary">
+            <h3>Enrollment Summary</h3>
+            <div class="kv"><span>Client</span><b id="sumClient">—</b></div>
+            <div class="kv"><span>Address</span><b id="sumAddress">—</b></div>
+            <div class="kv"><span>Effective Date</span><b id="sumDate">—</b></div>
+            <div class="kv"><span>Activation Due Today</span><b id="sumActivation">—</b></div>
+            <div class="kv"><span>Membership Monthly</span><b id="sumMonthly">—</b></div>
+            <div class="kv"><span>Retail Monthly</span><b id="sumRetailMonthly">—</b></div>
+            <div class="kv"><span>Non-Member Monthly (Retail + 15%)</span><b id="sumNonMemberMonthly">—</b></div>
+          </div>
+
+          <div class="sign-box" id="signBox" style="margin-top:14px;">
+            <h3>Sign to Enroll</h3>
+
+            <div class="agree">
+              <input id="agreeBox" type="checkbox" />
+              <div>
+                <label for="agreeBox">I have read and agree to the Membership Agreement terms above.</label>
+                <div style="color:var(--muted); font-size:0.9rem; margin-top:4px;">
+                  Electronic signature is intended to be legally binding.
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top:10px;">
+              <canvas id="signaturePad"></canvas>
+            </div>
+
+            <div class="sign-actions">
+              <button class="btn-secondary" type="button" id="clearSigBtn">Clear Signature</button>
+              <button class="btn-primary" type="button" id="generatePdfBtn">Generate Signed PDF</button>
+            </div>
+
+            <div style="margin-top:10px; color:var(--muted); font-size:0.9rem;">
+              After generating the PDF, switch to Square to charge activation and set up the subscription.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const { jsPDF } = window.jspdf;
+
+    // ---------------------------
+    // UI helpers
+    // ---------------------------
+    const asMoney = (val) =>
+      new Intl.NumberFormat("en-US", { style:"currency", currency:"USD" }).format(Number(val) || 0);
+
+    const getNum = (id) => Number.parseFloat(document.getElementById(id)?.value) || 0;
+    const getBool = (id) => !!document.getElementById(id)?.checked;
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    function clamp(n, min, max) {
+      const x = Number.isFinite(n) ? n : 0;
+      return Math.min(Math.max(x, min), max);
+    }
+
+    // ---------------------------
+    // Local storage
+    // ---------------------------
+    const STORAGE_KEY = "hydroblast_membership_engine_v1";
+    const INPUT_IDS = [
+      "clientName","clientAddress",
+      "activationFee","membershipTier",
+
+      "exteriorSqft","roofSqft",
+      "gutterFeetFirst",
+      "windowsFirstCount","windowsSecondCount",
+
+      "concreteMode","concreteSqft","concreteRate","concreteHours",
+
+      "waterFeatureAnnual",
+
+      "discSoftWash","discRoof","discGutters","discWindows","discConcrete","discWater",
+
+      "incWindows","incGutters","incSoftWash","incConcrete","incWater",
+      "freqWindows","freqGutters","freqSoftWash","freqConcrete","freqWater"
+    ];
+
+    function saveInputs() {
+      try {
+        const data = {};
+        INPUT_IDS.forEach((id) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          if (el.type === "checkbox") data[id] = el.checked ? "1" : "0";
+          else data[id] = el.value;
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      } catch (_) {}
+    }
+
+    function loadInputs() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        INPUT_IDS.forEach((id) => {
+          const el = document.getElementById(id);
+          if (!el || data[id] === undefined) return;
+          if (el.type === "checkbox") el.checked = data[id] === "1";
+          else el.value = data[id];
+        });
+      } catch (_) {}
+    }
+
+    // ---------------------------
+    // ENGINE (calculation layer)
+    // LOCKED RULES live here.
+    // UI must never compute totals.
+    // ---------------------------
+
+    const RULES = Object.freeze({
+      SOFTWASH_WALL_RATE: 0.20,
+      ROOF_RATE: 0.30,
+
+      WINDOWS_IO_FIRST_RATE: 8,
+      WINDOWS_IO_SECOND_RATE: 10,
+      WINDOWS_MIN_JOB: 100,
+
+      GUTTER_FIRST_RATE: 1,
+      GUTTER_SECOND_RATE: 2, // reserved for later scaling logic
+
+      CONCRETE_HOURLY_RATE: 225,
+      CONCRETE_MIN_JOB: 200,
+
+      INSPECTION_RETAIL: 100,
+
+      FINANCE_MULTIPLIER: 1.15,
+    });
+
+    const SERVICE_KEYS = Object.freeze(["softWash","roof","gutters","windows","concrete","waterFeature","inspection"]);
+
+    const PRESETS = Object.freeze({
+      BASIC: {
+        include: { windows:true, gutters:true, softWash:false, roof:false, concrete:false, waterFeature:false, inspection:true },
+        frequency: { windows:2, gutters:1, softWash:0, roof:0, concrete:0, waterFeature:0, inspection:1 },
+        discounts: { } // optional defaults allowed
+      },
+      ESTATE: {
+        include: { windows:true, gutters:true, softWash:true, roof:false, concrete:false, waterFeature:false, inspection:true },
+        frequency: { windows:3, gutters:1, softWash:1, roof:0, concrete:0, waterFeature:0, inspection:1 },
+        discounts: { }
+      },
+      CROWN: {
+        include: { windows:true, gutters:true, softWash:true, roof:false, concrete:true, waterFeature:true, inspection:true },
+        frequency: { windows:3, gutters:2, softWash:1, roof:0, concrete:1, waterFeature:1, inspection:1 },
+        discounts: { }
+      },
+      CUSTOM: {
+        include: { windows:false, gutters:false, softWash:false, roof:false, concrete:false, waterFeature:false, inspection:true },
+        frequency: { windows:0, gutters:0, softWash:0, roof:0, concrete:0, waterFeature:0, inspection:1 },
+        discounts: { }
+      }
+    });
+
+    function applyServiceDiscount(baseRetail, discountPercent01) {
+      const d = clamp(discountPercent01, 0, 1);
+      return baseRetail * (1 - d);
+    }
+
+    function applyFrequency(discountedRetail, freq) {
+      const f = Number.isFinite(freq) ? freq : 0;
+      if (f <= 0) return 0;
+      return discountedRetail * f;
+    }
+
+    function calcWindowsBaseRetail(builder) {
+      const first = builder.windowsFirstCount || 0;
+      const second = builder.windowsSecondCount || 0;
+
+      const raw = (first * RULES.WINDOWS_IO_FIRST_RATE) + (second * RULES.WINDOWS_IO_SECOND_RATE);
+      const enforced = raw < RULES.WINDOWS_MIN_JOB ? RULES.WINDOWS_MIN_JOB : raw;
+
+      const notes = [
+        `Windows base: (${first} × $${RULES.WINDOWS_IO_FIRST_RATE}) + (${second} × $${RULES.WINDOWS_IO_SECOND_RATE})`,
+      ];
+      if (enforced !== raw) notes.push(`Windows minimum enforced: $${RULES.WINDOWS_MIN_JOB}`);
+
+      return { baseRetail: enforced, notes };
+    }
+
+    function calcConcreteBaseRetail(builder) {
+      const mode = builder.concreteMode || "SQFT";
+      let base = 0;
+      const notes = [];
+
+      if (mode === "HOURLY") {
+        const hours = builder.concreteHours || 0;
+        base = hours * RULES.CONCRETE_HOURLY_RATE;
+        notes.push(`Concrete mode HOURLY: ${hours} hrs × $${RULES.CONCRETE_HOURLY_RATE}/hr`);
+      } else {
+        const sqft = builder.concreteSqft || 0;
+        const rate = builder.concreteRate || 0;
+        base = sqft * rate;
+        notes.push(`Concrete mode SQFT: ${sqft} sqft × $${rate}/sqft`);
+      }
+
+      if (base < RULES.CONCRETE_MIN_JOB && (builder.concreteSqft > 0 || builder.concreteHours > 0)) {
+        base = RULES.CONCRETE_MIN_JOB;
+        notes.push(`Concrete minimum enforced: $${RULES.CONCRETE_MIN_JOB}`);
+      }
+
+      // If user inputs are zero, keep it zero (min shouldn't force a job into existence).
+      if ((builder.concreteSqft || 0) === 0 && (builder.concreteHours || 0) === 0) base = 0;
+
+      return { baseRetail: base, notes };
+    }
+
+    function buildRetailFromInputs() {
+      // Step 1 inputs (builder)
+      const builder = {
+        exteriorSqft: getNum("exteriorSqft"),
+        roofSqft: getNum("roofSqft"),
+        gutterFeetFirst: getNum("gutterFeetFirst"),
+        windowsFirstCount: getNum("windowsFirstCount"),
+        windowsSecondCount: getNum("windowsSecondCount"),
+        concreteMode: document.getElementById("concreteMode").value,
+        concreteSqft: getNum("concreteSqft"),
+        concreteRate: getNum("concreteRate"),
+        concreteHours: getNum("concreteHours"),
+        waterFeatureAnnual: getNum("waterFeatureAnnual"),
+      };
+
+      // Discounts (percent input → 0..1)
+      const discounts01 = {
+        softWash: clamp(getNum("discSoftWash") / 100, 0, 1),
+        roof: clamp(getNum("discRoof") / 100, 0, 1),
+        gutters: clamp(getNum("discGutters") / 100, 0, 1),
+        windows: clamp(getNum("discWindows") / 100, 0, 1),
+        concrete: clamp(getNum("discConcrete") / 100, 0, 1),
+        waterFeature: clamp(getNum("discWater") / 100, 0, 1),
+        inspection: 0,
+      };
+
+      return { builder, discounts01 };
+    }
+
+    function getConfiguratorState(tierKey) {
+      // tier defaults
+      const preset = PRESETS[tierKey] || PRESETS.CUSTOM;
+
+      // user overrides from UI
+      const include = {
+        windows: getBool("incWindows"),
+        gutters: getBool("incGutters"),
+        softWash: getBool("incSoftWash"),
+        roof: false, // roof not exposed in inclusion toggles in this UI; can be added later
+        concrete: getBool("incConcrete"),
+        waterFeature: getBool("incWater"),
+        inspection: true, // forced locked
+      };
+
+      const frequency = {
+        windows: getNum("freqWindows"),
+        gutters: getNum("freqGutters"),
+        softWash: getNum("freqSoftWash"),
+        roof: 0,
+        concrete: getNum("freqConcrete"),
+        waterFeature: getNum("freqWater"),
+        inspection: 1, // semantic placeholder
+      };
+
+      return { preset, include, frequency };
+    }
+
+    function calculateMembershipQuote() {
+      // APPLY PRESET DEFAULTS FIRST, THEN OVERRIDES (architectural separation)
+      const tierKey = document.getElementById("membershipTier").value || "CUSTOM";
+      const preset = PRESETS[tierKey] || PRESETS.CUSTOM;
+
+      // Start from preset
+      const include = { ...preset.include };
+      const frequency = { ...preset.frequency };
+
+      // Override from current UI selections
+      include.windows = getBool("incWindows");
+      include.gutters = getBool("incGutters");
+      include.softWash = getBool("incSoftWash");
+      include.concrete = getBool("incConcrete");
+      include.waterFeature = getBool("incWater");
+      include.inspection = true; // locked
+
+      frequency.windows = getNum("freqWindows");
+      frequency.gutters = getNum("freqGutters");
+      frequency.softWash = getNum("freqSoftWash");
+      frequency.concrete = getNum("freqConcrete");
+      frequency.waterFeature = getNum("freqWater");
+      frequency.inspection = 1;
+
+      // Retail builder inputs + per-service discounts
+      const { builder, discounts01 } = buildRetailFromInputs();
+
+      // ---- STEP 1: per-service retail (after per-service discount) ----
+      const lineItems = [];
+
+      const pushLine = (service, baseRetail, discount01, freq, notes = []) => {
+        const included = !!include[service];
+
+        // inspection is forced included, not discountable, not frequency-based
+        if (service === "inspection") {
+          lineItems.push({
+            service,
+            included: true,
+            baseRetail: RULES.INSPECTION_RETAIL,
+            discountPercent: 0,
+            discountedRetail: RULES.INSPECTION_RETAIL,
+            frequency: 1,
+            annualRetail: RULES.INSPECTION_RETAIL,
+            notes: ["Annual Inspection (locked): $100"],
+          });
+          return;
+        }
+
+        if (!included) {
+          lineItems.push({
+            service,
+            included: false,
+            baseRetail: 0,
+            discountPercent: 0,
+            discountedRetail: 0,
+            frequency: 0,
+            annualRetail: 0,
+            notes: [],
+          });
+          return;
+        }
+
+        const discountedRetail = applyServiceDiscount(baseRetail, discount01);
+
+        // ---- STEP 2: apply frequency multipliers ----
+        const annualRetail = applyFrequency(discountedRetail, freq);
+
+        lineItems.push({
+          service,
+          included: true,
+          baseRetail,
+          discountPercent: discount01,
+          discountedRetail,
+          frequency: freq,
+          annualRetail,
+          notes,
+        });
+      };
+
+      // Soft wash walls
+      const softBase = (builder.exteriorSqft || 0) * RULES.SOFTWASH_WALL_RATE;
+      pushLine("softWash", softBase, discounts01.softWash, frequency.softWash, [
+        `Exterior walls: ${builder.exteriorSqft || 0} sqft × $${RULES.SOFTWASH_WALL_RATE}`,
+      ]);
+
+      // Roof (included via frequency later if you add a toggle; for now, if roofSqft entered and freq roof set >0, you can wire it)
+      const roofBase = (builder.roofSqft || 0) * RULES.ROOF_RATE;
+      // roof is not currently toggled in UI; treat as included if freqRoof > 0 in a future version
+      pushLine("roof", 0, 0, 0, []);
+
+      // Gutters (only 1st story locked in this UI build)
+      const guttersBase = (builder.gutterFeetFirst || 0) * RULES.GUTTER_FIRST_RATE;
+      pushLine("gutters", guttersBase, discounts01.gutters, frequency.gutters, [
+        `Gutters 1st story: ${builder.gutterFeetFirst || 0} lf × $${RULES.GUTTER_FIRST_RATE}`,
+      ]);
+
+      // Windows
+      const w = calcWindowsBaseRetail(builder);
+      pushLine("windows", w.baseRetail, discounts01.windows, frequency.windows, w.notes);
+
+      // Concrete
+      const c = calcConcreteBaseRetail(builder);
+      pushLine("concrete", c.baseRetail, discounts01.concrete, frequency.concrete, c.notes);
+
+      // Water Feature (rule pending; treated as a service line)
+      const waterBase = builder.waterFeatureAnnual || 0;
+      pushLine("waterFeature", waterBase, discounts01.waterFeature, frequency.waterFeature, [
+        `Water feature annual retail input: $${(builder.waterFeatureAnnual || 0).toFixed(2)}`,
+      ]);
+
+      // ---- STEP 3: Add Annual Inspection ($100) ----
+      pushLine("inspection", RULES.INSPECTION_RETAIL, 0, 1);
+
+      // ---- STEP 4: AnnualRetail ----
+      const annualRetail = lineItems.reduce((sum, li) => sum + li.annualRetail, 0);
+
+      // ---- STEP 5: AnnualFinanced = AnnualRetail × 1.15 ----
+      const annualFinanced = annualRetail * RULES.FINANCE_MULTIPLIER;
+
+      // ---- STEP 6: MemberMonthly = ceil(AnnualFinanced / 12) ----
+      const memberMonthly = Math.ceil(annualFinanced / 12);
+
+      // ---- STEP 7: AnnualMembershipBilled = MemberMonthly × 12 ----
+      const annualMembershipBilled = memberMonthly * 12;
+
+      // ---- STEP 8: YearOneTotal = Activation + AnnualMembershipBilled ----
+      const activation = getNum("activationFee");
+      const yearOneTotal = activation + annualMembershipBilled;
+
+      return {
+        tier: tierKey,
+        lineItems,
+        totals: {
+          annualRetail,
+          annualFinanced,
+          memberMonthly,
+          annualMembershipBilled,
+          activation,
+          yearOneTotal,
+        },
+        financeRate: 0.15,
+        rounding: "CEIL_MONTHLY",
+        calcOrder: [
+          "STEP 1: per-service retail after per-service discount",
+          "STEP 2: apply frequency multipliers",
+          "STEP 3: add Annual Inspection ($100)",
+          "STEP 4: AnnualRetail",
+          "STEP 5: AnnualFinanced = AnnualRetail × 1.15",
+          "STEP 6: MemberMonthly = ceil(AnnualFinanced / 12)",
+          "STEP 7: AnnualMembershipBilled = MemberMonthly × 12",
+          "STEP 8: YearOneTotal = Activation + AnnualMembershipBilled",
+        ],
+      };
+    }
+
+    // ---------------------------
+    // UI Wiring (tier -> preset -> UI defaults only)
+    // NO math inside tier presets.
+    // ---------------------------
+    function applyTierToUI(tierKey) {
+      const preset = PRESETS[tierKey] || PRESETS.CUSTOM;
+
+      // Inclusion defaults
+      document.getElementById("incWindows").checked = !!preset.include.windows;
+      document.getElementById("incGutters").checked = !!preset.include.gutters;
+      document.getElementById("incSoftWash").checked = !!preset.include.softWash;
+      document.getElementById("incConcrete").checked = !!preset.include.concrete;
+      document.getElementById("incWater").checked = !!preset.include.waterFeature;
+
+      // Frequency defaults
+      document.getElementById("freqWindows").value = preset.frequency.windows;
+      document.getElementById("freqGutters").value = preset.frequency.gutters;
+      document.getElementById("freqSoftWash").value = preset.frequency.softWash;
+      document.getElementById("freqConcrete").value = preset.frequency.concrete;
+      document.getElementById("freqWater").value = preset.frequency.waterFeature;
+
+      // Discount defaults (optional)
+      // (Preset has no defaults currently; safe to leave user values as-is. If you later set defaults, apply here.)
+    }
+
+    function renderBreakdown(lineItems) {
+      const tbody = document.getElementById("lineItemsBody");
+      tbody.innerHTML = "";
+
+      const labelMap = {
+        softWash: "Soft Wash (Walls)",
+        roof: "Roof",
+        gutters: "Gutters",
+        windows: "Windows",
+        concrete: "Concrete",
+        waterFeature: "Water Feature",
+        inspection: "Annual Inspection",
+      };
+
+      lineItems.forEach(li => {
+        const tr = document.createElement("tr");
+
+        const discPct = (li.discountPercent || 0) * 100;
+        const discTxt = li.service === "inspection" ? "0%" : `${discPct.toFixed(0)}%`;
+
+        tr.innerHTML = `
+          <td>
+            <div style="font-weight:900;">${labelMap[li.service] || li.service}</div>
+            <div class="muted" style="font-size:0.82rem;">
+              ${li.included ? "Included" : "Not included"}
+              ${li.service === "inspection" ? '<span class="pill locked">LOCKED</span>' : ""}
+            </div>
+            ${li.notes && li.notes.length ? `<div class="muted" style="margin-top:6px; font-size:0.82rem;">${li.notes.join("<br/>")}</div>` : ""}
+          </td>
+          <td>${asMoney(li.baseRetail)}</td>
+          <td>${discTxt}</td>
+          <td>${asMoney(li.discountedRetail)}</td>
+          <td>${li.service === "inspection" ? "—" : (li.frequency || 0)}</td>
+          <td style="font-weight:900;">${asMoney(li.annualRetail)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // ---------------------------
+    // State cache (for modal + PDF)
+    // ---------------------------
+    const state = {
+      quote: null
+    };
+
+    function showWarning(msg) {
+      const note = document.getElementById("warningNote");
+      if (!msg) {
+        note.style.display = "none";
+        note.textContent = "";
+        return;
+      }
+      note.style.display = "block";
+      note.textContent = msg;
+    }
+
+    function enforceConcreteModeUI() {
+      const mode = document.getElementById("concreteMode").value;
+      const sqftWrap = document.getElementById("concreteSqftWrap");
+      const rateWrap = document.getElementById("concreteRateWrap");
+      const hoursWrap = document.getElementById("concreteHoursWrap");
+
+      if (mode === "HOURLY") {
+        sqftWrap.style.display = "none";
+        rateWrap.style.display = "none";
+        hoursWrap.style.display = "block";
+      } else {
+        sqftWrap.style.display = "block";
+        rateWrap.style.display = "block";
+        hoursWrap.style.display = "none";
+      }
+    }
+
+    function calculateAndRender() {
+      enforceConcreteModeUI();
+
+      const quote = calculateMembershipQuote();
+      state.quote = quote;
+
+      const t = quote.totals;
+
+      setText("annualRetail", asMoney(t.annualRetail));
+      setText("annualFinanced", asMoney(t.annualFinanced));
+      setText("memberMonthly", asMoney(t.memberMonthly));
+      setText("annualMembership", asMoney(t.annualMembershipBilled));
+      setText("activationDisplay", asMoney(t.activation));
+      setText("yearOneTotal", asMoney(t.yearOneTotal));
+
+      renderBreakdown(quote.lineItems);
+
+      const hasPricing = t.annualRetail > 0 && t.memberMonthly > 0;
+      document.getElementById("results").style.display = hasPricing ? "block" : "none";
+      document.getElementById("openContractBtn").disabled = !hasPricing;
+
+      // basic warnings for common config mistakes (does NOT change math)
+      if (getBool("incWindows") && getNum("freqWindows") <= 0) {
+        showWarning("Windows is included but frequency is 0. Set Windows/year to 1+ or toggle Windows off.");
+      } else if (getBool("incGutters") && getNum("freqGutters") <= 0) {
+        showWarning("Gutters is included but frequency is 0. Set Gutters/year to 1+ or toggle Gutters off.");
+      } else if (getBool("incSoftWash") && getNum("freqSoftWash") <= 0) {
+        showWarning("Soft Wash is included but frequency is 0. Set Soft Wash/year to 1+ or toggle Soft Wash off.");
+      } else if (getBool("incConcrete") && getNum("freqConcrete") <= 0) {
+        showWarning("Concrete is included but frequency is 0. Set Concrete/year to 1+ or toggle Concrete off.");
+      } else {
+        showWarning("");
+      }
+
+      saveInputs();
+    }
+
+    // ---------------------------
+    // Contract + Signature + PDF
+    // ---------------------------
+    let signaturePad = null;
+
+    function resizeSigCanvas() {
+      const canvas = document.getElementById("signaturePad");
+      if (!canvas) return;
+
+      const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      const data = (signaturePad && !signaturePad.isEmpty()) ? signaturePad.toData() : null;
+
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * ratio;
+      canvas.height = rect.height * ratio;
+
+      const ctx = canvas.getContext("2d");
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+      if (signaturePad) {
+        signaturePad.clear();
+        if (data) signaturePad.fromData(data);
+      }
+    }
+
+    function openContract() {
+      if (!state.quote) {
+        alert("Please calculate pricing first.");
+        return;
+      }
+      const t = state.quote.totals;
+      if (!t.memberMonthly || !t.annualMembershipBilled) {
+        alert("Please calculate pricing first.");
+        return;
+      }
+
+      const name = (document.getElementById("clientName").value || "").trim();
+      const address = (document.getElementById("clientAddress").value || "").trim();
+
+      if (!name || !address) {
+        alert("Please enter client name and service address first.");
+        return;
+      }
+
+      const now = new Date();
+      const effectiveDate = now.toLocaleDateString();
+
+      setText("sumClient", name);
+      setText("sumAddress", address);
+      setText("sumDate", effectiveDate);
+      setText("sumActivation", asMoney(t.activation));
+      setText("sumMonthly", asMoney(t.memberMonthly));
+      setText("sumRetailMonthly", asMoney(t.annualRetail / 12));
+      setText("sumNonMemberMonthly", asMoney(t.annualFinanced / 12));
+
+      document.getElementById("contractModal").style.display = "flex";
+
+      const canvas = document.getElementById("signaturePad");
+      signaturePad = new SignaturePad(canvas);
+
+      requestAnimationFrame(() => resizeSigCanvas());
+      document.getElementById("agreeBox").checked = false;
+
+      saveInputs();
+    }
+
+    function closeContract() {
+      document.getElementById("contractModal").style.display = "none";
+    }
+
+    function clearSignature() {
+      if (signaturePad) signaturePad.clear();
+    }
+
+    function addPdfHeader(doc, left) {
+      doc.setFont("helvetica", "bold");
+      doc.text("HydroBlast Membership Agreement", left, 40);
+      doc.setFont("helvetica", "normal");
+    }
+
+    function serviceLabel(key) {
+      return ({
+        softWash: "Soft Wash (Walls)",
+        roof: "Roof",
+        gutters: "Gutters",
+        windows: "Windows",
+        concrete: "Concrete",
+        waterFeature: "Water Feature",
+        inspection: "Annual Inspection (Locked)",
+      })[key] || key;
+    }
+
+    function generateSignedPDF() {
+      const agree = document.getElementById("agreeBox").checked;
+      if (!agree) {
+        alert("Client must agree to the terms (checkbox) before generating the PDF.");
+        return;
+      }
+      if (!signaturePad || signaturePad.isEmpty()) {
+        alert("Client signature is required.");
+        return;
+      }
+
+      if (!state.quote) {
+        alert("No quote found. Please calculate pricing first.");
+        return;
+      }
+
+      const name = (document.getElementById("clientName").value || "").trim();
+      const address = (document.getElementById("clientAddress").value || "").trim();
+
+      const signedAt = new Date();
+      const signedDate = signedAt.toLocaleDateString();
+      const signedTime = signedAt.toLocaleTimeString();
+
+      const t = state.quote.totals;
+      const lineItems = state.quote.lineItems;
+
+      const doc = new jsPDF({ unit: "pt", format: "letter" });
+      const left = 54;
+      let y = 58;
+
+      addPdfHeader(doc, left);
+
+      doc.setFont("helvetica", "bold");
+      doc.text("Pricing Summary (Locked Calculation Order)", left, y);
+      y += 14;
+
+      doc.setFont("helvetica", "normal");
+      doc.text(`Client: ${name}`, left, y); y += 14;
+      doc.text(`Service Address: ${address}`, left, y); y += 18;
+
+      doc.text(`Annual Retail Value (Step 4): ${asMoney(t.annualRetail)}`, left, y); y += 14;
+      doc.text(`Annual Financed (Retail × 1.15) (Step 5): ${asMoney(t.annualFinanced)}`, left, y); y += 14;
+      doc.text(`Monthly Membership (Ceil) (Step 6): ${asMoney(t.memberMonthly)}`, left, y); y += 14;
+      doc.text(`Annual Membership Billed (Monthly × 12) (Step 7): ${asMoney(t.annualMembershipBilled)}`, left, y); y += 14;
+      doc.text(`Activation Fee (Non-Refundable): ${asMoney(t.activation)}`, left, y); y += 14;
+      doc.text(`Total Year 1 Collected (Step 8): ${asMoney(t.yearOneTotal)}`, left, y); y += 18;
+
+      doc.setFont("helvetica", "bold");
+      doc.text("Line Item Breakdown (Per-service discount + frequency)", left, y);
+      y += 14;
+
+      doc.setFont("helvetica", "normal");
+
+      const maxWidth = 500;
+      lineItems.forEach((li) => {
+        const included = li.included ? "Included" : "Not included";
+        const discPct = li.service === "inspection" ? 0 : Math.round((li.discountPercent || 0) * 100);
+        const freqTxt = li.service === "inspection" ? "N/A" : String(li.frequency || 0);
+
+        const block = [
+          `${serviceLabel(li.service)} — ${included}`,
+          `Base Retail: ${asMoney(li.baseRetail)} | Discount: ${discPct}% | Discounted: ${asMoney(li.discountedRetail)} | Freq: ${freqTxt} | Annual: ${asMoney(li.annualRetail)}`,
+          ...(li.notes || []).map(n => `• ${n}`)
+        ].join("\n");
+
+        const lines = doc.splitTextToSize(block, maxWidth);
+        lines.forEach((ln) => {
+          if (y > 640) {
+            doc.addPage();
+            addPdfHeader(doc, left);
+            y = 58;
+          }
+          doc.text(ln, left, y);
+          y += 12;
+        });
+        y += 8;
+      });
+
+      if (y > 610) {
+        doc.addPage();
+        addPdfHeader(doc, left);
+        y = 58;
+      }
+
+      doc.setFont("helvetica", "bold");
+      doc.text("Terms", left, y); y += 14;
+
+      doc.setFont("helvetica", "normal");
+      const terms = [
+        "1. Term: This Agreement is for twelve (12) months from the Effective Date and will auto-renew for successive 12-month terms unless Client provides written notice of cancellation prior to renewal.",
+        "2. Activation Fee: Non-refundable and due at signing. Intended to cover onboarding, scheduling allocation, and initial mobilization. Enrollment is not complete until activation is successfully processed.",
+        "3. Payment Authorization: Client authorizes Company to charge the payment method on file via Square for monthly membership payments and applicable fees.",
+        "4. Late Payments: Payments more than ten (10) days past due may result in service suspension until the account is brought current. Late fees may apply.",
+        "5. Cancellation / Early Termination: If Client cancels before completing the 12-month term, all services rendered will be recalculated at standard retail pricing and Client agrees to pay the difference between retail value and payments made to date. If cancellation occurs within the first six (6) months, a $250 administrative cancellation fee applies. If cancellation occurs after six (6) months but prior to completion of the term, the $250 fee does not apply (retail recalculation still applies).",
+        "6. Scheduling: Service scheduling may be adjusted due to weather, safety conditions, or operational requirements.",
+        "7. Governing Law: This Agreement is governed by the laws of the State of Idaho.",
+        "8. Entire Agreement: This document represents the entire Agreement between the parties."
+      ];
+
+      terms.forEach((tline) => {
+        const lines = doc.splitTextToSize(tline, maxWidth);
+        lines.forEach((ln) => {
+          if (y > 640) {
+            doc.addPage();
+            addPdfHeader(doc, left);
+            y = 58;
+          }
+          doc.text(ln, left, y);
+          y += 12;
+        });
+        y += 6;
+      });
+
+      if (y > 610) {
+        doc.addPage();
+        addPdfHeader(doc, left);
+        y = 58;
+      }
+
+      doc.setFont("helvetica", "bold");
+      doc.text("Electronic Signatures", left, y); y += 14;
+
+      doc.setFont("helvetica", "normal");
+      doc.text(`Signed Electronically by Client on: ${signedDate} at ${signedTime}`, left, y); y += 14;
+
+      const sigData = signaturePad.toDataURL("image/png");
+      doc.setFont("helvetica", "bold");
+      doc.text("Client Signature:", left, y); y += 10;
+      doc.addImage(sigData, "PNG", left, y, 220, 70);
+      y += 86;
+
+      doc.setFont("helvetica", "normal");
+      doc.text(`Client Printed Name: ${name}`, left, y); y += 16;
+      doc.text("Company Representative: ______________________________", left, y); y += 16;
+
+      const safeName = (name || "Client")
+        .trim()
+        .replace(/\s+/g, "_")
+        .replace(/[^a-zA-Z0-9_\-]/g, "");
+
+      doc.save(`${safeName}_HydroBlast_Membership_Agreement.pdf`);
+
+      alert("Signed PDF generated. Next: open Square to charge activation and set up monthly subscription.");
+    }
+
+    function skipToSignature() {
+      document.getElementById("signBox").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    function backToTop() {
+      document.getElementById("contractTop").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    // ---------------------------
+    // Event wiring
+    // ---------------------------
+    document.querySelectorAll(".calc-input").forEach(el => {
+      el.addEventListener("input", calculateAndRender);
+      el.addEventListener("change", calculateAndRender);
+    });
+
+    const membershipTierEl = document.getElementById("membershipTier");
+    membershipTierEl.addEventListener("change", function () {
+      applyTierToUI(this.value || "CUSTOM");
+      calculateAndRender();
+      saveInputs();
+    }, true);
+
+    document.getElementById("concreteMode").addEventListener("change", () => {
+      enforceConcreteModeUI();
+      calculateAndRender();
+      saveInputs();
+    });
+
+    document.getElementById("calculateBtn").addEventListener("click", calculateAndRender);
+    document.getElementById("openContractBtn").addEventListener("click", openContract);
+    document.getElementById("closeModalBtn").addEventListener("click", closeContract);
+    document.getElementById("clearSigBtn").addEventListener("click", clearSignature);
+    document.getElementById("generatePdfBtn").addEventListener("click", generateSignedPDF);
+    document.getElementById("skipToSignBtn").addEventListener("click", skipToSignature);
+    document.getElementById("backToTopBtn").addEventListener("click", backToTop);
+
+    window.addEventListener("resize", () => {
+      if (document.getElementById("contractModal").style.display === "flex") {
+        resizeSigCanvas();
+      }
+    });
+
+    document.getElementById("contractModal").addEventListener("click", (e) => {
+      if (e.target.id === "contractModal") closeContract();
+    });
+
+    // INITIAL LOAD
+    loadInputs();
+
+    // Initialize tier UI defaults if none loaded
+    const tierInit = document.getElementById("membershipTier").value || "CUSTOM";
+    if (!localStorage.getItem(STORAGE_KEY)) {
+      applyTierToUI(tierInit);
+    }
+
+    enforceConcreteModeUI();
+    calculateAndRender();
+  </script>
+</body>
+</html>
 
 
 
