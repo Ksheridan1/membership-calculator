@@ -805,7 +805,6 @@
             <div class="kv"><span>Activation Due Today</span><b id="sumActivation">—</b></div>
             <div class="kv"><span>Membership Monthly</span><b id="sumMonthly">—</b></div>
             <div class="kv"><span>Retail Monthly</span><b id="sumRetailMonthly">—</b></div>
-            <div class="kv"><span>Non-Member Monthly (Retail + 15%)</span><b id="sumNonMemberMonthly">—</b></div>
           </div>
 
           <div class="sign-box" id="signBox" style="margin-top:14px;">
@@ -1644,7 +1643,6 @@
       setText("sumActivation", asMoney(t.activation));
       setText("sumMonthly", asMoney(t.memberMonthly));
       setText("sumRetailMonthly", asMoney(t.annualRetail / 12));
-      setText("sumNonMemberMonthly", asMoney(t.annualFinanced / 12));
 
       // Signature init
       const canvas = document.getElementById("signaturePad");
