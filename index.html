@@ -483,6 +483,37 @@
           <input id="windowsSecondCount" class="calc-input" type="number" min="0" step="1" placeholder="0" />
           <small>Retail rate locked: $10 each (min $100 job)</small>
         </div>
+
+        <!-- WINDOWS MODE -->
+        <div class="field">
+          <label>Windows Mode</label>
+          <select id="windowsMode" class="calc-input">
+            <option value="INSIDE_OUT" selected>Inside & Out (Locked Rates)</option>
+            <option value="EXTERIOR_ONLY">Exterior Only</option>
+            <option value="BOTH">Both</option>
+          </select>
+          <small>Exterior-only requires manual rate entry (no locked rule defined yet).</small>
+        </div>
+
+        <div class="field" id="windowsExteriorFirstWrap" style="display:none;">
+          <label>Windows Exterior Only • 1st Level (count)</label>
+          <input id="windowsExteriorFirstCount" class="calc-input" type="number" min="0" step="1" placeholder="0" />
+        </div>
+
+        <div class="field" id="windowsExteriorFirstRateWrap" style="display:none;">
+          <label>Exterior Only • 1st Level Rate ($)</label>
+          <input id="windowsExteriorFirstRate" class="calc-input" type="number" min="0" step="0.01" placeholder="0.00" />
+        </div>
+
+        <div class="field" id="windowsExteriorSecondWrap" style="display:none;">
+          <label>Windows Exterior Only • 2nd Level (count)</label>
+          <input id="windowsExteriorSecondCount" class="calc-input" type="number" min="0" step="1" placeholder="0" />
+        </div>
+
+        <div class="field" id="windowsExteriorSecondRateWrap" style="display:none;">
+          <label>Exterior Only • 2nd Level Rate ($)</label>
+          <input id="windowsExteriorSecondRate" class="calc-input" type="number" min="0" step="0.01" placeholder="0.00" />
+        </div>
       </div>
 
       <h2 class="section-title">Concrete (Driveway) • Hourly Bypass</h2>
@@ -547,7 +578,7 @@
         <div class="field">
           <label>Windows Discount (%)</label>
           <input id="discWindows" class="calc-input" type="number" min="0" max="100" step="1" placeholder="0" />
-          <small>Applies only to Windows retail.</small>
+          <small>Applies to both Windows I/O and Windows Exterior line items.</small>
         </div>
         <div class="field">
           <label>Concrete Discount (%)</label>
@@ -583,7 +614,8 @@
         <div class="field">
           <label>Service Inclusion</label>
           <div class="row">
-            <div class="toggle"><input id="incWindows" class="calc-input" type="checkbox" /> <span>Windows</span></div>
+            <div class="toggle"><input id="incWindowsIO" class="calc-input" type="checkbox" /> <span>Windows I/O</span></div>
+            <div class="toggle"><input id="incWindowsExt" class="calc-input" type="checkbox" /> <span>Windows Exterior</span></div>
             <div class="toggle"><input id="incGutters" class="calc-input" type="checkbox" /> <span>Gutters</span></div>
             <div class="toggle"><input id="incSoftWash" class="calc-input" type="checkbox" /> <span>Soft Wash</span></div>
             <div class="toggle"><input id="incConcrete" class="calc-input" type="checkbox" /> <span>Concrete</span></div>
@@ -600,8 +632,12 @@
           <label>Annual Frequencies</label>
           <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px;">
             <div class="field">
-              <label class="muted">Windows / year</label>
-              <input id="freqWindows" class="calc-input" type="number" min="0" step="1" value="0" />
+              <label class="muted">Windows I/O / year</label>
+              <input id="freqWindowsIO" class="calc-input" type="number" min="0" step="1" value="0" />
+            </div>
+            <div class="field">
+              <label class="muted">Windows Exterior / year</label>
+              <input id="freqWindowsExt" class="calc-input" type="number" min="0" step="1" value="0" />
             </div>
             <div class="field">
               <label class="muted">Gutters / year</label>
@@ -817,6 +853,7 @@
 
     const getNum = (id) => Number.parseFloat(document.getElementById(id)?.value) || 0;
     const getBool = (id) => !!document.getElementById(id)?.checked;
+    const getWholeNum = (id) => Math.max(0, Math.trunc(getNum(id)));
 
     function setText(id, value) {
       const el = document.getElementById(id);
@@ -839,6 +876,9 @@
       "exteriorSqft","roofSqft",
       "gutterFeetFirst",
       "windowsFirstCount","windowsSecondCount",
+      "windowsMode",
+      "windowsExteriorFirstCount","windowsExteriorSecondCount",
+      "windowsExteriorFirstRate","windowsExteriorSecondRate",
 
       "concreteMode","concreteSqft","concreteRate","concreteHours",
 
@@ -846,8 +886,8 @@
 
       "discSoftWash","discRoof","discGutters","discWindows","discConcrete","discWater",
 
-      "incWindows","incGutters","incSoftWash","incConcrete","incWater",
-      "freqWindows","freqGutters","freqSoftWash","freqConcrete","freqWater",
+      "incWindowsIO","incWindowsExt","incGutters","incSoftWash","incConcrete","incWater",
+      "freqWindowsIO","freqWindowsExt","freqGutters","freqSoftWash","freqConcrete","freqWater",
 
       "scopeNotes"
     ];
@@ -870,12 +910,23 @@
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return;
         const data = JSON.parse(raw);
+
         INPUT_IDS.forEach((id) => {
           const el = document.getElementById(id);
           if (!el || data[id] === undefined) return;
           if (el.type === "checkbox") el.checked = data[id] === "1";
           else el.value = data[id];
         });
+
+        // Legacy migration: old single-window config -> Windows I/O
+        if (data["incWindows"] !== undefined && data["incWindowsIO"] === undefined) {
+          const el = document.getElementById("incWindowsIO");
+          if (el) el.checked = data["incWindows"] === "1";
+        }
+        if (data["freqWindows"] !== undefined && data["freqWindowsIO"] === undefined) {
+          const el = document.getElementById("freqWindowsIO");
+          if (el) el.value = data["freqWindows"];
+        }
       } catch (_) {}
     }
 
@@ -903,24 +954,96 @@
 
     const PRESETS = Object.freeze({
       BASIC: {
-        include: { windows:true, gutters:true, softWash:false, roof:false, concrete:false, waterFeature:false, inspection:true },
-        frequency: { windows:2, gutters:1, softWash:0, roof:0, concrete:0, waterFeature:0, inspection:1 },
-        discounts: { }
+        include: {
+          windowsIO: true,
+          windowsExterior: false,
+          gutters: true,
+          softWash: false,
+          roof: false,
+          concrete: false,
+          waterFeature: false,
+          inspection: true
+        },
+        frequency: {
+          windowsIO: 2,
+          windowsExterior: 0,
+          gutters: 1,
+          softWash: 0,
+          roof: 0,
+          concrete: 0,
+          waterFeature: 0,
+          inspection: 1
+        },
+        discounts: {}
       },
       ESTATE: {
-        include: { windows:true, gutters:true, softWash:true, roof:false, concrete:false, waterFeature:false, inspection:true },
-        frequency: { windows:3, gutters:1, softWash:1, roof:0, concrete:0, waterFeature:0, inspection:1 },
-        discounts: { }
+        include: {
+          windowsIO: true,
+          windowsExterior: false,
+          gutters: true,
+          softWash: true,
+          roof: false,
+          concrete: false,
+          waterFeature: false,
+          inspection: true
+        },
+        frequency: {
+          windowsIO: 3,
+          windowsExterior: 0,
+          gutters: 1,
+          softWash: 1,
+          roof: 0,
+          concrete: 0,
+          waterFeature: 0,
+          inspection: 1
+        },
+        discounts: {}
       },
       CROWN: {
-        include: { windows:true, gutters:true, softWash:true, roof:false, concrete:true, waterFeature:true, inspection:true },
-        frequency: { windows:3, gutters:2, softWash:1, roof:0, concrete:1, waterFeature:1, inspection:1 },
-        discounts: { }
+        include: {
+          windowsIO: true,
+          windowsExterior: false,
+          gutters: true,
+          softWash: true,
+          roof: false,
+          concrete: true,
+          waterFeature: true,
+          inspection: true
+        },
+        frequency: {
+          windowsIO: 3,
+          windowsExterior: 0,
+          gutters: 2,
+          softWash: 1,
+          roof: 0,
+          concrete: 1,
+          waterFeature: 1,
+          inspection: 1
+        },
+        discounts: {}
       },
       CUSTOM: {
-        include: { windows:false, gutters:false, softWash:false, roof:false, concrete:false, waterFeature:false, inspection:true },
-        frequency: { windows:0, gutters:0, softWash:0, roof:0, concrete:0, waterFeature:0, inspection:1 },
-        discounts: { }
+        include: {
+          windowsIO: false,
+          windowsExterior: false,
+          gutters: false,
+          softWash: false,
+          roof: false,
+          concrete: false,
+          waterFeature: false,
+          inspection: true
+        },
+        frequency: {
+          windowsIO: 0,
+          windowsExterior: 0,
+          gutters: 0,
+          softWash: 0,
+          roof: 0,
+          concrete: 0,
+          waterFeature: 0,
+          inspection: 1
+        },
+        discounts: {}
       }
     });
 
@@ -935,22 +1058,66 @@
       return discountedRetail * f;
     }
 
-    function calcWindowsBaseRetail(builder) {
-      const first = builder.windowsFirstCount || 0;
-      const second = builder.windowsSecondCount || 0;
+    function calcWindowsIOBaseRetail(builder) {
+      const mode = builder.windowsMode || "INSIDE_OUT";
+      if (!(mode === "INSIDE_OUT" || mode === "BOTH")) {
+        return { baseRetail: 0, notes: ["Windows I/O not active in selected mode."] };
+      }
 
-      const raw = (first * RULES.WINDOWS_IO_FIRST_RATE) + (second * RULES.WINDOWS_IO_SECOND_RATE);
-      const enforced = raw < RULES.WINDOWS_MIN_JOB ? RULES.WINDOWS_MIN_JOB : raw;
+      const ioFirst = builder.windowsFirstCount || 0;
+      const ioSecond = builder.windowsSecondCount || 0;
+      const totalCount = ioFirst + ioSecond;
+
+      if (totalCount === 0) {
+        return { baseRetail: 0, notes: ["Windows I/O counts are 0."] };
+      }
+
+      let raw =
+        (ioFirst * RULES.WINDOWS_IO_FIRST_RATE) +
+        (ioSecond * RULES.WINDOWS_IO_SECOND_RATE);
 
       const notes = [
-        `Windows base: (${first} × $${RULES.WINDOWS_IO_FIRST_RATE}) + (${second} × $${RULES.WINDOWS_IO_SECOND_RATE})`,
+        `I/O: (${ioFirst} × $${RULES.WINDOWS_IO_FIRST_RATE}) + (${ioSecond} × $${RULES.WINDOWS_IO_SECOND_RATE})`
       ];
-      if (enforced !== raw) notes.push(`Windows minimum enforced: $${RULES.WINDOWS_MIN_JOB}`);
 
-      // If counts are zero, do not force a job into existence
-      if ((first + second) === 0) return { baseRetail: 0, notes: ["Windows counts are 0."] };
+      if (raw < RULES.WINDOWS_MIN_JOB) {
+        raw = RULES.WINDOWS_MIN_JOB;
+        notes.push(`Windows I/O minimum enforced: $${RULES.WINDOWS_MIN_JOB}`);
+      }
 
-      return { baseRetail: enforced, notes };
+      return { baseRetail: raw, notes };
+    }
+
+    function calcWindowsExteriorBaseRetail(builder) {
+      const mode = builder.windowsMode || "INSIDE_OUT";
+      if (!(mode === "EXTERIOR_ONLY" || mode === "BOTH")) {
+        return { baseRetail: 0, notes: ["Windows Exterior not active in selected mode."] };
+      }
+
+      const extFirst = builder.windowsExteriorFirstCount || 0;
+      const extSecond = builder.windowsExteriorSecondCount || 0;
+      const extFirstRate = builder.windowsExteriorFirstRate || 0;
+      const extSecondRate = builder.windowsExteriorSecondRate || 0;
+      const totalCount = extFirst + extSecond;
+
+      if (totalCount === 0) {
+        return { baseRetail: 0, notes: ["Windows Exterior counts are 0."] };
+      }
+
+      let raw =
+        (extFirst * extFirstRate) +
+        (extSecond * extSecondRate);
+
+      const notes = [
+        `Exterior: (${extFirst} × $${extFirstRate}) + (${extSecond} × $${extSecondRate})`
+      ];
+
+      if (raw < RULES.WINDOWS_MIN_JOB) {
+        raw = RULES.WINDOWS_MIN_JOB;
+        notes.push(`Windows Exterior minimum enforced: $${RULES.WINDOWS_MIN_JOB}`);
+      }
+
+      return { baseRetail: raw, notes };
     }
 
     function calcConcreteBaseRetail(builder) {
@@ -988,6 +1155,11 @@
         gutterFeetFirst: getNum("gutterFeetFirst"),
         windowsFirstCount: getNum("windowsFirstCount"),
         windowsSecondCount: getNum("windowsSecondCount"),
+        windowsMode: document.getElementById("windowsMode").value,
+        windowsExteriorFirstCount: getNum("windowsExteriorFirstCount"),
+        windowsExteriorSecondCount: getNum("windowsExteriorSecondCount"),
+        windowsExteriorFirstRate: getNum("windowsExteriorFirstRate"),
+        windowsExteriorSecondRate: getNum("windowsExteriorSecondRate"),
         concreteMode: document.getElementById("concreteMode").value,
         concreteSqft: getNum("concreteSqft"),
         concreteRate: getNum("concreteRate"),
@@ -1017,20 +1189,21 @@
       const frequency = { ...preset.frequency };
 
       // Override from UI
-      include.windows = getBool("incWindows");
+      include.windowsIO = getBool("incWindowsIO");
+      include.windowsExterior = getBool("incWindowsExt");
       include.gutters = getBool("incGutters");
       include.softWash = getBool("incSoftWash");
       include.concrete = getBool("incConcrete");
       include.waterFeature = getBool("incWater");
       include.inspection = true; // locked
-      include.roof = true; // roof is included ONLY if frequency > 0 (configured below). No UI toggle in this build.
+      include.roof = !!preset.include.roof;
 
-      frequency.windows = getNum("freqWindows");
-      frequency.gutters = getNum("freqGutters");
-      frequency.softWash = getNum("freqSoftWash");
-      frequency.concrete = getNum("freqConcrete");
-      frequency.waterFeature = getNum("freqWater");
-      // roof frequency is not present; treat as 0 unless you add it later:
+      frequency.windowsIO = getWholeNum("freqWindowsIO");
+      frequency.windowsExterior = getWholeNum("freqWindowsExt");
+      frequency.gutters = getWholeNum("freqGutters");
+      frequency.softWash = getWholeNum("freqSoftWash");
+      frequency.concrete = getWholeNum("freqConcrete");
+      frequency.waterFeature = getWholeNum("freqWater");
       frequency.roof = 0;
       frequency.inspection = 1;
 
@@ -1089,7 +1262,7 @@
         `Exterior walls: ${builder.exteriorSqft || 0} sqft × $${RULES.SOFTWASH_WALL_RATE}`,
       ]);
 
-      // Roof (locked rate exists, but not wired into membership in this UI build)
+      // Roof
       const roofBase = (builder.roofSqft || 0) * RULES.ROOF_RATE;
       pushLine("roof", roofBase, discounts01.roof, frequency.roof, [
         `Roof: ${builder.roofSqft || 0} sqft × $${RULES.ROOF_RATE}`,
@@ -1101,9 +1274,13 @@
         `Gutters 1st story: ${builder.gutterFeetFirst || 0} lf × $${RULES.GUTTER_FIRST_RATE}`,
       ]);
 
-      // Windows
-      const w = calcWindowsBaseRetail(builder);
-      pushLine("windows", w.baseRetail, discounts01.windows, frequency.windows, w.notes);
+      // Windows I/O
+      const wIO = calcWindowsIOBaseRetail(builder);
+      pushLine("windowsIO", wIO.baseRetail, discounts01.windows, frequency.windowsIO, wIO.notes);
+
+      // Windows Exterior
+      const wExt = calcWindowsExteriorBaseRetail(builder);
+      pushLine("windowsExterior", wExt.baseRetail, discounts01.windows, frequency.windowsExterior, wExt.notes);
 
       // Concrete
       const c = calcConcreteBaseRetail(builder);
@@ -1166,13 +1343,15 @@
     function applyTierToUI(tierKey) {
       const preset = PRESETS[tierKey] || PRESETS.CUSTOM;
 
-      document.getElementById("incWindows").checked = !!preset.include.windows;
+      document.getElementById("incWindowsIO").checked = !!preset.include.windowsIO;
+      document.getElementById("incWindowsExt").checked = !!preset.include.windowsExterior;
       document.getElementById("incGutters").checked = !!preset.include.gutters;
       document.getElementById("incSoftWash").checked = !!preset.include.softWash;
       document.getElementById("incConcrete").checked = !!preset.include.concrete;
       document.getElementById("incWater").checked = !!preset.include.waterFeature;
 
-      document.getElementById("freqWindows").value = preset.frequency.windows;
+      document.getElementById("freqWindowsIO").value = preset.frequency.windowsIO;
+      document.getElementById("freqWindowsExt").value = preset.frequency.windowsExterior;
       document.getElementById("freqGutters").value = preset.frequency.gutters;
       document.getElementById("freqSoftWash").value = preset.frequency.softWash;
       document.getElementById("freqConcrete").value = preset.frequency.concrete;
@@ -1212,6 +1391,21 @@
       }
     }
 
+    function enforceWindowsModeUI() {
+      const mode = document.getElementById("windowsMode").value;
+      const showExt = (mode === "EXTERIOR_ONLY" || mode === "BOTH");
+
+      [
+        "windowsExteriorFirstWrap",
+        "windowsExteriorFirstRateWrap",
+        "windowsExteriorSecondWrap",
+        "windowsExteriorSecondRateWrap"
+      ].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = showExt ? "block" : "none";
+      });
+    }
+
     function renderBreakdown(lineItems) {
       const tbody = document.getElementById("lineItemsBody");
       tbody.innerHTML = "";
@@ -1220,7 +1414,8 @@
         softWash: "Soft Wash (Walls)",
         roof: "Roof",
         gutters: "Gutters",
-        windows: "Windows",
+        windowsIO: "Windows (Inside & Out)",
+        windowsExterior: "Windows (Exterior Only)",
         concrete: "Concrete",
         waterFeature: "Water Feature",
         inspection: "Annual Inspection",
@@ -1252,6 +1447,7 @@
 
     function calculateAndRender() {
       enforceConcreteModeUI();
+      enforceWindowsModeUI();
 
       const quote = calculateMembershipQuote();
       state.quote = quote;
@@ -1273,9 +1469,17 @@
 
       renderBreakdown(quote.lineItems);
 
+      const windowsMode = document.getElementById("windowsMode").value;
+
       // warnings (does not change math)
-      if (getBool("incWindows") && getNum("freqWindows") <= 0) {
-        showWarning("Windows is included but frequency is 0. Set Windows/year to 1+ or toggle Windows off.");
+      if (getBool("incWindowsIO") && getNum("freqWindowsIO") <= 0) {
+        showWarning("Windows I/O is included but frequency is 0. Set Windows I/O/year to 1+ or toggle it off.");
+      } else if (getBool("incWindowsExt") && getNum("freqWindowsExt") <= 0) {
+        showWarning("Windows Exterior is included but frequency is 0. Set Windows Exterior/year to 1+ or toggle it off.");
+      } else if (getBool("incWindowsIO") && !(windowsMode === "INSIDE_OUT" || windowsMode === "BOTH")) {
+        showWarning("Windows I/O is included, but Windows Mode is not set to Inside & Out or Both.");
+      } else if (getBool("incWindowsExt") && !(windowsMode === "EXTERIOR_ONLY" || windowsMode === "BOTH")) {
+        showWarning("Windows Exterior is included, but Windows Mode is not set to Exterior Only or Both.");
       } else if (getBool("incGutters") && getNum("freqGutters") <= 0) {
         showWarning("Gutters is included but frequency is 0. Set Gutters/year to 1+ or toggle Gutters off.");
       } else if (getBool("incSoftWash") && getNum("freqSoftWash") <= 0) {
@@ -1447,7 +1651,8 @@
         softWash: "Soft Wash (Walls)",
         roof: "Roof",
         gutters: "Gutters",
-        windows: "Windows",
+        windowsIO: "Windows (Inside & Out)",
+        windowsExterior: "Windows (Exterior Only)",
         concrete: "Concrete",
         waterFeature: "Water Feature",
         inspection: "Annual Inspection (Locked)",
@@ -1520,35 +1725,49 @@
       }
 
       doc.setFont("helvetica", "bold");
-      doc.text("Line Item Breakdown (Per-service discount + frequency)", left, y);
-      y += 14;
+      doc.text("Line Item Breakdown", left, y);
+      y += 12;
 
       doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
       const maxWidth = 500;
 
-      lineItems.forEach((li) => {
-        const included = li.included ? "Included" : "Not included";
-        const discPct = li.service === "inspection" ? 0 : Math.round((li.discountPercent || 0) * 100);
-        const freqTxt = li.service === "inspection" ? "N/A" : String(li.frequency || 0);
+      const col = { svc:left, base:left+160, disc:left+240, freq:left+310, annual:left+380 };
 
-        const block = [
-          `${serviceLabel(li.service)} — ${included}`,
-          `Base Retail: ${asMoney(li.baseRetail)} | Discount: ${discPct}% | Discounted: ${asMoney(li.discountedRetail)} | Freq: ${freqTxt} | Annual: ${asMoney(li.annualRetail)}`,
-          ...(li.notes || []).map(n => `• ${n}`)
-        ].join("\n");
+      doc.text("Service", col.svc, y);
+      doc.text("Base", col.base, y);
+      doc.text("Disc", col.disc, y);
+      doc.text("Freq", col.freq, y);
+      doc.text("Annual", col.annual, y);
+      y += 8;
 
-        const lines = doc.splitTextToSize(block, maxWidth);
-        lines.forEach((ln) => {
-          if (y > 640) {
+      doc.line(left, y, left + 500, y);
+      y += 10;
+
+      lineItems
+        .filter(li => li.included || li.service === "inspection")
+        .forEach((li) => {
+
+          if (y > 680) {
             doc.addPage();
             addPdfHeader(doc, left);
             y = 58;
           }
-          doc.text(ln, left, y);
+
+          const discPct = li.service === "inspection" ? 0 : Math.round((li.discountPercent || 0) * 100);
+          const freqTxt = li.service === "inspection" ? "—" : String(li.frequency || 0);
+
+          doc.text(serviceLabel(li.service), col.svc, y);
+          doc.text(asMoney(li.baseRetail), col.base, y);
+          doc.text(`${discPct}%`, col.disc, y);
+          doc.text(freqTxt, col.freq, y);
+          doc.text(asMoney(li.annualRetail), col.annual, y);
+
           y += 12;
         });
-        y += 8;
-      });
+
+      doc.setFontSize(12);
+      y += 6;
 
       if (y > 610) {
         doc.addPage();
@@ -1639,6 +1858,13 @@
       saveInputs();
     });
 
+    // Windows mode
+    document.getElementById("windowsMode").addEventListener("change", () => {
+      enforceWindowsModeUI();
+      calculateAndRender();
+      saveInputs();
+    });
+
     // Save on client fields
     ["clientName", "clientAddress", "scopeNotes"].forEach(id => {
       const el = document.getElementById(id);
@@ -1659,7 +1885,8 @@
     } else {
       // if loaded but toggles are empty, still apply
       if (
-        !document.getElementById("incWindows").checked &&
+        !document.getElementById("incWindowsIO").checked &&
+        !document.getElementById("incWindowsExt").checked &&
         !document.getElementById("incGutters").checked &&
         !document.getElementById("incSoftWash").checked &&
         !document.getElementById("incConcrete").checked &&
@@ -1669,6 +1896,7 @@
     }
 
     enforceConcreteModeUI();
+    enforceWindowsModeUI();
     calculateAndRender();
     setActiveStep(1);
   </script>
