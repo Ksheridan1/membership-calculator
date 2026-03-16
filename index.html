@@ -436,8 +436,15 @@
             <option value="100">Low – $100</option>
             <option value="199" selected>Mid – $199</option>
             <option value="299">High – $299</option>
+            <option value="CUSTOM">Custom – Enter Manual Amount</option>
           </select>
           <small>Due at signing. Enrollment not valid until activation is processed.</small>
+        </div>
+
+        <div class="field" id="activationFeeCustomWrap" style="display:none;">
+          <label for="activationFeeCustom">Custom Activation Fee ($)</label>
+          <input id="activationFeeCustom" class="calc-input" type="number" min="0" step="0.01" placeholder="0.00" />
+          <small>Used only when Activation Fee is set to Custom.</small>
         </div>
 
         <div class="field">
@@ -481,7 +488,7 @@
         <div class="field">
           <label>Windows Inside & Out • 2nd Level (count)</label>
           <input id="windowsSecondCount" class="calc-input" type="number" min="0" step="1" placeholder="0" />
-          <small>Retail rate locked: $10 each (min $100 job)</small>
+          <small>Retail rate locked: $8 each (min $100 job)</small>
         </div>
 
         <!-- WINDOWS MODE -->
@@ -492,7 +499,7 @@
             <option value="EXTERIOR_ONLY">Exterior Only</option>
             <option value="BOTH">Both</option>
           </select>
-          <small>Exterior-only requires manual rate entry (no locked rule defined yet).</small>
+          <small>Exterior-only defaults to $4 per pane. You can still override the rate manually if needed.</small>
         </div>
 
         <div class="field" id="windowsExteriorFirstWrap" style="display:none;">
@@ -502,7 +509,7 @@
 
         <div class="field" id="windowsExteriorFirstRateWrap" style="display:none;">
           <label>Exterior Only • 1st Level Rate ($)</label>
-          <input id="windowsExteriorFirstRate" class="calc-input" type="number" min="0" step="0.01" placeholder="0.00" />
+          <input id="windowsExteriorFirstRate" class="calc-input" type="number" min="0" step="0.01" placeholder="0.00" value="4.00" />
         </div>
 
         <div class="field" id="windowsExteriorSecondWrap" style="display:none;">
@@ -512,7 +519,7 @@
 
         <div class="field" id="windowsExteriorSecondRateWrap" style="display:none;">
           <label>Exterior Only • 2nd Level Rate ($)</label>
-          <input id="windowsExteriorSecondRate" class="calc-input" type="number" min="0" step="0.01" placeholder="0.00" />
+          <input id="windowsExteriorSecondRate" class="calc-input" type="number" min="0" step="0.01" placeholder="0.00" value="4.00" />
         </div>
       </div>
 
@@ -865,13 +872,22 @@
       return Math.min(Math.max(x, min), max);
     }
 
+    function getActivationAmount() {
+      const activationSelect = document.getElementById("activationFee");
+      if (!activationSelect) return 0;
+      if (activationSelect.value === "CUSTOM") {
+        return Math.max(0, getNum("activationFeeCustom"));
+      }
+      return Math.max(0, Number.parseFloat(activationSelect.value) || 0);
+    }
+
     // ---------------------------
     // Local storage
     // ---------------------------
     const STORAGE_KEY = "hydroblast_membership_engine_4step_v1";
     const INPUT_IDS = [
       "clientName","clientAddress",
-      "activationFee","membershipTier",
+      "activationFee","activationFeeCustom","membershipTier",
 
       "exteriorSqft","roofSqft",
       "gutterFeetFirst",
@@ -927,6 +943,12 @@
           const el = document.getElementById("freqWindowsIO");
           if (el) el.value = data["freqWindows"];
         }
+
+        // Default legacy exterior rates to locked defaults if blank
+        const extFirstRate = document.getElementById("windowsExteriorFirstRate");
+        const extSecondRate = document.getElementById("windowsExteriorSecondRate");
+        if (extFirstRate && !extFirstRate.value) extFirstRate.value = String(RULES.WINDOWS_EXTERIOR_FIRST_RATE.toFixed(2));
+        if (extSecondRate && !extSecondRate.value) extSecondRate.value = String(RULES.WINDOWS_EXTERIOR_SECOND_RATE.toFixed(2));
       } catch (_) {}
     }
 
@@ -938,7 +960,9 @@
       ROOF_RATE: 0.30,
 
       WINDOWS_IO_FIRST_RATE: 8,
-      WINDOWS_IO_SECOND_RATE: 10,
+      WINDOWS_IO_SECOND_RATE: 8,
+      WINDOWS_EXTERIOR_FIRST_RATE: 4,
+      WINDOWS_EXTERIOR_SECOND_RATE: 4,
       WINDOWS_MIN_JOB: 100,
 
       GUTTER_FIRST_RATE: 1,
@@ -1096,8 +1120,8 @@
 
       const extFirst = builder.windowsExteriorFirstCount || 0;
       const extSecond = builder.windowsExteriorSecondCount || 0;
-      const extFirstRate = builder.windowsExteriorFirstRate || 0;
-      const extSecondRate = builder.windowsExteriorSecondRate || 0;
+      const extFirstRate = builder.windowsExteriorFirstRate || RULES.WINDOWS_EXTERIOR_FIRST_RATE;
+      const extSecondRate = builder.windowsExteriorSecondRate || RULES.WINDOWS_EXTERIOR_SECOND_RATE;
       const totalCount = extFirst + extSecond;
 
       if (totalCount === 0) {
@@ -1308,7 +1332,7 @@
       const annualMembershipBilled = memberMonthly * 12;
 
       // STEP 8: YearOneTotal
-      const activation = getNum("activationFee");
+      const activation = getActivationAmount();
       const yearOneTotal = activation + annualMembershipBilled;
 
       return {
@@ -1356,6 +1380,13 @@
       document.getElementById("freqSoftWash").value = preset.frequency.softWash;
       document.getElementById("freqConcrete").value = preset.frequency.concrete;
       document.getElementById("freqWater").value = preset.frequency.waterFeature;
+    }
+
+    function enforceActivationFeeUI() {
+      const mode = document.getElementById("activationFee").value;
+      const wrap = document.getElementById("activationFeeCustomWrap");
+      if (!wrap) return;
+      wrap.style.display = mode === "CUSTOM" ? "flex" : "none";
     }
 
     // ---------------------------
@@ -1865,6 +1896,13 @@
       saveInputs();
     });
 
+    // Activation fee mode
+    document.getElementById("activationFee").addEventListener("change", () => {
+      enforceActivationFeeUI();
+      calculateAndRender();
+      saveInputs();
+    });
+
     // Save on client fields
     ["clientName", "clientAddress", "scopeNotes"].forEach(id => {
       const el = document.getElementById(id);
@@ -1895,6 +1933,7 @@
       ) applyTierToUI(tierInit);
     }
 
+    enforceActivationFeeUI();
     enforceConcreteModeUI();
     enforceWindowsModeUI();
     calculateAndRender();
